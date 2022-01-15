@@ -34,6 +34,11 @@ window.addEventListener('mousemove', (event) => {
     perspectivate_camera.position.set(0.5 * (window.innerWidth / 4) * (event.clientX / window.innerWidth * 2 - 1), 0.5 * (window.innerHeight / 4) * (-event.clientY / window.innerHeight * 2 + 1), perspectivate_camera_position_z());
     perspectivate_camera.lookAt(0.5 * (window.innerWidth / 4) * (event.clientX / window.innerWidth * 2 - 1), 0.5 * (window.innerHeight / 4) * (-event.clientY / window.innerHeight * 2 + 1), 0);
 });
+window.addEventListener('touchmove', (event) => {
+    console.log(event.touches[0].clientX);
+    perspectivate_camera.position.set(0.5 * (window.innerWidth / 4) * (event.touches[0].clientX / window.innerWidth * 2 - 1), 0.5 * (window.innerHeight / 4) * (-event.touches[0].clientY / window.innerHeight * 2 + 1), perspectivate_camera_position_z());
+    perspectivate_camera.lookAt(0.5 * (window.innerWidth / 4) * (event.touches[0].clientX / window.innerWidth * 2 - 1), 0.5 * (window.innerHeight / 4) * (-event.touches[0].clientY / window.innerHeight * 2 + 1), 0);
+});
 
 function update() {
     perspectivate_camera.position.z = perspectivate_camera_position_z();
