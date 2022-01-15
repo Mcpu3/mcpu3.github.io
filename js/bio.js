@@ -15,7 +15,7 @@ const perspectivate_camera = new THREE.PerspectiveCamera(fov, window.innerWidth 
     perspectivate_camera.position.z = perspectivate_camera_position_z();
 }
 
-const css_3d_renderer = new CSS3DRenderer();
+const css_3d_renderer = new CSS3DRenderer({antialias: true});
 {
     css_3d_renderer.setSize(window.innerWidth, window.innerHeight);
     document.getElementById('div').appendChild(css_3d_renderer.domElement);
@@ -35,7 +35,6 @@ window.addEventListener('mousemove', (event) => {
     perspectivate_camera.lookAt(0.5 * (window.innerWidth / 4) * (event.clientX / window.innerWidth * 2 - 1), 0.5 * (window.innerHeight / 4) * (-event.clientY / window.innerHeight * 2 + 1), 0);
 });
 window.addEventListener('touchmove', (event) => {
-    console.log(event.touches[0].clientX);
     perspectivate_camera.position.set(0.5 * (window.innerWidth / 4) * (event.touches[0].clientX / window.innerWidth * 2 - 1), 0.5 * (window.innerHeight / 4) * (-event.touches[0].clientY / window.innerHeight * 2 + 1), perspectivate_camera_position_z());
     perspectivate_camera.lookAt(0.5 * (window.innerWidth / 4) * (event.touches[0].clientX / window.innerWidth * 2 - 1), 0.5 * (window.innerHeight / 4) * (-event.touches[0].clientY / window.innerHeight * 2 + 1), 0);
 });

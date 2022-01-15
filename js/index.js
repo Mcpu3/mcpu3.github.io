@@ -45,7 +45,7 @@ const perspective_camera = new THREE.PerspectiveCamera(90, window.innerWidth / w
     requestAnimationFrame(update);
 }
 
-const web_gl_renderer = new THREE.WebGLRenderer({canvas});
+const web_gl_renderer = new THREE.WebGLRenderer({canvas, antialias: true});
 {
     web_gl_renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
     document.body.appendChild(web_gl_renderer.domElement);
