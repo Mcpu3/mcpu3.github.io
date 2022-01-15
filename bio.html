@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+        <title>Mcpu3's homepage</title>
+        <link href="css/bio.css" rel="stylesheet">
+    </head>
+    <body>
+        <div id="div"></div>
+        <div class="l-wrapper_01">
+            <article class="card_01">
+                <div class="card__header_01">
+                    <p class="card__title_01">岩本圭介</p>
+                    <figure class="card__thumbnail_01">
+                        <img src="resources/images/photo.jpg" alt="サムネイル" class="card__image_01">
+                    </figure>
+                </div>
+                <div class="card__body_01">
+                    <p class="card__text2_01">
+                        <dl>
+                            <dt>在学中</dt>
+                            <dd>北九州工業高等専門学校</dd>
+                            <dt>在住</dt>
+                            <dd>北九州市</dd>
+                            <dt>出身</dt>
+                            <dd>周南市</dd>
+                            <dt>年齢</dt>
+                            <dd id="age"></dd>
+                            <dt>資格, 試験</dt>
+                            <dd>普通自動車第一種免許, 基本情報技術者試験, 応用情報技術者試験, TOEIC: 580</dd>
+                        </dl>
+                    </p>
+                </div>
+                <div class="card__footer_01">
+                    <p class="card__text_01"><a href="javascript:on_click();" class="button_01 -compact">OK</a></p>
+                </div>
+            </article>
+        </div>
+        <script>
+            const birth_date = new Date('2002/01/11');
+            const date = new Date();
+            document.getElementById('age').innerText = Math.floor(((date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate()) - (birth_date.getFullYear() * 10000 + (birth_date.getMonth() + 1) * 100 + birth_date.getDate())) / 10000);
+            
+            function on_click() {
+                window.close();
+            }
+        </script>
+        <script src="js/bio.js" type="module"></script>
+    </body>
+</html>

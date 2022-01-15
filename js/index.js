@@ -1,61 +1,85 @@
 import * as THREE from '../build/three.module.js'
-import {OrbitControls} from '../examples/jsm/controls/OrbitControls.js'
+import {BrightnessContrastShader} from '../examples/jsm/shaders/BrightnessContrastShader.js'
+import {EffectComposer} from '../examples/jsm/postprocessing/EffectComposer.js'
+import {FilmPass} from '../examples/jsm/postprocessing/FilmPass.js'
+import {GlitchPass} from '../examples/jsm/postprocessing/GlitchPass.js'
 import {GLTFLoader} from '../examples/jsm/loaders/GLTFLoader.js'
 import {Lensflare, LensflareElement} from '../examples/jsm/objects/Lensflare.js'
-import {EffectComposer} from '../examples/jsm/postprocessing/EffectComposer.js'
-import {RenderPass} from '../examples/jsm/postprocessing/RenderPass.js'
+import {OrbitControls} from '../examples/jsm/controls/OrbitControls.js'
 import {OutlinePass} from '../examples/jsm/postprocessing/OutlinePass.js'
-import {GlitchPass} from '../examples/jsm/postprocessing/GlitchPass.js'
+import {RenderPass} from '../examples/jsm/postprocessing/RenderPass.js'
+import {RGBShiftShader} from '../examples/jsm/shaders/RGBShiftShader.js';
 import {ShaderPass} from '../examples/jsm/postprocessing/ShaderPass.js'
-import {BrightnessContrastShader} from '../examples/jsm/shaders/BrightnessContrastShader.js'
 
+
+const gltf_loader = new GLTFLoader();
+const texture_loader = new THREE.TextureLoader();
 
 const camera_r = 137.6;
 const glb_r = 131.4;
 
-const texture_loader = new THREE.TextureLoader();
-const gltf_loader = new GLTFLoader();
-
 const canvas = document.querySelector('#canvas')
+
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 2200);
+
+const perspective_camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 2200);
 {
     const theta = -1;
-    camera.position.set(camera_r * Math.cos(theta), 0, camera_r * Math.sin(theta));
+    perspective_camera.position.set(camera_r * Math.cos(theta), 0, camera_r * Math.sin(theta));
 }
-const renderer = new THREE.WebGLRenderer({canvas});
+
 {
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+    function update() {
+        if (perspective_camera.position.y != 0) {
+            perspective_camera.position.y = 0;
+        }
+        const theta = Math.sign(perspective_camera.position.z) * Math.acos(perspective_camera.position.x / Math.sqrt(Math.pow(perspective_camera.position.x, 2) + Math.pow(perspective_camera.position.z, 2)));
+        if (Math.sqrt(Math.pow(perspective_camera.position.x, 2) + Math.pow(perspective_camera.position.z, 2)) != camera_r) {
+            perspective_camera.position.x = camera_r * Math.cos(theta);
+            perspective_camera.position.z = camera_r * Math.sin(theta);
+        }
+        perspective_camera.lookAt(new THREE.Vector3(camera_r * Math.cos(theta + 1.5), 0, camera_r * Math.sin(theta + 1.5)));
+        requestAnimationFrame(update);
+    }
+
+    requestAnimationFrame(update);
 }
-const composer = new EffectComposer(renderer);
+
+const web_gl_renderer = new THREE.WebGLRenderer({canvas});
 {
-    const renderPass = new RenderPass(scene, camera);
-    composer.addPass(renderPass);
+    web_gl_renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+    document.body.appendChild(web_gl_renderer.domElement);
 }
-const controls = new OrbitControls(camera, canvas);
+
+const objects = {};
+
+const effect_composer = new EffectComposer(web_gl_renderer);
 {
-    controls.enableDamping = true;
-    controls.enablePan = false;
-    controls.enableZoom = false;
+    effect_composer.setSize(web_gl_renderer.domElement.clientWidth, web_gl_renderer.domElement.clientHeight);
+    const render_pass = new RenderPass(scene, perspective_camera);
+    objects.render_pass = render_pass;
+    effect_composer.addPass(render_pass);
+}
+
+const orbit_controls = new OrbitControls(perspective_camera, canvas);
+{
+    orbit_controls.autoRotate = true;
+    orbit_controls.enableDamping = true;
+    orbit_controls.enablePan = false;
+    orbit_controls.enableZoom = false;
 }
 
 {
     const texture = texture_loader.load(
         '../resources/images/background.jpg',
         () => {
-            const target = new THREE.WebGLCubeRenderTarget(texture.image.height);
-            target.fromEquirectangularTexture(renderer, texture);
-            scene.background = target.texture;
+            const web_gl_cube_render_target = new THREE.WebGLCubeRenderTarget(texture.image.height);
+            web_gl_cube_render_target.fromEquirectangularTexture(web_gl_renderer, texture);
+            objects.background = web_gl_cube_render_target.texture;
+            scene.background = web_gl_cube_render_target.texture;
         }
     );
 }
-
-const objects = {};
-
-const root = new THREE.Object3D();
-scene.add(root);
-objects.root = root;
 
 {
     const sun = new THREE.PointLight(0xFFEBCD, 2);
@@ -73,8 +97,22 @@ objects.root = root;
     lensflare.addElement(new LensflareElement(texture_3, 180, 0.9));
     lensflare.addElement(new LensflareElement(texture_3, 100, 1));
     sun.add(lensflare);
-    root.add(sun);
     objects.sun = sun;
+    scene.add(sun);
+}
+
+{
+    function update() {
+        if (Math.random() < 0.9) {
+            objects.sun.children[0].visible = true;
+        }
+        else {
+            objects.sun.children[0].visible = false;
+        }
+        requestAnimationFrame(update);
+    }
+
+    requestAnimationFrame(update);
 }
 
 {
@@ -82,201 +120,311 @@ objects.root = root;
     const r = 2000;
     const theta = -90 * Math.PI / 180;
     moon.position.set(r * Math.cos(theta), 0, r * Math.sin(theta));
-    root.add(moon);
     objects.moon = moon;
+    scene.add(moon);
 }
 
 {
-    const geometry = new THREE.SphereGeometry(100);
-    const material = new THREE.MeshLambertMaterial({map: texture_loader.load('../resources/images/earth.jpg')});
-    const earth = new THREE.Mesh(geometry, material);
+    const sphere_geometry = new THREE.SphereGeometry(100);
+    const mesh_lambert_material = new THREE.MeshLambertMaterial({map: texture_loader.load('../resources/images/earth.jpg')});
+    const earth = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
     earth.rotation.x = -23.4 * Math.PI / 180;
-    root.add(earth);
     objects.earth = earth;
-
-    const outline_pass = new OutlinePass(new THREE.Vector2(window.innerWidth, window.innerHeight), scene, camera);
+    scene.add(earth);
+    const outline_pass = new OutlinePass(new THREE.Vector2(web_gl_renderer.domElement.clientWidth, web_gl_renderer.domElement.clientHeight), scene, perspective_camera);
     outline_pass.selectedObjects = [earth];
-    outline_pass.edgeStrength = 2.5;
     outline_pass.edgeGlow = 5;
+    outline_pass.edgeStrength = 2.5;
     outline_pass.edgeThickness = 10;
-    composer.addPass(outline_pass);
+    objects.earth_outline_pass = outline_pass;
+    effect_composer.addPass(outline_pass);
+}
+
+{
+    gltf_loader.load('../resources/glb/sentinel6.glb', (glb) => {
+        const theta = 0 * Math.PI / 180;
+        glb.scene.position.set(glb_r * Math.cos(theta), 0, glb_r * Math.sin(theta));
+        objects.bio_glb = glb.scene;
+        scene.add(glb.scene);
+        const outline_pass = new OutlinePass(new THREE.Vector2(web_gl_renderer.domElement.clientWidth, web_gl_renderer.domElement.clientHeight), scene, perspective_camera);
+        web_gl_renderer.domElement.addEventListener('pointermove', (event) => {
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(new THREE.Vector2(event.clientX / web_gl_renderer.domElement.clientWidth * 2 - 1, -event.clientY / web_gl_renderer.domElement.clientHeight * 2 + 1), perspective_camera);
+            const selected_objects = [];
+            const intersect_objects = raycaster.intersectObject(scene, true);
+            if (intersect_objects.length > 0) {
+                if (intersect_objects[0].object.parent.parent == glb.scene) {
+                    selected_objects.push(intersect_objects[0].object);
+                }
+            }
+            outline_pass.selectedObjects = selected_objects;
+        });
+        objects.bio_outline_pass = outline_pass;
+        effect_composer.addPass(outline_pass);
+    });
+}
+
+{
+    const sprite_material = new THREE.SpriteMaterial({map: texture_loader.load('../resources/images/bio.jpg')});
+    const sprite = new THREE.Sprite(sprite_material);
+    const theta = 0 * Math.PI / 180;
+    sprite.position.set(glb_r * Math.cos(theta), 6.6, glb_r * Math.sin(theta));
+    sprite.scale.set(6.6, 6.6, 6.6);
+    objects.bio_sprite = sprite;
+    scene.add(sprite);
+}
+
+{
+    web_gl_renderer.domElement.addEventListener('click', (event) => {
+        const raycaster = new THREE.Raycaster();
+        raycaster.setFromCamera(new THREE.Vector2(event.clientX / web_gl_renderer.domElement.clientWidth * 2 - 1, -event.clientY / web_gl_renderer.domElement.clientHeight * 2 + 1), perspective_camera);
+        const intersect_objects = raycaster.intersectObject(scene, true);
+        if (intersect_objects.length > 0) {
+            if (intersect_objects[0].object.parent.parent == objects.bio_glb || intersect_objects[0].object == objects.bio_sprite) {
+                window.open('bio.html');
+            }
+        }
+    });
+}
+
+{
+    function update() {
+        if ('bio_glb' in objects) {
+            objects.bio_glb.rotation.set(objects.bio_glb.rotation.x + 0.01, objects.bio_glb.rotation.y + 0.01, objects.bio_glb.rotation.z + 0.01);
+        }
+        requestAnimationFrame(update);
+    }
+
+    requestAnimationFrame(update);
 }
 
 {
     gltf_loader.load('../resources/glb/icesat2.glb', (glb) => {
-        const theta = 0 * Math.PI / 180;
+        const theta = 90 * Math.PI / 180;
         glb.scene.position.set(glb_r * Math.cos(theta), 0, glb_r * Math.sin(theta));
-        glb.scene.scale.set(13.2, 13.2, 13.2);
-        root.add(glb.scene);
-        objects.bio_glb = glb.scene;
-
-        const outline_pass = new OutlinePass(new THREE.Vector2(window.innerWidth, window.innerHeight), scene, camera);
-        renderer.domElement.addEventListener('pointermove', (event) => {
+        objects.twitter_glb = glb.scene;
+        scene.add(glb.scene);
+        const outline_pass = new OutlinePass(new THREE.Vector2(web_gl_renderer.domElement.clientWidth, web_gl_renderer.domElement.clientHeight), scene, perspective_camera);
+        web_gl_renderer.domElement.addEventListener('pointermove', (event) => {
             const raycaster = new THREE.Raycaster();
-            raycaster.setFromCamera(new THREE.Vector2(event.clientX / window.innerWidth * 2 - 1, -event.clientY / window.innerHeight * 2 + 1), camera);
+            raycaster.setFromCamera(new THREE.Vector2(event.clientX / web_gl_renderer.domElement.clientWidth * 2 - 1, -event.clientY / web_gl_renderer.domElement.clientHeight * 2 + 1), perspective_camera);
             const selected_objects = [];
             const intersect_objects = raycaster.intersectObject(scene, true);
             if (intersect_objects.length > 0) {
-                if (intersect_objects[0].object.parent.parent.parent == glb.scene) {
+                if (intersect_objects[0].object.parent.parent == glb.scene) {
                     selected_objects.push(intersect_objects[0].object);
                 }
             }
             outline_pass.selectedObjects = selected_objects;
         });
-        composer.addPass(outline_pass);
+        objects.twitter_outline_pass = outline_pass;
+        effect_composer.addPass(outline_pass);
     });
 }
 
 {
-    const material = new THREE.SpriteMaterial({map: texture_loader.load('../resources/images/bio.png')});
-    const sprite = new THREE.Sprite(material);
-    const theta = 0 * Math.PI / 180;
-    sprite.position.set(glb_r * Math.cos(theta), 6.6, glb_r * Math.sin(theta));
-    sprite.scale.set(6.6, 6.6, 6.6);
-    root.add(sprite);
-    objects.bio_sprite = sprite;
-}
-
-{
-    gltf_loader.load('../resources/glb/iss.glb', (glb) => {
-        const theta = 90 * Math.PI / 180;
-        glb.scene.position.set(glb_r * Math.cos(theta), 0, glb_r * Math.sin(theta));
-        glb.scene.scale.set(13.2, 13.2, 13.2);
-        root.add(glb.scene);
-        objects.twitter_glb = glb.scene;
-    });
-}
-
-{
-    const material = new THREE.SpriteMaterial({map: texture_loader.load('../resources/images/twitter.png')});
-    const sprite = new THREE.Sprite(material);
+    const sprite_material = new THREE.SpriteMaterial({map: texture_loader.load('../resources/images/twitter.png')});
+    const sprite = new THREE.Sprite(sprite_material);
     const theta = 90 * Math.PI / 180;
     sprite.position.set(glb_r * Math.cos(theta), 6.6, glb_r * Math.sin(theta));
     sprite.scale.set(6.6, 6.6, 6.6);
-    root.add(sprite);
     objects.twitter_sprite = sprite;
+    scene.add(sprite);
 }
 
 {
-    renderer.domElement.addEventListener('click', (event) => {
+    web_gl_renderer.domElement.addEventListener('click', (event) => {
         const raycaster = new THREE.Raycaster();
-        raycaster.setFromCamera(new THREE.Vector2(event.clientX / window.innerWidth * 2 - 1, -event.clientY / window.innerHeight * 2 + 1), camera);
+        raycaster.setFromCamera(new THREE.Vector2(event.clientX / web_gl_renderer.domElement.clientWidth * 2 - 1, -event.clientY / web_gl_renderer.domElement.clientHeight * 2 + 1), perspective_camera);
         const intersect_objects = raycaster.intersectObject(scene, true);
         if (intersect_objects.length > 0) {
-            // if (intersect_objects[0].object.parent.parent.parent == objects.easteregg_glb || intersect_objects[0].object == objects.easteregg_sprite) {
-            if (intersect_objects[0].object == objects.twitter_sprite) {
+            if (intersect_objects[0].object.parent.parent == objects.twitter_glb || intersect_objects[0].object == objects.twitter_sprite) {
                 window.open('https://twitter.com/mcpu3_kei');
+                const film_pass = new FilmPass();
+                film_pass.uniforms.sIntensity.value = 0.5;
+                film_pass.uniforms.sCount.value = 2000;
+                film_pass.uniforms.grayscale = false;
+                objects.film_pass = film_pass;
+                effect_composer.addPass(film_pass);
             }
         }
     });
 }
 
 {
-    const material = new THREE.SpriteMaterial({map: texture_loader.load('../resources/images/github.png')});
-    const sprite = new THREE.Sprite(material);
+    function update() {
+        if ('twitter_glb' in objects) {
+            objects.twitter_glb.rotation.set(objects.twitter_glb.rotation.x + 0.01, objects.twitter_glb.rotation.y + 0.01, objects.twitter_glb.rotation.z + 0.01);
+        }
+        requestAnimationFrame(update);
+    }
+
+    requestAnimationFrame(update);
+}
+
+{
+    gltf_loader.load('../resources/glb/cloudsat.glb', (glb) => {
+        const theta = 180 * Math.PI / 180;
+        glb.scene.position.set(glb_r * Math.cos(theta), 0, glb_r * Math.sin(theta));
+        objects.github_glb = glb.scene;
+        scene.add(glb.scene);
+        const outline_pass = new OutlinePass(new THREE.Vector2(web_gl_renderer.domElement.clientWidth, web_gl_renderer.domElement.clientHeight), scene, perspective_camera);
+        web_gl_renderer.domElement.addEventListener('pointermove', (event) => {
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(new THREE.Vector2(event.clientX / web_gl_renderer.domElement.clientWidth * 2 - 1, -event.clientY / web_gl_renderer.domElement.clientHeight * 2 + 1), perspective_camera);
+            const selected_objects = [];
+            const intersect_objects = raycaster.intersectObject(scene, true);
+            if (intersect_objects.length > 0) {
+                if (intersect_objects[0].object.parent.parent == glb.scene) {
+                    selected_objects.push(intersect_objects[0].object);
+                }
+            }
+            outline_pass.selectedObjects = selected_objects;
+        });
+        objects.github_outline_pass = outline_pass;
+        effect_composer.addPass(outline_pass);
+    });
+}
+
+{
+    const sprite_material = new THREE.SpriteMaterial({map: texture_loader.load('../resources/images/github.png')});
+    const sprite = new THREE.Sprite(sprite_material);
     const theta = 180 * Math.PI / 180;
     sprite.position.set(glb_r * Math.cos(theta), 6.6, glb_r * Math.sin(theta));
     sprite.scale.set(6.6, 6.6, 6.6);
-    root.add(sprite);
     objects.github_sprite = sprite;
+    scene.add(sprite);
+}
+
+{
+    web_gl_renderer.domElement.addEventListener('click', (event) => {
+        const raycaster = new THREE.Raycaster();
+        raycaster.setFromCamera(new THREE.Vector2(event.clientX / window.innerWidth * 2 - 1, -event.clientY / window.innerHeight * 2 + 1), perspective_camera);
+        const intersect_objects = raycaster.intersectObject(scene, true);
+        if (intersect_objects.length > 0) {
+            if (intersect_objects[0].object.parent.parent == objects.github_glb || intersect_objects[0].object == objects.github_sprite) {
+                window.open('https://github.com/Mcpu3');
+                const shader_pass_rgb_shift_shader = new ShaderPass(RGBShiftShader);
+                shader_pass_rgb_shift_shader.enabled = false;
+                objects.shader_pass_rgb_shift_shader = shader_pass_rgb_shift_shader;
+                effect_composer.addPass(shader_pass_rgb_shift_shader);
+            }
+        }
+    });
+}
+
+{
+    function update() {
+        if ('github_glb' in objects) {
+            objects.github_glb.rotation.set(objects.github_glb.rotation.x + 0.01, objects.github_glb.rotation.y + 0.01, objects.github_glb.rotation.z + 0.01);
+        }
+        if ('shader_pass_rgb_shift_shader' in objects) {
+            if (Math.random() < 0.1) {
+                objects.shader_pass_rgb_shift_shader.enabled = true;
+            }
+            else {
+                objects.shader_pass_rgb_shift_shader.enabled = false;
+            }
+        }
+        requestAnimationFrame(update);
+    }
+
+    requestAnimationFrame(update);
 }
 
 {
     gltf_loader.load('../resources/glb/astronaut.glb', (glb) => {
-        const theta = -90 * Math.PI / 180;
+        const theta = 270 * Math.PI / 180;
         glb.scene.position.set(glb_r * Math.cos(theta), 0, glb_r * Math.sin(theta));
-        root.add(glb.scene);
         objects.easteregg_glb = glb.scene;
-
-        const outline_pass = new OutlinePass(new THREE.Vector2(window.innerWidth, window.innerHeight), scene, camera);
-        renderer.domElement.addEventListener('pointermove', (event) => {
+        scene.add(glb.scene);
+        const outline_pass = new OutlinePass(new THREE.Vector2(web_gl_renderer.domElement.clientWidth, web_gl_renderer.domElement.clientHeight), scene, perspective_camera);
+        web_gl_renderer.domElement.addEventListener('pointermove', (event) => {
             const raycaster = new THREE.Raycaster();
-            raycaster.setFromCamera(new THREE.Vector2(event.clientX / window.innerWidth * 2 - 1, -event.clientY / window.innerHeight * 2 + 1), camera);
+            raycaster.setFromCamera(new THREE.Vector2(event.clientX / web_gl_renderer.domElement.clientWidth * 2 - 1, -event.clientY / web_gl_renderer.domElement.clientHeight * 2 + 1), perspective_camera);
             const selected_objects = [];
             const intersect_objects = raycaster.intersectObject(scene, true);
             if (intersect_objects.length > 0) {
-                if (intersect_objects[0].object.parent.parent.parent == glb.scene) {
+                if (intersect_objects[0].object.parent.parent == glb.scene) {
                     selected_objects.push(intersect_objects[0].object);
                 }
             }
             outline_pass.selectedObjects = selected_objects;
         });
-        composer.addPass(outline_pass);
+        objects.easteregg_outline_pass = outline_pass;
+        effect_composer.addPass(outline_pass);
     });
 }
 
 {
-    renderer.domElement.addEventListener('click', (event) => {
-        const raycaster = new THREE.Raycaster();
-        raycaster.setFromCamera(new THREE.Vector2(event.clientX / window.innerWidth * 2 - 1, -event.clientY / window.innerHeight * 2 + 1), camera);
-        const intersect_objects = raycaster.intersectObject(scene, true);
-        if (intersect_objects.length > 0) {
-            // if (intersect_objects[0].object.parent.parent.parent == objects.easteregg_glb || intersect_objects[0].object == objects.easteregg_sprite) {
-            if (intersect_objects[0].object == objects.github_sprite) {
-                window.open('https://github.com/Mcpu3');
-            }
-        }
-    });
-}
-
-{
-    const material = new THREE.SpriteMaterial({map: texture_loader.load('../resources/images/bio.jpg')});
-    const sprite = new THREE.Sprite(material);
-    const theta = -90 * Math.PI / 180;
+    const sprite_material = new THREE.SpriteMaterial({map: texture_loader.load('../resources/images/easteregg.jpg')});
+    const sprite = new THREE.Sprite(sprite_material);
+    const theta = 270 * Math.PI / 180;
     sprite.position.set(glb_r * Math.cos(theta), 6.6, glb_r * Math.sin(theta));
     sprite.scale.set(6.6, 6.6, 6.6);
-    root.add(sprite);
     objects.easteregg_sprite = sprite;
+    scene.add(sprite);
 }
 
 {
-    renderer.domElement.addEventListener('click', (event) => {
+    let clicked = false;
+    web_gl_renderer.domElement.addEventListener('click', (event) => {
         const raycaster = new THREE.Raycaster();
-        raycaster.setFromCamera(new THREE.Vector2(event.clientX / window.innerWidth * 2 - 1, -event.clientY / window.innerHeight * 2 + 1), camera);
+        raycaster.setFromCamera(new THREE.Vector2(event.clientX / web_gl_renderer.domElement.clientWidth * 2 - 1, -event.clientY / web_gl_renderer.domElement.clientHeight * 2 + 1), perspective_camera);
         const intersect_objects = raycaster.intersectObject(scene, true);
         if (intersect_objects.length > 0) {
-            if (intersect_objects[0].object.parent.parent.parent == objects.easteregg_glb || intersect_objects[0].object == objects.easteregg_sprite) {
-                objects.easteregg_glb.visible = false;
-                objects.easteregg_sprite.visible = false;
-
-                const geometry = new THREE.WireframeGeometry(objects.earth.geometry);
-                const material = new THREE.LineBasicMaterial();
-                const earth_wireframe = new THREE.LineSegments(geometry, material);
+            if (intersect_objects[0].object.parent.parent == objects.easteregg_glb || intersect_objects[0].object == objects.easteregg_sprite) {
+                if (clicked) {
+                    return;
+                }
+                clicked = true;
+                const easteregg_glb_scale = objects.easteregg_glb.scale;
+                const easteregg_sprite_scale = objects.easteregg_sprite.scale;
+                const wireframe_geometry = new THREE.WireframeGeometry(objects.earth.geometry);
+                const line_basic_material = new THREE.LineBasicMaterial();
+                const earth_wireframe = new THREE.LineSegments(wireframe_geometry, line_basic_material);
                 earth_wireframe.rotation.z = -23.4 * Math.PI / 180;
                 earth_wireframe.visible = false;
-                root.add(earth_wireframe);
                 objects.earth_wireframe = earth_wireframe;
-
+                scene.add(earth_wireframe);
                 const glitch_pass = new GlitchPass();
-                composer.addPass(glitch_pass);
-
+                objects.glitch_pass = glitch_pass;
+                effect_composer.addPass(glitch_pass);
                 const shader_pass_brightness_contrast = new ShaderPass(BrightnessContrastShader);
-                let added_shader_pass_brightness_contrast_to_composer = false;
                 shader_pass_brightness_contrast.uniforms.brightness.value = -0.5;
+                shader_pass_brightness_contrast.enabled = false;
+                objects.shader_pass_brightness_contrast = shader_pass_brightness_contrast;
+                effect_composer.addPass(shader_pass_brightness_contrast);
+                const clock = new THREE.Clock();
 
-                const clock_easteregg = new THREE.Clock();
-
-                function update_easteregg() {
-                    objects.earth.visible = true;
-                    objects.earth_wireframe.visible = false;
-                    if (clock_easteregg.getElapsedTime() >= 0.0 && clock_easteregg.getElapsedTime() < 0.2) {
+                function update() {
+                    if (clock.getElapsedTime() >= 0.0 && clock.getElapsedTime() < 0.5) {
+                        objects.easteregg_glb.scale.set(easteregg_glb_scale.x * Math.cos(clock.getElapsedTime() * Math.PI), easteregg_glb_scale.y * Math.cos(clock.getElapsedTime() * Math.PI), easteregg_glb_scale.z * Math.cos(clock.getElapsedTime() * Math.PI));
+                        objects.easteregg_sprite.scale.set(easteregg_sprite_scale.x * Math.cos(clock.getElapsedTime() * Math.PI), easteregg_sprite_scale.y * Math.cos(clock.getElapsedTime() * Math.PI), easteregg_sprite_scale.z * Math.cos(clock.getElapsedTime() * Math.PI));
+                    }
+                    else {
+                        objects.easteregg_glb.visible = false;
+                        objects.easteregg_sprite.visible = false;
+                    }
+                    if (clock.getElapsedTime() >= 0.0 && clock.getElapsedTime() < 0.2) {
                         objects.earth.visible = false;
                         objects.earth_wireframe.visible = true;
                     }
-                    else if (clock_easteregg.getElapsedTime() >= 0.2 && clock_easteregg.getElapsedTime() < 0.3) {
+                    else if (clock.getElapsedTime() >= 0.2 && clock.getElapsedTime() < 0.3) {
                         objects.earth.visible = true;
                         objects.earth_wireframe.visible = false;
                     }
-                    else if (clock_easteregg.getElapsedTime() >= 0.3 && clock_easteregg.getElapsedTime() < 0.4) {
+                    else if (clock.getElapsedTime() >= 0.3 && clock.getElapsedTime() < 0.4) {
                         objects.earth.visible = false;
                         objects.earth_wireframe.visible = true;
                     }
-                    if (clock_easteregg.getElapsedTime() >= 4.0) {
-                        if (!added_shader_pass_brightness_contrast_to_composer) {
-                            composer.addPass(shader_pass_brightness_contrast);
-                            added_shader_pass_brightness_contrast_to_composer = true;
-                        }
+                    else {
+                        objects.earth.visible = true;
+                        objects.earth_wireframe.visible = false;
+                    }
+                    if (clock.getElapsedTime() >= 4.0) {
                         glitch_pass.goWild = true;
+                        objects.shader_pass_brightness_contrast.enabled = true;
                         if (Math.random() < 0.1) {
                             objects.earth.visible = false;
                             objects.earth_wireframe.visible = true;
@@ -286,47 +434,56 @@ objects.root = root;
                             objects.earth_wireframe.visible = false;
                         }
                     }
-                    requestAnimationFrame(update_easteregg);
+                    requestAnimationFrame(update);
                 }
     
-                requestAnimationFrame(update_easteregg);
+                requestAnimationFrame(update);
             }
         }
     });
 }
 
-const clock = new THREE.Clock();
-
-function render() {
-    // if ('bio_glb' in objects) {
-    //     console.log(objects.bio_glb.rotation._x);
-    //     objects.glb_bio.rotation._x = clock.getElapsedTime() * 2 * Math.PI / 15;
-    // }
-
-    if (camera.position.y != 0) {
-        camera.position.y = 0;
-    }
-    {
-        const r = 137.6;
-        const theta = Math.sign(camera.position.z) * Math.acos(camera.position.x / Math.sqrt(Math.pow(camera.position.x, 2) + Math.pow(camera.position.z, 2)));
-        if (Math.sqrt(Math.pow(camera.position.x, 2) + Math.pow(camera.position.z, 2)) != r) {
-            camera.position.x = r * Math.cos(theta);
-            camera.position.z = r * Math.sin(theta);
+{
+    function update() {
+        if ('easteregg_glb' in objects) {
+            objects.easteregg_glb.rotation.set(objects.easteregg_glb.rotation.x + 0.01, objects.easteregg_glb.rotation.y + 0.01, objects.easteregg_glb.rotation.z + 0.01);
         }
-        camera.lookAt(new THREE.Vector3(r * Math.cos(theta + 1.5), 0, r * Math.sin(theta + 1.5)));
+        requestAnimationFrame(update);
     }
 
-    if (Math.random() < 0.9) {
-        objects.sun.children[0].visible = true;
-    }
-    else {
-        objects.sun.children[0].visible = false;
-    }
-
-    renderer.render(scene, camera);
-    composer.render();
-    controls.update();
-    requestAnimationFrame(render);
+    requestAnimationFrame(update);
 }
 
-requestAnimationFrame(render);
+{
+    objects.natural_satellites = []
+    const sphere_buffer_geometry = new THREE.SphereBufferGeometry(3, 3, 3);
+    for (let i = 0; i < 2000; i++) {
+        const mesh_phong_material = new THREE.MeshPhongMaterial({color: 0x666666, flatShading: true});
+        const natural_satellite = new THREE.Mesh(sphere_buffer_geometry, mesh_phong_material)
+        natural_satellite.position.set(4000 * Math.random() - 2000, 4000 * Math.random() - 2000, 4000 * Math.random() - 2000);
+        natural_satellite.rotation.set(Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI)
+        natural_satellite.scale.x = natural_satellite.scale.y = natural_satellite.scale.z = Math.random()
+        objects.natural_satellites.push(natural_satellite);
+        scene.add(natural_satellite)
+    }
+}
+
+function update() {
+    if (() => {
+        if (web_gl_renderer.domElement.width !== web_gl_renderer.domElement.clientWidth || web_gl_renderer.domElement.height !== web_gl_renderer.domElement.clientHeight) {
+            web_gl_renderer.setSize(web_gl_renderer.domElement.clientWidth, web_gl_renderer.domElement.clientHeight, false);
+            return true;
+        }
+        return false;
+    }) {
+        perspective_camera.aspect = web_gl_renderer.domElement.clientWidth / web_gl_renderer.domElement.clientHeight;
+        perspective_camera.updateProjectionMatrix();
+    }
+    effect_composer.setSize(web_gl_renderer.domElement.clientWidth, web_gl_renderer.domElement.clientHeight);
+    web_gl_renderer.render(scene, perspective_camera);
+    effect_composer.render();
+    orbit_controls.update();
+    requestAnimationFrame(update);
+}
+
+requestAnimationFrame(update);
