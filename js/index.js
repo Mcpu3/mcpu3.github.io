@@ -136,6 +136,7 @@ const orbit_controls = new OrbitControls(perspective_camera, canvas);
     outline_pass.edgeGlow = 5;
     outline_pass.edgeStrength = 2.5;
     outline_pass.edgeThickness = 10;
+    outline_pass.hiddenEdgeColor = new THREE.Color(0, 0, 0);
     objects.earth_outline_pass = outline_pass;
     effect_composer.addPass(outline_pass);
 }
