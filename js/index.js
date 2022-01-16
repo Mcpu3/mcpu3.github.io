@@ -349,7 +349,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 }
 
 {
-    gltf_loader.load('../resources/glb/astronaut.glb', (glb) => {
+    gltf_loader.load('../resources/glb/mkiii.glb', (glb) => {
         const theta = 270 * Math.PI / 180;
         glb.scene.position.set(glb_r * Math.cos(theta), 0, glb_r * Math.sin(theta));
         objects.easteregg_glb = glb.scene;
