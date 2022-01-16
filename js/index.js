@@ -12,8 +12,8 @@ import {RGBShiftShader} from '../examples/jsm/shaders/RGBShiftShader.js';
 import {ShaderPass} from '../examples/jsm/postprocessing/ShaderPass.js'
 
 
-const gltf_loader = new GLTFLoader();
 const texture_loader = new THREE.TextureLoader();
+const gltf_loader = new GLTFLoader();
 
 const camera_r = 137.6;
 const glb_r = 131.4;
@@ -63,10 +63,10 @@ const effect_composer = new EffectComposer(web_gl_renderer);
 
 const orbit_controls = new OrbitControls(perspective_camera, canvas);
 {
-    orbit_controls.autoRotate = true;
-    orbit_controls.enableDamping = true;
     orbit_controls.enablePan = false;
     orbit_controls.enableZoom = false;
+    orbit_controls.enableDamping = true;
+    orbit_controls.autoRotate = true;
 }
 
 {

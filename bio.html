@@ -2,19 +2,21 @@
 <html lang="ja">
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <title>Mcpu3's bio</title>
+        <meta name="description" content="Mcpu3のページです。">
+        <meta name="keywords" content="Mcpu3, 岩本圭介">
         <link rel="icon" href="resources/images/favicon.ico">
-        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
-        <title>Mcpu3's homepage</title>
         <link href="css/bio.css" rel="stylesheet">
     </head>
-    <body>
+    <body oncopy="return false;">
         <div id="div"></div>
         <div class="l-wrapper_01">
             <article class="card_01">
                 <div class="card__header_01">
                     <p class="card__title_01">岩本圭介</p>
                     <figure class="card__thumbnail_01">
-                        <img src="resources/images/photo.jpg" alt="サムネイル" class="card__image_01">
+                        <img src="resources/images/photo.jpg" alt="Photo" class="card__image_01">
                     </figure>
                 </div>
                 <div class="card__body_01">
@@ -39,8 +41,8 @@
             </article>
         </div>
         <script>
-            const birth_date = new Date('2002/01/11');
             const date = new Date();
+            const birth_date = new Date('2002/01/11');
             document.getElementById('age').innerText = Math.floor(((date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate()) - (birth_date.getFullYear() * 10000 + (birth_date.getMonth() + 1) * 100 + birth_date.getDate())) / 10000);
             
             function on_click() {
