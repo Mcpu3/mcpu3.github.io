@@ -18,7 +18,7 @@ const gltf_loader = new GLTFLoader();
 const camera_r = 137.6;
 const glb_r = 131.4;
 
-const canvas = document.querySelector('#canvas')
+const index = document.querySelector('#index')
 
 const scene = new THREE.Scene();
 
@@ -45,9 +45,9 @@ const perspective_camera = new THREE.PerspectiveCamera(90, window.innerWidth / w
     requestAnimationFrame(update);
 }
 
-const web_gl_renderer = new THREE.WebGLRenderer({canvas, antialias: true});
+const web_gl_renderer = new THREE.WebGLRenderer({canvas: index, antialias: true});
 {
-    web_gl_renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+    web_gl_renderer.setSize(index.clientWidth, index.clientHeight, false);
     document.body.appendChild(web_gl_renderer.domElement);
 }
 
@@ -61,7 +61,7 @@ const effect_composer = new EffectComposer(web_gl_renderer);
     effect_composer.addPass(render_pass);
 }
 
-const orbit_controls = new OrbitControls(perspective_camera, canvas);
+const orbit_controls = new OrbitControls(perspective_camera, index);
 {
     orbit_controls.enablePan = false;
     orbit_controls.enableZoom = false;
@@ -182,7 +182,7 @@ const orbit_controls = new OrbitControls(perspective_camera, canvas);
         const intersect_objects = raycaster.intersectObject(scene, true);
         if (intersect_objects.length > 0) {
             if (intersect_objects[0].object.parent.parent == objects.bio_glb || intersect_objects[0].object == objects.bio_sprite) {
-                window.open('bio.html');
+                location = 'bio.html';
             }
         }
     });

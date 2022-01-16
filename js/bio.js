@@ -18,7 +18,7 @@ const perspectivate_camera = new THREE.PerspectiveCamera(fov, window.innerWidth 
 const css_3d_renderer = new CSS3DRenderer({antialias: true});
 {
     css_3d_renderer.setSize(window.innerWidth, window.innerHeight);
-    document.getElementById('div').appendChild(css_3d_renderer.domElement);
+    document.getElementById('bio').appendChild(css_3d_renderer.domElement);
 }
 
 const objects = {};
