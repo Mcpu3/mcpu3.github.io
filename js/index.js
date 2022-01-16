@@ -22,7 +22,7 @@ const index = document.querySelector('#index')
 
 const scene = new THREE.Scene();
 
-const perspective_camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 2200);
+const perspective_camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 4000);
 {
     const theta = -1;
     perspective_camera.position.set(camera_r * Math.cos(theta), 0, camera_r * Math.sin(theta));
@@ -82,32 +82,32 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 }
 
 {
-    const sun = new THREE.PointLight(0xFFEBCD, 2);
+    const sun_light = new THREE.PointLight(0xFFEBCD, 2);
     const r = 2000;
     const theta = 90 * Math.PI / 180;
-    sun.position.set(r * Math.cos(theta), 0, r * Math.sin(theta));
+    sun_light.position.set(r * Math.cos(theta), 0, r * Math.sin(theta));
     const lensflare = new Lensflare();
     const texture_0 = texture_loader.load('../examples/textures/lensflare/lensflare0.png');
     const texture_2 = texture_loader.load('../examples/textures/lensflare/lensflare2.png');
     const texture_3 = texture_loader.load('../examples/textures/lensflare/lensflare3.png');
-    lensflare.addElement(new LensflareElement(texture_0, 500, 0, sun.color));
-    lensflare.addElement(new LensflareElement(texture_2, 1000, 0.1, sun.color));
+    lensflare.addElement(new LensflareElement(texture_0, 500, 0, sun_light.color));
+    lensflare.addElement(new LensflareElement(texture_2, 1000, 0.1, sun_light.color));
     lensflare.addElement(new LensflareElement(texture_3, 100, 0.5));
     lensflare.addElement(new LensflareElement(texture_3, 120, 0.6));
     lensflare.addElement(new LensflareElement(texture_3, 180, 0.9));
     lensflare.addElement(new LensflareElement(texture_3, 100, 1));
-    sun.add(lensflare);
-    objects.sun = sun;
-    scene.add(sun);
+    sun_light.add(lensflare);
+    objects.sun_light = sun_light;
+    scene.add(sun_light);
 }
 
 {
     function update() {
         if (Math.random() < 0.9) {
-            objects.sun.children[0].visible = true;
+            objects.sun_light.children[0].visible = true;
         }
         else {
-            objects.sun.children[0].visible = false;
+            objects.sun_light.children[0].visible = false;
         }
         requestAnimationFrame(update);
     }
@@ -116,29 +116,36 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 }
 
 {
-    const moon = new THREE.PointLight(0xFFFFFF, 2);
-    const r = 2000;
+    const r = 1000;
     const theta = -90 * Math.PI / 180;
-    moon.position.set(r * Math.cos(theta), 0, r * Math.sin(theta));
+    const sphere_geometry = new THREE.SphereGeometry(27.3);
+    const mesh_lambert_material = new THREE.MeshLambertMaterial({map: texture_loader.load('../examples/textures/planets/moon_1024.jpg')});
+    const moon = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
     objects.moon = moon;
+    moon.position.set(r * Math.cos(theta), 0, r * Math.sin(theta));
     scene.add(moon);
+    const moon_light = new THREE.PointLight(0xFFFFFF, 2);
+    moon_light.position.set(r * Math.cos(theta), 0, r * Math.sin(theta));
+    objects.moon_light = moon_light;
+    scene.add(moon_light);
 }
 
 {
-    const sphere_geometry = new THREE.SphereGeometry(100);
+    const sphere_geometry = new THREE.SphereGeometry(100, 32, 32);
     const mesh_lambert_material = new THREE.MeshLambertMaterial({map: texture_loader.load('../resources/images/earth.jpg')});
     const earth = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
     earth.rotation.x = -23.4 * Math.PI / 180;
     objects.earth = earth;
     scene.add(earth);
-    const outline_pass = new OutlinePass(new THREE.Vector2(web_gl_renderer.domElement.clientWidth, web_gl_renderer.domElement.clientHeight), scene, perspective_camera);
-    outline_pass.selectedObjects = [earth];
-    outline_pass.edgeGlow = 5;
-    outline_pass.edgeStrength = 2.5;
-    outline_pass.edgeThickness = 10;
-    outline_pass.hiddenEdgeColor = new THREE.Color(0, 0, 0);
-    objects.earth_outline_pass = outline_pass;
-    effect_composer.addPass(outline_pass);
+}
+
+{
+    const sphere_geometry = new THREE.SphereGeometry(101.3, 32, 32);
+    const mesh_lambert_material = new THREE.MeshLambertMaterial({map: texture_loader.load('../examples/textures/planets/earth_clouds_1024.png'), transparent: true, side: THREE.DoubleSide});
+    const cloud = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
+    cloud.rotation.x = -23.4 * Math.PI / 180;
+    objects.earth.add(cloud);
+    scene.add(cloud);
 }
 
 {

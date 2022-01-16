@@ -120,3 +120,4 @@ dist
 !examples/textures
 /examples/textures/*
 !/examples/textures/lensflare
+!/examples/textures/planets
