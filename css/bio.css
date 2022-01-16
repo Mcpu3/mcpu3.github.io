@@ -2,8 +2,7 @@ html, body {
     margin: 0;
     height: 100%;
     font-family: sans-serif;
-    /* overflow: hidden; */
-    touch-action: none;
+    touch-action: manipulation;
     user-select: none;
     -webkit-user-select: none;
 }
