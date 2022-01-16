@@ -189,9 +189,14 @@ const orbit_controls = new OrbitControls(perspective_camera, canvas);
 }
 
 {
+    let clock = new THREE.Clock();
+
     function update() {
+        if (clock >= 4) {
+            clock = new THREE.Clock();
+        }
         if ('bio_glb' in objects) {
-            objects.bio_glb.rotation.set(objects.bio_glb.rotation.x + 0.01, objects.bio_glb.rotation.y + 0.01, objects.bio_glb.rotation.z + 0.01);
+            objects.bio_glb.rotation.set(clock.getElapsedTime() / 4 * 2 * Math.PI, clock.getElapsedTime() / 4 * 2 * Math.PI, clock.getElapsedTime() / 4 * 2 * Math.PI);
         }
         requestAnimationFrame(update);
     }
@@ -253,9 +258,14 @@ const orbit_controls = new OrbitControls(perspective_camera, canvas);
 }
 
 {
+    let clock = new THREE.Clock();
+
     function update() {
+        if (clock >= 4) {
+            clock = new THREE.Clock();
+        }
         if ('twitter_glb' in objects) {
-            objects.twitter_glb.rotation.set(objects.twitter_glb.rotation.x + 0.01, objects.twitter_glb.rotation.y + 0.01, objects.twitter_glb.rotation.z + 0.01);
+            objects.twitter_glb.rotation.set(clock.getElapsedTime() / 4 * 2 * Math.PI, clock.getElapsedTime() / 4 * 2 * Math.PI, clock.getElapsedTime() / 4 * 2 * Math.PI);
         }
         requestAnimationFrame(update);
     }
@@ -315,9 +325,14 @@ const orbit_controls = new OrbitControls(perspective_camera, canvas);
 }
 
 {
+    let clock = new THREE.Clock();
+
     function update() {
+        if (clock >= 4) {
+            clock = new THREE.Clock();
+        }
         if ('github_glb' in objects) {
-            objects.github_glb.rotation.set(objects.github_glb.rotation.x + 0.01, objects.github_glb.rotation.y + 0.01, objects.github_glb.rotation.z + 0.01);
+            objects.github_glb.rotation.set(clock.getElapsedTime() / 4 * 2 * Math.PI, clock.getElapsedTime() / 4 * 2 * Math.PI, clock.getElapsedTime() / 4 * 2 * Math.PI);
         }
         if ('shader_pass_rgb_shift_shader' in objects) {
             if (Math.random() < 0.1) {
@@ -407,7 +422,7 @@ const orbit_controls = new OrbitControls(perspective_camera, canvas);
                         objects.easteregg_glb.visible = false;
                         objects.easteregg_sprite.visible = false;
                     }
-                    if (clock.getElapsedTime() >= 0.0 && clock.getElapsedTime() < 0.2) {
+                    if (clock.getElapsedTime() >= 0 && clock.getElapsedTime() < 0.2) {
                         objects.earth.visible = false;
                         objects.earth_wireframe.visible = true;
                     }
@@ -423,7 +438,7 @@ const orbit_controls = new OrbitControls(perspective_camera, canvas);
                         objects.earth.visible = true;
                         objects.earth_wireframe.visible = false;
                     }
-                    if (clock.getElapsedTime() >= 4.0) {
+                    if (clock.getElapsedTime() >= 4) {
                         glitch_pass.goWild = true;
                         objects.shader_pass_brightness_contrast.enabled = true;
                         if (Math.random() < 0.1) {
@@ -445,9 +460,14 @@ const orbit_controls = new OrbitControls(perspective_camera, canvas);
 }
 
 {
+    let clock = new THREE.Clock();
+
     function update() {
+        if (clock >= 4) {
+            clock = new THREE.Clock();
+        }
         if ('easteregg_glb' in objects) {
-            objects.easteregg_glb.rotation.set(objects.easteregg_glb.rotation.x + 0.01, objects.easteregg_glb.rotation.y + 0.01, objects.easteregg_glb.rotation.z + 0.01);
+            objects.easteregg_glb.rotation.set(clock.getElapsedTime() / 4 * 2 * Math.PI, clock.getElapsedTime() / 4 * 2 * Math.PI, clock.getElapsedTime() / 4 * 2 * Math.PI);
         }
         requestAnimationFrame(update);
     }
