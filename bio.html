@@ -50,8 +50,8 @@
         <script>
             {
                 const date = new Date();
-                const birth_date = new Date('2002/01/11');
-                document.getElementById('age').innerText = Math.floor(((date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate()) - (birth_date.getFullYear() * 10000 + (birth_date.getMonth() + 1) * 100 + birth_date.getDate())) / 10000);
+                const date_birth = new Date('2002/01/11');
+                document.getElementById('age').innerText = Math.floor(((date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate()) - (date_birth.getFullYear() * 10000 + (date_birth.getMonth() + 1) * 100 + date_birth.getDate())) / 10000);
             }
         </script>
         <script src="js/bio.js" type="module"></script>
