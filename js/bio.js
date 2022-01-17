@@ -31,7 +31,7 @@ const objects = {};
 }
 
 {
-    document.getElementById('ok').addEventListener('click', (event) => {
+    document.getElementById('ok').addEventListener('touchend', (event) => {
         location = 'index.html';
     });
 }
