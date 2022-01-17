@@ -43,7 +43,7 @@
                     </p>
                 </div>
                 <div class="card__footer_01">
-                    <p class="card__text_01"><a href="javascript:on_click();" class="button_01 -compact">OK</a></p>
+                    <p class="card__text_01"><a href="index.html" class="button_01 -compact">OK</a></p>
                 </div>
             </article>
         </div>
@@ -52,12 +52,6 @@
                 const date = new Date();
                 const birth_date = new Date('2002/01/11');
                 document.getElementById('age').innerText = Math.floor(((date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate()) - (birth_date.getFullYear() * 10000 + (birth_date.getMonth() + 1) * 100 + birth_date.getDate())) / 10000);
-            }
-            
-            {
-                function on_click() {
-                    location = 'index.html';
-                }
             }
         </script>
         <script src="js/bio.js" type="module"></script>
