@@ -260,7 +260,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         if (intersect_objects.length > 0) {
             if (intersect_objects[0].object.parent.parent == objects.twitter_glb || intersect_objects[0].object == objects.twitter_sprite) {
                 window.open('https://twitter.com/mcpu3_kei');
-                film_pass.enabled = true;
+                objects.film_pass.enabled = true;
             }
         }
     });
