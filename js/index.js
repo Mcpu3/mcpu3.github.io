@@ -246,7 +246,13 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 }
 
 {
-    let clicked = false;
+    const film_pass = new FilmPass();
+    film_pass.uniforms.sIntensity.value = 0.5;
+    film_pass.uniforms.sCount.value = 2000;
+    film_pass.uniforms.grayscale = false;
+    film_pass.enabled = false;
+    objects.film_pass = film_pass;
+    effect_composer.addPass(film_pass);
     web_gl_renderer.domElement.addEventListener('click', (event) => {
         const raycaster = new THREE.Raycaster();
         raycaster.setFromCamera(new THREE.Vector2(event.clientX / web_gl_renderer.domElement.clientWidth * 2 - 1, -event.clientY / web_gl_renderer.domElement.clientHeight * 2 + 1), perspective_camera);
@@ -254,15 +260,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         if (intersect_objects.length > 0) {
             if (intersect_objects[0].object.parent.parent == objects.twitter_glb || intersect_objects[0].object == objects.twitter_sprite) {
                 window.open('https://twitter.com/mcpu3_kei');
-                if (!clicked) {
-                    clicked = true;
-                    const film_pass = new FilmPass();
-                    film_pass.uniforms.sIntensity.value = 0.5;
-                    film_pass.uniforms.sCount.value = 2000;
-                    film_pass.uniforms.grayscale = false;
-                    objects.film_pass = film_pass;
-                    effect_composer.addPass(film_pass);
-                }
+                film_pass.enabled = true;
             }
         }
     });
