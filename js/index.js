@@ -246,6 +246,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 }
 
 {
+    let clicked = false;
     web_gl_renderer.domElement.addEventListener('click', (event) => {
         const raycaster = new THREE.Raycaster();
         raycaster.setFromCamera(new THREE.Vector2(event.clientX / web_gl_renderer.domElement.clientWidth * 2 - 1, -event.clientY / web_gl_renderer.domElement.clientHeight * 2 + 1), perspective_camera);
@@ -253,12 +254,15 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         if (intersect_objects.length > 0) {
             if (intersect_objects[0].object.parent.parent == objects.twitter_glb || intersect_objects[0].object == objects.twitter_sprite) {
                 window.open('https://twitter.com/mcpu3_kei');
-                const film_pass = new FilmPass();
-                film_pass.uniforms.sIntensity.value = 0.5;
-                film_pass.uniforms.sCount.value = 2000;
-                film_pass.uniforms.grayscale = false;
-                objects.film_pass = film_pass;
-                effect_composer.addPass(film_pass);
+                if (!clicked) {
+                    clicked = true;
+                    const film_pass = new FilmPass();
+                    film_pass.uniforms.sIntensity.value = 0.5;
+                    film_pass.uniforms.sCount.value = 2000;
+                    film_pass.uniforms.grayscale = false;
+                    objects.film_pass = film_pass;
+                    effect_composer.addPass(film_pass);
+                }
             }
         }
     });
@@ -315,6 +319,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 }
 
 {
+    let clicked = false;
     web_gl_renderer.domElement.addEventListener('click', (event) => {
         const raycaster = new THREE.Raycaster();
         raycaster.setFromCamera(new THREE.Vector2(event.clientX / window.innerWidth * 2 - 1, -event.clientY / window.innerHeight * 2 + 1), perspective_camera);
@@ -322,10 +327,13 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         if (intersect_objects.length > 0) {
             if (intersect_objects[0].object.parent.parent == objects.github_glb || intersect_objects[0].object == objects.github_sprite) {
                 window.open('https://github.com/Mcpu3');
-                const shader_pass_rgb_shift_shader = new ShaderPass(RGBShiftShader);
-                shader_pass_rgb_shift_shader.enabled = false;
-                objects.shader_pass_rgb_shift_shader = shader_pass_rgb_shift_shader;
-                effect_composer.addPass(shader_pass_rgb_shift_shader);
+                if (!clicked) {
+                    clicked = true;
+                    const shader_pass_rgb_shift_shader = new ShaderPass(RGBShiftShader);
+                    shader_pass_rgb_shift_shader.enabled = false;
+                    objects.shader_pass_rgb_shift_shader = shader_pass_rgb_shift_shader;
+                    effect_composer.addPass(shader_pass_rgb_shift_shader);
+                }
             }
         }
     });
