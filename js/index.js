@@ -47,7 +47,7 @@ const perspective_camera = new THREE.PerspectiveCamera(90, window.innerWidth / w
 
 const web_gl_renderer = new THREE.WebGLRenderer({canvas: index, antialias: true});
 {
-    web_gl_renderer.setSize(index.clientWidth, index.clientHeight, false);
+    web_gl_renderer.setSize(index.clientWidth * window.devicePixelRatio, index.clientHeight * window.devicePixelRatio, false);
     document.body.appendChild(web_gl_renderer.domElement);
 }
 
@@ -499,7 +499,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 function update() {
     if (() => {
         if (web_gl_renderer.domElement.width !== web_gl_renderer.domElement.clientWidth || web_gl_renderer.domElement.height !== web_gl_renderer.domElement.clientHeight) {
-            web_gl_renderer.setSize(web_gl_renderer.domElement.clientWidth, web_gl_renderer.domElement.clientHeight, false);
+            web_gl_renderer.setSize(web_gl_renderer.domElement.clientWidth * window.devicePixelRatio, web_gl_renderer.domElement.clientHeight * window.devicePixelRatio, false);
             return true;
         }
         return false;
@@ -507,7 +507,7 @@ function update() {
         perspective_camera.aspect = web_gl_renderer.domElement.clientWidth / web_gl_renderer.domElement.clientHeight;
         perspective_camera.updateProjectionMatrix();
     }
-    effect_composer.setSize(web_gl_renderer.domElement.clientWidth, web_gl_renderer.domElement.clientHeight);
+    effect_composer.setSize(web_gl_renderer.domElement.clientWidth * window.devicePixelRatio, web_gl_renderer.domElement.clientHeight * window.devicePixelRatio);
     web_gl_renderer.render(scene, perspective_camera);
     effect_composer.render();
     orbit_controls.update();

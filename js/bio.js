@@ -17,7 +17,7 @@ const perspectivate_camera = new THREE.PerspectiveCamera(fov, window.innerWidth 
 
 const css_3d_renderer = new CSS3DRenderer({antialias: true});
 {
-    css_3d_renderer.setSize(window.innerWidth, window.innerHeight);
+    css_3d_renderer.setSize(window.innerWidth * devicePixelRatio, window.innerHeight * window.devicePixelRatio);
     document.getElementById('bio').appendChild(css_3d_renderer.domElement);
 }
 
@@ -53,7 +53,7 @@ const objects = {};
 
 function update() {
     perspectivate_camera.position.z = perspectivate_camera_position_z();
-    css_3d_renderer.setSize(window.innerWidth, window.innerHeight);
+    css_3d_renderer.setSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
     perspectivate_camera.aspect = window.innerWidth / window.innerHeight;
     perspectivate_camera.updateProjectionMatrix();
     css_3d_renderer.render(scene, perspectivate_camera);
