@@ -143,9 +143,24 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
     const sphere_geometry = new THREE.SphereGeometry(101.3, 32, 32);
     const mesh_lambert_material = new THREE.MeshLambertMaterial({map: texture_loader.load('../examples/textures/planets/earth_clouds_1024.png'), transparent: true, side: THREE.DoubleSide});
     const cloud = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
-    cloud.rotation.x = -23.4 * Math.PI / 180;
+    objects.cloud = cloud;
     objects.earth.add(cloud);
-    scene.add(cloud);
+}
+
+{
+    let clock = new THREE.Clock();
+
+    function update() {
+        if (clock >= 60) {
+            clock = new THREE.Clock();
+        }
+        if ('cloud' in objects) {
+            objects.cloud.rotation.y = clock.getElapsedTime() / 60 * 2 * Math.PI;
+        }
+        requestAnimationFrame(update);
+    }
+
+    requestAnimationFrame(update);
 }
 
 {
