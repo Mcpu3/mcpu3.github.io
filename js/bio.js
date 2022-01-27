@@ -32,7 +32,7 @@ const objects = {};
 
 {
     document.getElementById('ok').addEventListener('touchend', (event) => {
-        location = 'index.html';
+        location = './';
     });
 }
 

@@ -204,7 +204,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const intersect_objects = raycaster.intersectObject(scene, true);
         if (intersect_objects.length > 0) {
             if (intersect_objects[0].object.parent.parent == objects.bio_glb || intersect_objects[0].object == objects.bio_sprite) {
-                location = 'bio.html';
+                location = './bio.html';
             }
         }
     });
@@ -274,7 +274,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const intersect_objects = raycaster.intersectObject(scene, true);
         if (intersect_objects.length > 0) {
             if (intersect_objects[0].object.parent.parent == objects.twitter_glb || intersect_objects[0].object == objects.twitter_sprite) {
-                window.open('https://twitter.com/mcpu3_kei');
+                window.open('https://twitter.com/mcpu3_kei/');
                 objects.film_pass.enabled = true;
             }
         }
@@ -339,7 +339,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const intersect_objects = raycaster.intersectObject(scene, true);
         if (intersect_objects.length > 0) {
             if (intersect_objects[0].object.parent.parent == objects.github_glb || intersect_objects[0].object == objects.github_sprite) {
-                window.open('https://github.com/Mcpu3');
+                window.open('https://github.com/Mcpu3/');
                 if (!clicked) {
                     clicked = true;
                     const shader_pass_rgb_shift_shader = new ShaderPass(RGBShiftShader);
