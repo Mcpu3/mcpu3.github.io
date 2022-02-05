@@ -8,7 +8,7 @@ import {Lensflare, LensflareElement} from '../examples/jsm/objects/Lensflare.js'
 import {OrbitControls} from '../examples/jsm/controls/OrbitControls.js'
 import {OutlinePass} from '../examples/jsm/postprocessing/OutlinePass.js'
 import {RenderPass} from '../examples/jsm/postprocessing/RenderPass.js'
-import {RGBShiftShader} from '../examples/jsm/shaders/RGBShiftShader.js';
+import {RGBShiftShader} from '../examples/jsm/shaders/RGBShiftShader.js'
 import {ShaderPass} from '../examples/jsm/postprocessing/ShaderPass.js'
 
 
