@@ -23,17 +23,14 @@ const perspective_camera = new THREE.PerspectiveCamera(90, window.innerWidth / w
     const r = 137.6;
     const theta = -1;
     perspective_camera.position.set(r * Math.cos(theta), 0, r * Math.sin(theta));
+    perspective_camera.lookAt(r * Math.cos(theta + 1.5), 0, r * Math.sin(theta + 1.5));
 
     function update() {
-        if (perspective_camera.position.y != 0) {
-            perspective_camera.position.y = 0;
-        }
+        perspective_camera.position.y = 0;
         const theta = Math.sign(perspective_camera.position.z) * Math.acos(perspective_camera.position.x / Math.sqrt(Math.pow(perspective_camera.position.x, 2) + Math.pow(perspective_camera.position.z, 2)));
-        if (Math.sqrt(Math.pow(perspective_camera.position.x, 2) + Math.pow(perspective_camera.position.z, 2)) != r) {
-            perspective_camera.position.x = r * Math.cos(theta);
-            perspective_camera.position.z = r * Math.sin(theta);
-        }
-        perspective_camera.lookAt(new THREE.Vector3(r * Math.cos(theta + 1.5), 0, r * Math.sin(theta + 1.5)));
+        perspective_camera.position.x = r * Math.cos(theta);
+        perspective_camera.position.z = r * Math.sin(theta);
+        perspective_camera.lookAt(r * Math.cos(theta + 1.5), 0, r * Math.sin(theta + 1.5));
         requestAnimationFrame(update);
     }
 
@@ -164,8 +161,9 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         if (clock.getElapsedTime() >= 60) {
             clock.start();
         }
+        const elapsed_time = clock.getElapsedTime();
         if ('cloud' in objects) {
-            objects.cloud.rotation.y = clock.getElapsedTime() / 60 * 2 * Math.PI;
+            objects.cloud.rotation.y = elapsed_time / 60 * 2 * Math.PI;
         }
         requestAnimationFrame(update);
     }
@@ -232,8 +230,9 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         if (clock.getElapsedTime() >= 4) {
             clock.start();
         }
+        const elapsed_time = clock.getElapsedTime();
         if ('bio_glb' in objects) {
-            objects.bio_glb.rotation.set(clock.getElapsedTime() / 4 * 2 * Math.PI, clock.getElapsedTime() / 4 * 2 * Math.PI, clock.getElapsedTime() / 4 * 2 * Math.PI);
+            objects.bio_glb.rotation.set(elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI);
         }
         requestAnimationFrame(update);
     }
@@ -308,8 +307,9 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         if (clock.getElapsedTime() >= 4) {
             clock.start();
         }
+        const elapsed_time = clock.getElapsedTime();
         if ('twitter_glb' in objects) {
-            objects.twitter_glb.rotation.set(clock.getElapsedTime() / 4 * 2 * Math.PI, clock.getElapsedTime() / 4 * 2 * Math.PI, clock.getElapsedTime() / 4 * 2 * Math.PI);
+            objects.twitter_glb.rotation.set(elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI);
         }
         requestAnimationFrame(update);
     }
@@ -385,8 +385,9 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         if (clock.getElapsedTime() >= 4) {
             clock.start();
         }
+        const elapsed_time = clock.getElapsedTime();
         if ('github_glb' in objects) {
-            objects.github_glb.rotation.set(clock.getElapsedTime() / 4 * 2 * Math.PI, clock.getElapsedTime() / 4 * 2 * Math.PI, clock.getElapsedTime() / 4 * 2 * Math.PI);
+            objects.github_glb.rotation.set(elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI);
         }
         if ('shader_pass_rgb_shift_shader' in objects) {
             if (Math.random() < 0.1) {
@@ -479,23 +480,24 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const clock = new THREE.Clock();
 
         function update() {
-            if (clock.getElapsedTime() >= 0.0 && clock.getElapsedTime() < 0.5) {
-                objects.easteregg_glb.scale.set(easteregg_glb_scale.x * Math.cos(clock.getElapsedTime() * Math.PI), easteregg_glb_scale.y * Math.cos(clock.getElapsedTime() * Math.PI), easteregg_glb_scale.z * Math.cos(clock.getElapsedTime() * Math.PI));
-                objects.easteregg_sprite.scale.set(easteregg_sprite_scale.x * Math.cos(clock.getElapsedTime() * Math.PI), easteregg_sprite_scale.y * Math.cos(clock.getElapsedTime() * Math.PI), easteregg_sprite_scale.z * Math.cos(clock.getElapsedTime() * Math.PI));
+            const elapsed_time = clock.getElapsedTime();
+            if (elapsed_time >= 0.0 && elapsed_time < 0.5) {
+                objects.easteregg_glb.scale.set(easteregg_glb_scale.x * Math.cos(elapsed_time * Math.PI), easteregg_glb_scale.y * Math.cos(elapsed_time * Math.PI), easteregg_glb_scale.z * Math.cos(elapsed_time * Math.PI));
+                objects.easteregg_sprite.scale.set(easteregg_sprite_scale.x * Math.cos(elapsed_time * Math.PI), easteregg_sprite_scale.y * Math.cos(elapsed_time * Math.PI), easteregg_sprite_scale.z * Math.cos(elapsed_time * Math.PI));
             }
             else {
                 objects.easteregg_glb.visible = false;
                 objects.easteregg_sprite.visible = false;
             }
-            if (clock.getElapsedTime() >= 0 && clock.getElapsedTime() < 0.2) {
+            if (elapsed_time >= 0 && elapsed_time < 0.2) {
                 objects.earth.visible = false;
                 objects.earth_wireframe.visible = true;
             }
-            else if (clock.getElapsedTime() >= 0.2 && clock.getElapsedTime() < 0.3) {
+            else if (elapsed_time >= 0.2 && elapsed_time < 0.3) {
                 objects.earth.visible = true;
                 objects.earth_wireframe.visible = false;
             }
-            else if (clock.getElapsedTime() >= 0.3 && clock.getElapsedTime() < 0.4) {
+            else if (elapsed_time >= 0.3 && elapsed_time < 0.4) {
                 objects.earth.visible = false;
                 objects.earth_wireframe.visible = true;
             }
@@ -503,7 +505,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
                 objects.earth.visible = true;
                 objects.earth_wireframe.visible = false;
             }
-            if (clock.getElapsedTime() >= 4) {
+            if (elapsed_time >= 4) {
                 glitch_pass.goWild = true;
                 objects.shader_pass_brightness_contrast.enabled = true;
                 if (Math.random() < 0.1) {
@@ -529,8 +531,9 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         if (clock.getElapsedTime() >= 4) {
             clock.start();
         }
+        const elapsed_time = clock.getElapsedTime();
         if ('easteregg_glb' in objects) {
-            objects.easteregg_glb.rotation.set(clock.getElapsedTime() / 4 * 2 * Math.PI, clock.getElapsedTime() / 4 * 2 * Math.PI, clock.getElapsedTime() / 4 * 2 * Math.PI);
+            objects.easteregg_glb.rotation.set(elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI);
         }
         requestAnimationFrame(update);
     }
