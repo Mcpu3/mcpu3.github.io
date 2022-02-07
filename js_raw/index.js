@@ -94,25 +94,21 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
                 lensflare.addElement(new LensflareElement(texture_3, 100, 1));
                 objects.lensflare = lensflare;
                 objects.sun_light.add(lensflare);
+
+                function update() {
+                    if (Math.random() < 0.9) {
+                        objects.lensflare.visible = true;
+                    }
+                    else {
+                        objects.lensflare.visible = false;
+                    }
+                    requestAnimationFrame(update);
+                }
+            
+                requestAnimationFrame(update);
             });
         });
     });
-}
-
-{
-    function update() {
-        if ('lensflare' in objects) {
-            if (Math.random() < 0.9) {
-                objects.lensflare.visible = true;
-            }
-            else {
-                objects.lensflare.visible = false;
-            }
-        }
-        requestAnimationFrame(update);
-    }
-
-    requestAnimationFrame(update);
 }
 
 {
@@ -149,26 +145,21 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
                 const cloud = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
                 objects.cloud = cloud;
                 objects.earth.add(cloud);
+                const clock = new THREE.Clock();
+
+                function update() {
+                    if (clock.getElapsedTime() >= 60) {
+                        clock.start();
+                    }
+                    const elapsed_time = clock.getElapsedTime();
+                    objects.cloud.rotation.y = elapsed_time / 60 * 2 * Math.PI;
+                    requestAnimationFrame(update);
+                }
+
+                requestAnimationFrame(update);
             });
         }
     });
-}
-
-{
-    const clock = new THREE.Clock();
-
-    function update() {
-        if (clock.getElapsedTime() >= 60) {
-            clock.start();
-        }
-        const elapsed_time = clock.getElapsedTime();
-        if ('cloud' in objects) {
-            objects.cloud.rotation.y = elapsed_time / 60 * 2 * Math.PI;
-        }
-        requestAnimationFrame(update);
-    }
-
-    requestAnimationFrame(update);
 }
 
 {
@@ -193,6 +184,18 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         });
         objects.bio_outline_pass = outline_pass;
         effect_composer.addPass(outline_pass);
+        const clock = new THREE.Clock();
+
+        function update() {
+            if (clock.getElapsedTime() >= 4) {
+                clock.start();
+            }
+            const elapsed_time = clock.getElapsedTime();
+            objects.bio_glb.rotation.set(elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI);
+            requestAnimationFrame(update);
+        }
+
+        requestAnimationFrame(update);
     });
 }
 
@@ -224,23 +227,6 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 }
 
 {
-    const clock = new THREE.Clock();
-
-    function update() {
-        if (clock.getElapsedTime() >= 4) {
-            clock.start();
-        }
-        const elapsed_time = clock.getElapsedTime();
-        if ('bio_glb' in objects) {
-            objects.bio_glb.rotation.set(elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI);
-        }
-        requestAnimationFrame(update);
-    }
-
-    requestAnimationFrame(update);
-}
-
-{
     const gltf_loader = new GLTFLoader();
     gltf_loader.load('../resources/glb/icesat2.glb', (glb) => {
         const theta = 90 * Math.PI / 180;
@@ -262,6 +248,18 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         });
         objects.twitter_outline_pass = outline_pass;
         effect_composer.addPass(outline_pass);
+        const clock = new THREE.Clock();
+
+        function update() {
+            if (clock.getElapsedTime() >= 4) {
+                clock.start();
+            }
+            const elapsed_time = clock.getElapsedTime();
+            objects.twitter_glb.rotation.set(elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI);
+            requestAnimationFrame(update);
+        }
+
+        requestAnimationFrame(update);
     });
 }
 
@@ -301,23 +299,6 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 }
 
 {
-    const clock = new THREE.Clock();
-
-    function update() {
-        if (clock.getElapsedTime() >= 4) {
-            clock.start();
-        }
-        const elapsed_time = clock.getElapsedTime();
-        if ('twitter_glb' in objects) {
-            objects.twitter_glb.rotation.set(elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI);
-        }
-        requestAnimationFrame(update);
-    }
-
-    requestAnimationFrame(update);
-}
-
-{
     const gltf_loader = new GLTFLoader();
     gltf_loader.load('../resources/glb/cloudsat.glb', (glb) => {
         const theta = 180 * Math.PI / 180;
@@ -339,6 +320,18 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         });
         objects.github_outline_pass = outline_pass;
         effect_composer.addPass(outline_pass);
+        const clock = new THREE.Clock();
+
+        function update() {
+            if (clock.getElapsedTime() >= 4) {
+                clock.start();
+            }
+            const elapsed_time = clock.getElapsedTime();
+            objects.github_glb.rotation.set(elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI);
+            requestAnimationFrame(update);
+        }
+
+        requestAnimationFrame(update);
     });
 }
 
@@ -374,33 +367,20 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
             shader_pass_rgb_shift_shader.enabled = false;
             objects.shader_pass_rgb_shift_shader = shader_pass_rgb_shift_shader;
             effect_composer.addPass(shader_pass_rgb_shift_shader);
+
+            function update() {
+                if (Math.random() < 0.1) {
+                    objects.shader_pass_rgb_shift_shader.enabled = true;
+                }
+                else {
+                    objects.shader_pass_rgb_shift_shader.enabled = false;
+                }
+                requestAnimationFrame(update);
+            }
+
+            requestAnimationFrame(update);
         }
     });
-}
-
-{
-    const clock = new THREE.Clock();
-
-    function update() {
-        if (clock.getElapsedTime() >= 4) {
-            clock.start();
-        }
-        const elapsed_time = clock.getElapsedTime();
-        if ('github_glb' in objects) {
-            objects.github_glb.rotation.set(elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI);
-        }
-        if ('shader_pass_rgb_shift_shader' in objects) {
-            if (Math.random() < 0.1) {
-                objects.shader_pass_rgb_shift_shader.enabled = true;
-            }
-            else {
-                objects.shader_pass_rgb_shift_shader.enabled = false;
-            }
-        }
-        requestAnimationFrame(update);
-    }
-
-    requestAnimationFrame(update);
 }
 
 {
@@ -425,6 +405,18 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         });
         objects.easteregg_outline_pass = outline_pass;
         effect_composer.addPass(outline_pass);
+        const clock = new THREE.Clock();
+
+        function update() {
+            if (clock.getElapsedTime() >= 4) {
+                clock.start();
+            }
+            const elapsed_time = clock.getElapsedTime();
+            objects.easteregg_glb.rotation.set(elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI);
+            requestAnimationFrame(update);
+        }
+
+        requestAnimationFrame(update);
     });
 }
 
@@ -522,23 +514,6 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 
         requestAnimationFrame(update);
     });
-}
-
-{
-    const clock = new THREE.Clock();
-
-    function update() {
-        if (clock.getElapsedTime() >= 4) {
-            clock.start();
-        }
-        const elapsed_time = clock.getElapsedTime();
-        if ('easteregg_glb' in objects) {
-            objects.easteregg_glb.rotation.set(elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI);
-        }
-        requestAnimationFrame(update);
-    }
-
-    requestAnimationFrame(update);
 }
 
 {
