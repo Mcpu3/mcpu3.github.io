@@ -12,26 +12,31 @@ import {RGBShiftShader} from '../examples/jsm/shaders/RGBShiftShader.js'
 import {ShaderPass} from '../examples/jsm/postprocessing/ShaderPass.js'
 
 
-const camera_r = 137.6;
-const sun_and_moon_r = 1000;
-const glb_r = 131.4;
+const sun_and_moon_position_r = 1000;
+const earth_scale_r = 100;
+const cloud_scale_r = (6356.8 + 80) / 6356.8 * earth_scale_r;
+const moon_scale_r = 1737.2 / 6356.8 * earth_scale_r;
+const glb_and_sprite_position_r = (6356.8 + 2000) / 6356.8 * earth_scale_r;
+const sprite_scale_r = 0.2 * (glb_and_sprite_position_r - earth_scale_r);
+const camera_position_r = glb_and_sprite_position_r + sprite_scale_r;
 
 const index = document.querySelector('#index')
 
 const scene = new THREE.Scene();
 
-const perspective_camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, camera_r + sun_and_moon_r);
+const perspective_camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, camera_position_r + sun_and_moon_position_r);
 {
-    const theta = -1;
-    perspective_camera.position.set(camera_r * Math.cos(theta), 0, camera_r * Math.sin(theta));
-    perspective_camera.lookAt(camera_r * Math.cos(theta + 1.5), 0, camera_r * Math.sin(theta + 1.5));
+    const d_theta = 2 * Math.acos(earth_scale_r / glb_and_sprite_position_r);
+    const theta = -90 * Math.PI / 180;
+    perspective_camera.position.set(camera_position_r * Math.cos(theta), 0, camera_position_r * Math.sin(theta));
+    perspective_camera.lookAt(camera_position_r * Math.cos(theta + d_theta), 0, camera_position_r * Math.sin(theta + d_theta));
 
     function update() {
         perspective_camera.position.y = 0;
-        const theta = Math.sign(perspective_camera.position.z) * Math.acos(perspective_camera.position.x / Math.sqrt(Math.pow(perspective_camera.position.x, 2) + Math.pow(perspective_camera.position.z, 2)));
-        perspective_camera.position.x = camera_r * Math.cos(theta);
-        perspective_camera.position.z = camera_r * Math.sin(theta);
-        perspective_camera.lookAt(camera_r * Math.cos(theta + 1.5), 0, camera_r * Math.sin(theta + 1.5));
+        const theta = Math.sign(perspective_camera.position.z) * Math.acos(perspective_camera.position.x / Math.hypot(perspective_camera.position.x, perspective_camera.position.z));
+        perspective_camera.position.x = camera_position_r * Math.cos(theta);
+        perspective_camera.position.z = camera_position_r * Math.sin(theta);
+        perspective_camera.lookAt(camera_position_r * Math.cos(theta + d_theta), 0, camera_position_r * Math.sin(theta + d_theta));
         requestAnimationFrame(update);
     }
 
@@ -40,7 +45,7 @@ const perspective_camera = new THREE.PerspectiveCamera(90, window.innerWidth / w
 
 const web_gl_renderer = new THREE.WebGLRenderer({canvas: index, antialias: true});
 {
-    web_gl_renderer.setSize(index.clientWidth * window.devicePixelRatio, index.clientHeight * window.devicePixelRatio, false);
+    web_gl_renderer.setSize(window.devicePixelRatio * index.clientWidth, window.devicePixelRatio * index.clientHeight, false);
     document.body.appendChild(web_gl_renderer.domElement);
 }
 
@@ -48,7 +53,7 @@ const objects = {};
 
 const effect_composer = new EffectComposer(web_gl_renderer);
 {
-    effect_composer.setSize(web_gl_renderer.domElement.clientWidth * window.devicePixelRatio, web_gl_renderer.domElement.clientHeight * window.devicePixelRatio);
+    effect_composer.setSize(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight);
     const render_pass = new RenderPass(scene, perspective_camera);
     objects.render_pass = render_pass;
     effect_composer.addPass(render_pass);
@@ -75,7 +80,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 {
     const sun_light = new THREE.PointLight(0xFFEBCD, 2);
     const theta = 90 * Math.PI / 180;
-    sun_light.position.set(sun_and_moon_r * Math.cos(theta), 0, sun_and_moon_r * Math.sin(theta));
+    sun_light.position.set(sun_and_moon_position_r * Math.cos(theta), 0, sun_and_moon_position_r * Math.sin(theta));
     objects.sun_light = sun_light;
     scene.add(sun_light);
 }
@@ -113,37 +118,8 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 
 {
     const texture_loader = new THREE.TextureLoader();
-    const theta = -90 * Math.PI / 180;
-    const texture = texture_loader.load('../examples/textures/planets/moon_1024.jpg', () => {
-        const sphere_geometry = new THREE.SphereGeometry(27.3);
-        const mesh_lambert_material = new THREE.MeshLambertMaterial({map: texture});
-        const moon = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
-        moon.position.set(sun_and_moon_r * Math.cos(theta), 0, sun_and_moon_r * Math.sin(theta));
-        objects.moon = moon;
-        scene.add(moon);
-        const clock = new THREE.Clock();
-
-        function update() {
-            if (clock.getElapsedTime() >= 4) {
-                clock.start();
-            }
-            const elapsed_time = clock.getElapsedTime();
-            objects.moon.rotation.y = elapsed_time / 4 * 2 * Math.PI;
-            requestAnimationFrame(update);
-        }
-
-        requestAnimationFrame(update);
-    });
-    const moon_light = new THREE.PointLight(0xFFFFFF, 2);
-    moon_light.position.set(sun_and_moon_r * Math.cos(theta), 0, sun_and_moon_r * Math.sin(theta));
-    objects.moon_light = moon_light;
-    scene.add(moon_light);
-}
-
-{
-    const texture_loader = new THREE.TextureLoader();
     const texture = texture_loader.load('../resources/images/earth.jpg', () => {
-        const sphere_geometry = new THREE.SphereGeometry(100, 32, 32);
+        const sphere_geometry = new THREE.SphereGeometry(earth_scale_r, 32, 32);
         const mesh_lambert_material = new THREE.MeshLambertMaterial({map: texture});
         const earth = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
         earth.rotation.x = -23.4 * Math.PI / 180;
@@ -151,7 +127,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         scene.add(earth);
         {
             const texture = texture_loader.load('../examples/textures/planets/earth_clouds_1024.png', () => {
-                const sphere_geometry = new THREE.SphereGeometry(101.3, 32, 32);
+                const sphere_geometry = new THREE.SphereGeometry(cloud_scale_r, 32, 32);
                 const mesh_lambert_material = new THREE.MeshLambertMaterial({map: texture, transparent: true, side: THREE.DoubleSide});
                 const cloud = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
                 objects.cloud = cloud;
@@ -163,7 +139,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
                         clock.start();
                     }
                     const elapsed_time = clock.getElapsedTime();
-                    objects.cloud.rotation.y = elapsed_time / 60 * 2 * Math.PI;
+                    objects.cloud.rotation.y = 2 * Math.PI * elapsed_time / 60;
                     requestAnimationFrame(update);
                 }
 
@@ -174,16 +150,45 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 }
 
 {
+    const texture_loader = new THREE.TextureLoader();
+    const theta = -90 * Math.PI / 180;
+    const texture = texture_loader.load('../examples/textures/planets/moon_1024.jpg', () => {
+        const sphere_geometry = new THREE.SphereGeometry(moon_scale_r);
+        const mesh_lambert_material = new THREE.MeshLambertMaterial({map: texture});
+        const moon = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
+        moon.position.set(sun_and_moon_position_r * Math.cos(theta), 0, sun_and_moon_position_r * Math.sin(theta));
+        objects.moon = moon;
+        scene.add(moon);
+        const clock = new THREE.Clock();
+
+        function update() {
+            if (clock.getElapsedTime() >= 4) {
+                clock.start();
+            }
+            const elapsed_time = clock.getElapsedTime();
+            objects.moon.rotation.y = 2 * Math.PI * elapsed_time / 4;
+            requestAnimationFrame(update);
+        }
+
+        requestAnimationFrame(update);
+    });
+    const moon_light = new THREE.PointLight(0xFFFFFF, 2);
+    moon_light.position.set(sun_and_moon_position_r * Math.cos(theta), 0, sun_and_moon_position_r * Math.sin(theta));
+    objects.moon_light = moon_light;
+    scene.add(moon_light);
+}
+
+{
     const gltf_loader = new GLTFLoader();
     gltf_loader.load('../resources/glb/sentinel6.glb', (glb) => {
         const theta = 0 * Math.PI / 180;
-        glb.scene.position.set(glb_r * Math.cos(theta), 0, glb_r * Math.sin(theta));
+        glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta));
         objects.bio_glb = glb.scene;
         scene.add(glb.scene);
-        const outline_pass = new OutlinePass(new THREE.Vector2(web_gl_renderer.domElement.clientWidth, web_gl_renderer.domElement.clientHeight), scene, perspective_camera);
+        const outline_pass = new OutlinePass(new THREE.Vector2(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight), scene, perspective_camera);
         web_gl_renderer.domElement.addEventListener('pointermove', (event) => {
             const raycaster = new THREE.Raycaster();
-            raycaster.setFromCamera(new THREE.Vector2(event.clientX / web_gl_renderer.domElement.clientWidth * 2 - 1, -event.clientY / web_gl_renderer.domElement.clientHeight * 2 + 1), perspective_camera);
+            raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera);
             const selected_objects = [];
             const intersect_objects = raycaster.intersectObject(scene, true);
             if (intersect_objects.length > 0) {
@@ -202,7 +207,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
                 clock.start();
             }
             const elapsed_time = clock.getElapsedTime();
-            objects.bio_glb.rotation.set(elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI);
+            objects.bio_glb.rotation.set(2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4);
             requestAnimationFrame(update);
         }
 
@@ -216,8 +221,8 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const sprite_material = new THREE.SpriteMaterial({map: texture});
         const sprite = new THREE.Sprite(sprite_material);
         const theta = 0 * Math.PI / 180;
-        sprite.position.set(glb_r * Math.cos(theta), 6.6, glb_r * Math.sin(theta));
-        sprite.scale.set(6.6, 6.6, 6.6);
+        sprite.position.set(glb_and_sprite_position_r * Math.cos(theta), sprite_scale_r, glb_and_sprite_position_r * Math.sin(theta));
+        sprite.scale.set(sprite_scale_r, sprite_scale_r, sprite_scale_r);
         objects.bio_sprite = sprite;
         scene.add(sprite);
     });
@@ -226,7 +231,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 {
     web_gl_renderer.domElement.addEventListener('click', (event) => {
         const raycaster = new THREE.Raycaster();
-        raycaster.setFromCamera(new THREE.Vector2(event.clientX / web_gl_renderer.domElement.clientWidth * 2 - 1, -event.clientY / web_gl_renderer.domElement.clientHeight * 2 + 1), perspective_camera);
+        raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera);
         const intersect_objects = raycaster.intersectObject(scene, true);
         if (!(intersect_objects.length > 0)) {
             return;
@@ -241,13 +246,13 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
     const gltf_loader = new GLTFLoader();
     gltf_loader.load('../resources/glb/icesat2.glb', (glb) => {
         const theta = 90 * Math.PI / 180;
-        glb.scene.position.set(glb_r * Math.cos(theta), 0, glb_r * Math.sin(theta));
+        glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta));
         objects.twitter_glb = glb.scene;
         scene.add(glb.scene);
-        const outline_pass = new OutlinePass(new THREE.Vector2(web_gl_renderer.domElement.clientWidth, web_gl_renderer.domElement.clientHeight), scene, perspective_camera);
+        const outline_pass = new OutlinePass(new THREE.Vector2(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight), scene, perspective_camera);
         web_gl_renderer.domElement.addEventListener('pointermove', (event) => {
             const raycaster = new THREE.Raycaster();
-            raycaster.setFromCamera(new THREE.Vector2(event.clientX / web_gl_renderer.domElement.clientWidth * 2 - 1, -event.clientY / web_gl_renderer.domElement.clientHeight * 2 + 1), perspective_camera);
+            raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera);
             const selected_objects = [];
             const intersect_objects = raycaster.intersectObject(scene, true);
             if (intersect_objects.length > 0) {
@@ -266,7 +271,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
                 clock.start();
             }
             const elapsed_time = clock.getElapsedTime();
-            objects.twitter_glb.rotation.set(elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI);
+            objects.twitter_glb.rotation.set(2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4);
             requestAnimationFrame(update);
         }
 
@@ -280,8 +285,8 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const sprite_material = new THREE.SpriteMaterial({map: texture});
         const sprite = new THREE.Sprite(sprite_material);
         const theta = 90 * Math.PI / 180;
-        sprite.position.set(glb_r * Math.cos(theta), 6.6, glb_r * Math.sin(theta));
-        sprite.scale.set(6.6, 6.6, 6.6);
+        sprite.position.set(glb_and_sprite_position_r * Math.cos(theta), sprite_scale_r, glb_and_sprite_position_r * Math.sin(theta));
+        sprite.scale.set(sprite_scale_r, sprite_scale_r, sprite_scale_r);
         objects.twitter_sprite = sprite;
         scene.add(sprite);
     });
@@ -297,7 +302,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
     effect_composer.addPass(film_pass);
     web_gl_renderer.domElement.addEventListener('click', (event) => {
         const raycaster = new THREE.Raycaster();
-        raycaster.setFromCamera(new THREE.Vector2(event.clientX / web_gl_renderer.domElement.clientWidth * 2 - 1, -event.clientY / web_gl_renderer.domElement.clientHeight * 2 + 1), perspective_camera);
+        raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera);
         const intersect_objects = raycaster.intersectObject(scene, true);
         if (!(intersect_objects.length > 0)) {
             return;
@@ -313,13 +318,13 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
     const gltf_loader = new GLTFLoader();
     gltf_loader.load('../resources/glb/cloudsat.glb', (glb) => {
         const theta = 180 * Math.PI / 180;
-        glb.scene.position.set(glb_r * Math.cos(theta), 0, glb_r * Math.sin(theta));
+        glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta));
         objects.github_glb = glb.scene;
         scene.add(glb.scene);
-        const outline_pass = new OutlinePass(new THREE.Vector2(web_gl_renderer.domElement.clientWidth, web_gl_renderer.domElement.clientHeight), scene, perspective_camera);
+        const outline_pass = new OutlinePass(new THREE.Vector2(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight), scene, perspective_camera);
         web_gl_renderer.domElement.addEventListener('pointermove', (event) => {
             const raycaster = new THREE.Raycaster();
-            raycaster.setFromCamera(new THREE.Vector2(event.clientX / web_gl_renderer.domElement.clientWidth * 2 - 1, -event.clientY / web_gl_renderer.domElement.clientHeight * 2 + 1), perspective_camera);
+            raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera);
             const selected_objects = [];
             const intersect_objects = raycaster.intersectObject(scene, true);
             if (intersect_objects.length > 0) {
@@ -338,7 +343,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
                 clock.start();
             }
             const elapsed_time = clock.getElapsedTime();
-            objects.github_glb.rotation.set(elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI);
+            objects.github_glb.rotation.set(2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4);
             requestAnimationFrame(update);
         }
 
@@ -352,8 +357,8 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const sprite_material = new THREE.SpriteMaterial({map: texture});
         const sprite = new THREE.Sprite(sprite_material);
         const theta = 180 * Math.PI / 180;
-        sprite.position.set(glb_r * Math.cos(theta), 6.6, glb_r * Math.sin(theta));
-        sprite.scale.set(6.6, 6.6, 6.6);
+        sprite.position.set(glb_and_sprite_position_r * Math.cos(theta), sprite_scale_r, glb_and_sprite_position_r * Math.sin(theta));
+        sprite.scale.set(sprite_scale_r, sprite_scale_r, sprite_scale_r);
         objects.github_sprite = sprite;
         scene.add(sprite);
     });
@@ -363,7 +368,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
     let clicked = false;
     web_gl_renderer.domElement.addEventListener('click', (event) => {
         const raycaster = new THREE.Raycaster();
-        raycaster.setFromCamera(new THREE.Vector2(event.clientX / window.innerWidth * 2 - 1, -event.clientY / window.innerHeight * 2 + 1), perspective_camera);
+        raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / window.innerWidth - 1, -2 * event.clientY / window.innerHeight + 1), perspective_camera);
         const intersect_objects = raycaster.intersectObject(scene, true);
         if (!(intersect_objects.length > 0)) {
             return;
@@ -398,13 +403,13 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
     const gltf_loader = new GLTFLoader();
     gltf_loader.load('../resources/glb/mkiii.glb', (glb) => {
         const theta = 270 * Math.PI / 180;
-        glb.scene.position.set(glb_r * Math.cos(theta), 0, glb_r * Math.sin(theta));
+        glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta));
         objects.easteregg_glb = glb.scene;
         scene.add(glb.scene);
-        const outline_pass = new OutlinePass(new THREE.Vector2(web_gl_renderer.domElement.clientWidth, web_gl_renderer.domElement.clientHeight), scene, perspective_camera);
+        const outline_pass = new OutlinePass(new THREE.Vector2(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight), scene, perspective_camera);
         web_gl_renderer.domElement.addEventListener('pointermove', (event) => {
             const raycaster = new THREE.Raycaster();
-            raycaster.setFromCamera(new THREE.Vector2(event.clientX / web_gl_renderer.domElement.clientWidth * 2 - 1, -event.clientY / web_gl_renderer.domElement.clientHeight * 2 + 1), perspective_camera);
+            raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera);
             const selected_objects = [];
             const intersect_objects = raycaster.intersectObject(scene, true);
             if (intersect_objects.length > 0) {
@@ -423,7 +428,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
                 clock.start();
             }
             const elapsed_time = clock.getElapsedTime();
-            objects.easteregg_glb.rotation.set(elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI, elapsed_time / 4 * 2 * Math.PI);
+            objects.easteregg_glb.rotation.set(2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4);
             requestAnimationFrame(update);
         }
 
@@ -437,8 +442,8 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const sprite_material = new THREE.SpriteMaterial({map: texture});
         const sprite = new THREE.Sprite(sprite_material);
         const theta = 270 * Math.PI / 180;
-        sprite.position.set(glb_r * Math.cos(theta), 6.6, glb_r * Math.sin(theta));
-        sprite.scale.set(6.6, 6.6, 6.6);
+        sprite.position.set(glb_and_sprite_position_r * Math.cos(theta), sprite_scale_r, glb_and_sprite_position_r * Math.sin(theta));
+        sprite.scale.set(sprite_scale_r, sprite_scale_r, sprite_scale_r);
         objects.easteregg_sprite = sprite;
         scene.add(sprite);
     });
@@ -448,7 +453,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
     let clicked = false;
     web_gl_renderer.domElement.addEventListener('click', (event) => {
         const raycaster = new THREE.Raycaster();
-        raycaster.setFromCamera(new THREE.Vector2(event.clientX / web_gl_renderer.domElement.clientWidth * 2 - 1, -event.clientY / web_gl_renderer.domElement.clientHeight * 2 + 1), perspective_camera);
+        raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera);
         const intersect_objects = raycaster.intersectObject(scene, true);
         if (!(intersect_objects.length > 0)) {
             return;
@@ -463,8 +468,6 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
             return;
         }
         clicked = true;
-        const easteregg_glb_scale = objects.easteregg_glb.scale;
-        const easteregg_sprite_scale = objects.easteregg_sprite.scale;
         const wireframe_geometry = new THREE.WireframeGeometry(objects.earth.geometry);
         const line_basic_material = new THREE.LineBasicMaterial();
         const earth_wireframe = new THREE.LineSegments(wireframe_geometry, line_basic_material);
@@ -485,8 +488,8 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         function update() {
             const elapsed_time = clock.getElapsedTime();
             if (elapsed_time >= 0.0 && elapsed_time < 0.5) {
-                objects.easteregg_glb.scale.set(easteregg_glb_scale.x * Math.cos(elapsed_time * Math.PI), easteregg_glb_scale.y * Math.cos(elapsed_time * Math.PI), easteregg_glb_scale.z * Math.cos(elapsed_time * Math.PI));
-                objects.easteregg_sprite.scale.set(easteregg_sprite_scale.x * Math.cos(elapsed_time * Math.PI), easteregg_sprite_scale.y * Math.cos(elapsed_time * Math.PI), easteregg_sprite_scale.z * Math.cos(elapsed_time * Math.PI));
+                objects.easteregg_glb.scale.set(Math.cos(elapsed_time * Math.PI), Math.cos(elapsed_time * Math.PI), Math.cos(elapsed_time * Math.PI));
+                objects.easteregg_sprite.scale.set(sprite_scale_r * Math.cos(elapsed_time * Math.PI), sprite_scale_r * Math.cos(elapsed_time * Math.PI), sprite_scale_r * Math.cos(elapsed_time * Math.PI));
             }
             else {
                 objects.easteregg_glb.visible = false;
@@ -533,11 +536,11 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
     for (let i = 0; i < 1000; i++) {
         const mesh_phong_material = new THREE.MeshPhongMaterial({color: 0x666666, flatShading: true});
         const natural_satellite = new THREE.Mesh(sphere_buffer_geometry, mesh_phong_material);
-        const r = Math.random() * (sun_and_moon_r - camera_r) * 0.5 + camera_r + (sun_and_moon_r - camera_r) * 0.5;
-        const theta = Math.random() * 2 * Math.PI;
-        const phi = Math.random() * 2 * Math.PI;
+        const r = 0.5 * (sun_and_moon_position_r - camera_position_r) * Math.random() + 0.5 * (sun_and_moon_position_r - camera_position_r) + camera_position_r;
+        const theta = 2 * Math.PI * Math.random();
+        const phi = 2 * Math.PI * Math.random();
         natural_satellite.position.set(r * Math.sin(theta) * Math.cos(phi), r * Math.sin(theta) * Math.sin(phi), r * Math.cos(theta));
-        natural_satellite.rotation.set(Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI);
+        natural_satellite.rotation.set(2 * Math.PI * Math.random(), 2 * Math.PI * Math.random(), 2 * Math.PI * Math.random());
         natural_satellite.scale.x = natural_satellite.scale.y = natural_satellite.scale.z = Math.random();
         objects.natural_satellites.push(natural_satellite);
         scene.add(natural_satellite)
@@ -545,17 +548,19 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 }
 
 function update() {
-    if (() => {
+    function resize() {
         if (web_gl_renderer.domElement.width !== web_gl_renderer.domElement.clientWidth || web_gl_renderer.domElement.height !== web_gl_renderer.domElement.clientHeight) {
-            web_gl_renderer.setSize(web_gl_renderer.domElement.clientWidth * window.devicePixelRatio, web_gl_renderer.domElement.clientHeight * window.devicePixelRatio, false);
+            web_gl_renderer.setSize(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight, false);
             return true;
         }
         return false;
-    }) {
+    }
+
+    if (resize()) {
         perspective_camera.aspect = web_gl_renderer.domElement.clientWidth / web_gl_renderer.domElement.clientHeight;
         perspective_camera.updateProjectionMatrix();
     }
-    effect_composer.setSize(web_gl_renderer.domElement.clientWidth * window.devicePixelRatio, web_gl_renderer.domElement.clientHeight * window.devicePixelRatio);
+    effect_composer.setSize(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight);
     web_gl_renderer.render(scene, perspective_camera);
     effect_composer.render();
     orbit_controls.update();
