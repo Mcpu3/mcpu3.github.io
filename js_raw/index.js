@@ -12,25 +12,26 @@ import {RGBShiftShader} from '../examples/jsm/shaders/RGBShiftShader.js'
 import {ShaderPass} from '../examples/jsm/postprocessing/ShaderPass.js'
 
 
+const camera_r = 137.6;
+const sun_and_moon_r = 1000;
 const glb_r = 131.4;
 
 const index = document.querySelector('#index')
 
 const scene = new THREE.Scene();
 
-const perspective_camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 4000);
+const perspective_camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, camera_r + sun_and_moon_r);
 {
-    const r = 137.6;
     const theta = -1;
-    perspective_camera.position.set(r * Math.cos(theta), 0, r * Math.sin(theta));
-    perspective_camera.lookAt(r * Math.cos(theta + 1.5), 0, r * Math.sin(theta + 1.5));
+    perspective_camera.position.set(camera_r * Math.cos(theta), 0, camera_r * Math.sin(theta));
+    perspective_camera.lookAt(camera_r * Math.cos(theta + 1.5), 0, camera_r * Math.sin(theta + 1.5));
 
     function update() {
         perspective_camera.position.y = 0;
         const theta = Math.sign(perspective_camera.position.z) * Math.acos(perspective_camera.position.x / Math.sqrt(Math.pow(perspective_camera.position.x, 2) + Math.pow(perspective_camera.position.z, 2)));
-        perspective_camera.position.x = r * Math.cos(theta);
-        perspective_camera.position.z = r * Math.sin(theta);
-        perspective_camera.lookAt(r * Math.cos(theta + 1.5), 0, r * Math.sin(theta + 1.5));
+        perspective_camera.position.x = camera_r * Math.cos(theta);
+        perspective_camera.position.z = camera_r * Math.sin(theta);
+        perspective_camera.lookAt(camera_r * Math.cos(theta + 1.5), 0, camera_r * Math.sin(theta + 1.5));
         requestAnimationFrame(update);
     }
 
@@ -73,9 +74,8 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 
 {
     const sun_light = new THREE.PointLight(0xFFEBCD, 2);
-    const r = 2000;
     const theta = 90 * Math.PI / 180;
-    sun_light.position.set(r * Math.cos(theta), 0, r * Math.sin(theta));
+    sun_light.position.set(sun_and_moon_r * Math.cos(theta), 0, sun_and_moon_r * Math.sin(theta));
     objects.sun_light = sun_light;
     scene.add(sun_light);
 }
@@ -113,18 +113,29 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 
 {
     const texture_loader = new THREE.TextureLoader();
-    const r = 1000;
     const theta = -90 * Math.PI / 180;
     const texture = texture_loader.load('../examples/textures/planets/moon_1024.jpg', () => {
         const sphere_geometry = new THREE.SphereGeometry(27.3);
         const mesh_lambert_material = new THREE.MeshLambertMaterial({map: texture});
         const moon = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
-        moon.position.set(r * Math.cos(theta), 0, r * Math.sin(theta));
+        moon.position.set(sun_and_moon_r * Math.cos(theta), 0, sun_and_moon_r * Math.sin(theta));
         objects.moon = moon;
         scene.add(moon);
+        const clock = new THREE.Clock();
+
+        function update() {
+            if (clock.getElapsedTime() >= 4) {
+                clock.start();
+            }
+            const elapsed_time = clock.getElapsedTime();
+            objects.moon.rotation.y = elapsed_time / 4 * 2 * Math.PI;
+            requestAnimationFrame(update);
+        }
+
+        requestAnimationFrame(update);
     });
     const moon_light = new THREE.PointLight(0xFFFFFF, 2);
-    moon_light.position.set(r * Math.cos(theta), 0, r * Math.sin(theta));
+    moon_light.position.set(sun_and_moon_r * Math.cos(theta), 0, sun_and_moon_r * Math.sin(theta));
     objects.moon_light = moon_light;
     scene.add(moon_light);
 }
@@ -279,7 +290,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 {
     const film_pass = new FilmPass();
     film_pass.uniforms.sIntensity.value = 0.5;
-    film_pass.uniforms.sCount.value = 2000;
+    film_pass.uniforms.sCount.value = 1000;
     film_pass.uniforms.grayscale = false;
     film_pass.enabled = false;
     objects.film_pass = film_pass;
@@ -519,12 +530,15 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 {
     objects.natural_satellites = []
     const sphere_buffer_geometry = new THREE.SphereBufferGeometry(3, 3, 3);
-    for (let i = 0; i < 2000; i++) {
+    for (let i = 0; i < 1000; i++) {
         const mesh_phong_material = new THREE.MeshPhongMaterial({color: 0x666666, flatShading: true});
-        const natural_satellite = new THREE.Mesh(sphere_buffer_geometry, mesh_phong_material)
-        natural_satellite.position.set(4000 * Math.random() - 2000, 4000 * Math.random() - 2000, 4000 * Math.random() - 2000);
-        natural_satellite.rotation.set(Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI)
-        natural_satellite.scale.x = natural_satellite.scale.y = natural_satellite.scale.z = Math.random()
+        const natural_satellite = new THREE.Mesh(sphere_buffer_geometry, mesh_phong_material);
+        const r = Math.random() * (sun_and_moon_r - camera_r) * 0.5 + camera_r + (sun_and_moon_r - camera_r) * 0.5;
+        const theta = Math.random() * 2 * Math.PI;
+        const phi = Math.random() * 2 * Math.PI;
+        natural_satellite.position.set(r * Math.sin(theta) * Math.cos(phi), r * Math.sin(theta) * Math.sin(phi), r * Math.cos(theta));
+        natural_satellite.rotation.set(Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI);
+        natural_satellite.scale.x = natural_satellite.scale.y = natural_satellite.scale.z = Math.random();
         objects.natural_satellites.push(natural_satellite);
         scene.add(natural_satellite)
     }
