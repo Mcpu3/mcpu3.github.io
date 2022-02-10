@@ -26,17 +26,17 @@ const scene = new THREE.Scene();
 
 const perspective_camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, camera_position_r + sun_and_moon_position_r);
 {
-    const d_theta = 2 * Math.acos(earth_scale_r / glb_and_sprite_position_r);
+    const d_theta = Math.acos(0.5 * (earth_scale_r + glb_and_sprite_position_r) / camera_position_r);
     const theta = -90 * Math.PI / 180;
     perspective_camera.position.set(camera_position_r * Math.cos(theta), 0, camera_position_r * Math.sin(theta));
-    perspective_camera.lookAt(camera_position_r * Math.cos(theta + d_theta), 0, camera_position_r * Math.sin(theta + d_theta));
+    perspective_camera.lookAt(0.5 * (earth_scale_r + glb_and_sprite_position_r) * Math.cos(theta + d_theta), 0, 0.5 * (earth_scale_r + glb_and_sprite_position_r) * Math.sin(theta + d_theta));
 
     function update() {
         perspective_camera.position.y = 0;
         const theta = Math.sign(perspective_camera.position.z) * Math.acos(perspective_camera.position.x / Math.hypot(perspective_camera.position.x, perspective_camera.position.z));
         perspective_camera.position.x = camera_position_r * Math.cos(theta);
         perspective_camera.position.z = camera_position_r * Math.sin(theta);
-        perspective_camera.lookAt(camera_position_r * Math.cos(theta + d_theta), 0, camera_position_r * Math.sin(theta + d_theta));
+        perspective_camera.lookAt(0.5 * (earth_scale_r + glb_and_sprite_position_r) * Math.cos(theta + d_theta), 0, 0.5 * (earth_scale_r + glb_and_sprite_position_r) * Math.sin(theta + d_theta));
         requestAnimationFrame(update);
     }
 
