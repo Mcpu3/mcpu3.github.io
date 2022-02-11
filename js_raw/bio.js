@@ -5,12 +5,12 @@ import {CSS3DObject, CSS3DRenderer} from '../examples/jsm/renderers/CSS3DRendere
 const fov = 60;
 
 function perspectivate_camera_position_z() {
-    return window.innerHeight / 2 / Math.tan(fov / 2 * Math.PI / 180);
+    return 0.5 * window.innerHeight / Math.tan(0.5 * fov * Math.PI / 180);
 }
 
 const scene = new THREE.Scene();
 
-const perspectivate_camera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight, 0.1, 2200);
+const perspectivate_camera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight);
 {
     perspectivate_camera.position.z = perspectivate_camera_position_z();
 }
@@ -25,7 +25,7 @@ const objects = {};
 
 {
     const css_3d_object = new CSS3DObject(document.querySelector('.l-wrapper_01'));
-    css_3d_object.rotation.y = 0.25;
+    css_3d_object.rotation.y = 15 * Math.PI / 180;
     objects.css_3d_object = css_3d_object;
     scene.add(css_3d_object);
 }
@@ -38,16 +38,16 @@ const objects = {};
 
 {
     window.addEventListener('mousemove', (event) => {
-        perspectivate_camera.position.set(0.5 * (window.innerWidth / 4) * (event.clientX / window.innerWidth * 2 - 1), 0.5 * (window.innerHeight / 4) * (-event.clientY / window.innerHeight * 2 + 1), perspectivate_camera_position_z());
-        perspectivate_camera.lookAt(0.5 * (window.innerWidth / 4) * (event.clientX / window.innerWidth * 2 - 1), 0.5 * (window.innerHeight / 4) * (-event.clientY / window.innerHeight * 2 + 1), 0);
+        perspectivate_camera.position.set(0.125 * window.innerWidth * (2 * event.clientX / window.innerWidth - 1), 0.125 * window.innerHeight * (-2 * event.clientY / window.innerHeight + 1), perspectivate_camera_position_z());
+        perspectivate_camera.lookAt(0.125 * window.innerWidth * (2 * event.clientX / window.innerWidth - 1), 0.125 * window.innerHeight * (-2 * event.clientY / window.innerHeight + 1), 0);
     });
     window.addEventListener('touchend', (event) => {
-        perspectivate_camera.position.set(0.5 * (window.innerWidth / 4) * (event.changedTouches[0].clientX / window.innerWidth * 2 - 1), 0.5 * (window.innerHeight / 4) * (-event.changedTouches[0].clientY / window.innerHeight * 2 + 1), perspectivate_camera_position_z());
-        perspectivate_camera.lookAt(0.5 * (window.innerWidth / 4) * (event.changedTouches[0].clientX / window.innerWidth * 2 - 1), 0.5 * (window.innerHeight / 4) * (-event.changedTouches[0].clientY / window.innerHeight * 2 + 1), 0);
+        perspectivate_camera.position.set(0.125 * window.innerWidth * (2 * event.changedTouches[0].clientX / window.innerWidth - 1), 0.125 * window.innerHeight * (-2 * event.changedTouches[0].clientY / window.innerHeight + 1), perspectivate_camera_position_z());
+        perspectivate_camera.lookAt(0.125 * window.innerWidth * (2 * event.changedTouches[0].clientX / window.innerWidth - 1), 0.125 * window.innerHeight * (-2 * event.changedTouches[0].clientY / window.innerHeight + 1), 0);
     });
     window.addEventListener('touchmove', (event) => {
-        perspectivate_camera.position.set(0.5 * (window.innerWidth / 4) * (event.touches[0].clientX / window.innerWidth * 2 - 1), 0.5 * (window.innerHeight / 4) * (-event.touches[0].clientY / window.innerHeight * 2 + 1), perspectivate_camera_position_z());
-        perspectivate_camera.lookAt(0.5 * (window.innerWidth / 4) * (event.touches[0].clientX / window.innerWidth * 2 - 1), 0.5 * (window.innerHeight / 4) * (-event.touches[0].clientY / window.innerHeight * 2 + 1), 0);
+        perspectivate_camera.position.set(0.125 * window.innerWidth * (2 * event.touches[0].clientX / window.innerWidth - 1), 0.125 * window.innerHeight * (-2 * event.touches[0].clientY / window.innerHeight + 1), perspectivate_camera_position_z());
+        perspectivate_camera.lookAt(0.125 * window.innerWidth * (2 * event.touches[0].clientX / window.innerWidth - 1), 0.125 * window.innerHeight * (-2 * event.touches[0].clientY / window.innerHeight + 1), 0);
     });
 }
 
