@@ -24,7 +24,7 @@ const index = document.querySelector('#index')
 
 const scene = new THREE.Scene();
 
-const perspective_camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, camera_position_r + sun_and_moon_position_r);
+const perspective_camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, camera_position_r + sun_and_moon_position_r + moon_scale_r);
 {
     const d_theta = Math.acos(0.5 * (earth_scale_r + glb_and_sprite_position_r) / camera_position_r);
     const theta = -90 * Math.PI / 180;
