@@ -1,5 +1,6 @@
 import * as THREE from '../build/three.module.js'
 import {BrightnessContrastShader} from '../examples/jsm/shaders/BrightnessContrastShader.js'
+import {DRACOLoader} from '../examples/jsm/loaders/DRACOLoader.js'
 import {EffectComposer} from '../examples/jsm/postprocessing/EffectComposer.js'
 import {FilmPass} from '../examples/jsm/postprocessing/FilmPass.js'
 import {GlitchPass} from '../examples/jsm/postprocessing/GlitchPass.js'
@@ -87,9 +88,9 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 
 {
     const texture_loader = new THREE.TextureLoader();
-    const texture_0 = texture_loader.load('../examples/textures/lensflare/lensflare0.png', () => {
-        const texture_2 = texture_loader.load('../examples/textures/lensflare/lensflare2.png', () => {
-            const texture_3 = texture_loader.load('../examples/textures/lensflare/lensflare3.png', () => {
+    const texture_0 = texture_loader.load('../resources/images/lensflare/lensflare0.jpg', () => {
+        const texture_2 = texture_loader.load('../resources/images/lensflare/lensflare2.jpg', () => {
+            const texture_3 = texture_loader.load('../resources/images/lensflare/lensflare3.jpg', () => {
                 const lensflare = new Lensflare();
                 lensflare.addElement(new LensflareElement(texture_0, 500, 0, objects.sun_light.color));
                 lensflare.addElement(new LensflareElement(texture_2, 1000, 0.1, objects.sun_light.color));
@@ -118,7 +119,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 
 {
     const texture_loader = new THREE.TextureLoader();
-    const texture = texture_loader.load('../resources/images/earth.jpg', () => {
+    const texture = texture_loader.load('../resources/images/planets/earth.jpg', () => {
         const sphere_geometry = new THREE.SphereGeometry(earth_scale_r, 32, 32);
         const mesh_lambert_material = new THREE.MeshLambertMaterial({map: texture});
         const earth = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
@@ -126,7 +127,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         objects.earth = earth;
         scene.add(earth);
         {
-            const texture = texture_loader.load('../examples/textures/planets/earth_clouds_1024.png', () => {
+            const texture = texture_loader.load('../resources/images/planets/earth_clouds_1024.png', () => {
                 const sphere_geometry = new THREE.SphereGeometry(cloud_scale_r, 32, 32);
                 const mesh_lambert_material = new THREE.MeshLambertMaterial({map: texture, transparent: true, side: THREE.DoubleSide});
                 const cloud = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
@@ -152,7 +153,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 {
     const texture_loader = new THREE.TextureLoader();
     const theta = -90 * Math.PI / 180;
-    const texture = texture_loader.load('../examples/textures/planets/moon_1024.jpg', () => {
+    const texture = texture_loader.load('../resources/images/planets/moon_1024.jpg', () => {
         const sphere_geometry = new THREE.SphereGeometry(moon_scale_r);
         const mesh_lambert_material = new THREE.MeshLambertMaterial({map: texture});
         const moon = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
@@ -180,6 +181,9 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 
 {
     const gltf_loader = new GLTFLoader();
+    const draco_loader = new DRACOLoader();
+    draco_loader.setDecoderPath('../examples/js/libs/draco/');
+    gltf_loader.setDRACOLoader(draco_loader);
     gltf_loader.load('../resources/glb/sentinel6.glb', (glb) => {
         const theta = 0 * Math.PI / 180;
         glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta));
@@ -244,6 +248,9 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 
 {
     const gltf_loader = new GLTFLoader();
+    const draco_loader = new DRACOLoader();
+    draco_loader.setDecoderPath('../examples/js/libs/draco/');
+    gltf_loader.setDRACOLoader(draco_loader);
     gltf_loader.load('../resources/glb/icesat2.glb', (glb) => {
         const theta = 90 * Math.PI / 180;
         glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta));
@@ -316,6 +323,9 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 
 {
     const gltf_loader = new GLTFLoader();
+    const draco_loader = new DRACOLoader();
+    draco_loader.setDecoderPath('../examples/js/libs/draco/');
+    gltf_loader.setDRACOLoader(draco_loader);
     gltf_loader.load('../resources/glb/cloudsat.glb', (glb) => {
         const theta = 180 * Math.PI / 180;
         glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta));
@@ -401,6 +411,9 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 
 {
     const gltf_loader = new GLTFLoader();
+    const draco_loader = new DRACOLoader();
+    draco_loader.setDecoderPath('../examples/js/libs/draco/');
+    gltf_loader.setDRACOLoader(draco_loader);
     gltf_loader.load('../resources/glb/mkiii.glb', (glb) => {
         const theta = 270 * Math.PI / 180;
         glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta));

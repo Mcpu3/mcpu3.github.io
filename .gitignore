@@ -116,8 +116,5 @@ dist
 .pnp.*
 
 /examples/*
+!/examples/js
 !/examples/jsm
-!examples/textures
-/examples/textures/*
-!/examples/textures/lensflare
-!/examples/textures/planets
