@@ -18,7 +18,7 @@ const earth_scale_r = 100;
 const cloud_scale_r = (6356.8 + 80) / 6356.8 * earth_scale_r;
 const moon_scale_r = 1737.2 / 6356.8 * earth_scale_r;
 const glb_and_sprite_position_r = (6356.8 + 2000) / 6356.8 * earth_scale_r;
-const sprite_scale_r = 0.2 * (glb_and_sprite_position_r - earth_scale_r);
+const sprite_scale_r = 0.25 * (glb_and_sprite_position_r - earth_scale_r);
 const camera_position_r = glb_and_sprite_position_r + sprite_scale_r;
 
 const index = document.querySelector('#index')
@@ -57,7 +57,7 @@ const effect_composer = new EffectComposer(web_gl_renderer);
     effect_composer.setSize(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight);
     const render_pass = new RenderPass(scene, perspective_camera);
     objects.render_pass = render_pass;
-    effect_composer.addPass(render_pass);
+    effect_composer.addPass(objects.render_pass);
 }
 
 const orbit_controls = new OrbitControls(perspective_camera, index);
@@ -74,7 +74,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const web_gl_cube_render_target = new THREE.WebGLCubeRenderTarget(texture.image.height);
         web_gl_cube_render_target.fromEquirectangularTexture(web_gl_renderer, texture);
         objects.background = web_gl_cube_render_target.texture;
-        scene.background = web_gl_cube_render_target.texture;
+        scene.background = objects.background;
     });
 }
 
@@ -83,7 +83,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
     const theta = 90 * Math.PI / 180;
     sun_light.position.set(sun_and_moon_position_r * Math.cos(theta), 0, sun_and_moon_position_r * Math.sin(theta));
     objects.sun_light = sun_light;
-    scene.add(sun_light);
+    scene.add(objects.sun_light);
 }
 
 {
@@ -99,7 +99,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
                 lensflare.addElement(new LensflareElement(texture_3, 180, 0.9));
                 lensflare.addElement(new LensflareElement(texture_3, 100, 1));
                 objects.lensflare = lensflare;
-                objects.sun_light.add(lensflare);
+                objects.sun_light.add(objects.lensflare);
 
                 function update() {
                     if (Math.random() < 0.9) {
@@ -125,14 +125,14 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const earth = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
         earth.rotation.x = -23.4 * Math.PI / 180;
         objects.earth = earth;
-        scene.add(earth);
+        scene.add(objects.earth);
         {
             const texture = texture_loader.load('../resources/images/planets/earth_clouds_1024.png', () => {
                 const sphere_geometry = new THREE.SphereGeometry(cloud_scale_r, 32, 32);
                 const mesh_lambert_material = new THREE.MeshLambertMaterial({map: texture, transparent: true, side: THREE.DoubleSide});
                 const cloud = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
                 objects.cloud = cloud;
-                objects.earth.add(cloud);
+                objects.earth.add(objects.cloud);
                 const clock = new THREE.Clock();
 
                 function update() {
@@ -159,7 +159,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const moon = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
         moon.position.set(sun_and_moon_position_r * Math.cos(theta), 0, sun_and_moon_position_r * Math.sin(theta));
         objects.moon = moon;
-        scene.add(moon);
+        scene.add(objects.moon);
         const clock = new THREE.Clock();
 
         function update() {
@@ -176,7 +176,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
     const moon_light = new THREE.PointLight(0xFFFFFF, 2);
     moon_light.position.set(sun_and_moon_position_r * Math.cos(theta), 0, sun_and_moon_position_r * Math.sin(theta));
     objects.moon_light = moon_light;
-    scene.add(moon_light);
+    scene.add(objects.moon_light);
 }
 
 {
@@ -188,22 +188,22 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const theta = 0 * Math.PI / 180;
         glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta));
         objects.bio_glb = glb.scene;
-        scene.add(glb.scene);
+        scene.add(objects.bio_glb);
         const outline_pass = new OutlinePass(new THREE.Vector2(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight), scene, perspective_camera);
+        const raycaster = new THREE.Raycaster();
         web_gl_renderer.domElement.addEventListener('pointermove', (event) => {
-            const raycaster = new THREE.Raycaster();
-            raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera);
             const selected_objects = [];
+            raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera);
             const intersect_objects = raycaster.intersectObject(scene, true);
             if (intersect_objects.length > 0) {
-                if (intersect_objects[0].object.parent.parent == glb.scene) {
-                    selected_objects.push(intersect_objects[0].object);
+                if (intersect_objects[0].object.parent.parent === objects.bio_glb) {
+                    selected_objects.push(objects.bio_glb);
                 }
             }
             outline_pass.selectedObjects = selected_objects;
         });
         objects.bio_outline_pass = outline_pass;
-        effect_composer.addPass(outline_pass);
+        effect_composer.addPass(objects.bio_outline_pass);
         const clock = new THREE.Clock();
 
         function update() {
@@ -228,19 +228,19 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         sprite.position.set(glb_and_sprite_position_r * Math.cos(theta), sprite_scale_r, glb_and_sprite_position_r * Math.sin(theta));
         sprite.scale.set(sprite_scale_r, sprite_scale_r, sprite_scale_r);
         objects.bio_sprite = sprite;
-        scene.add(sprite);
+        scene.add(objects.bio_sprite);
     });
 }
 
 {
+    const raycaster = new THREE.Raycaster();
     web_gl_renderer.domElement.addEventListener('click', (event) => {
-        const raycaster = new THREE.Raycaster();
         raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera);
         const intersect_objects = raycaster.intersectObject(scene, true);
         if (!(intersect_objects.length > 0)) {
             return;
         }
-        if ('bio_glb' in objects && intersect_objects[0].object.parent.parent == objects.bio_glb || 'bio_sprite' in objects && intersect_objects[0].object == objects.bio_sprite) {
+        if ('bio_glb' in objects && intersect_objects[0].object.parent.parent === objects.bio_glb || 'bio_sprite' in objects && intersect_objects[0].object === objects.bio_sprite) {
             location = './bio.html';
         }
     });
@@ -255,22 +255,22 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const theta = 90 * Math.PI / 180;
         glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta));
         objects.twitter_glb = glb.scene;
-        scene.add(glb.scene);
+        scene.add(objects.twitter_glb);
         const outline_pass = new OutlinePass(new THREE.Vector2(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight), scene, perspective_camera);
+        const raycaster = new THREE.Raycaster();
         web_gl_renderer.domElement.addEventListener('pointermove', (event) => {
-            const raycaster = new THREE.Raycaster();
-            raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera);
             const selected_objects = [];
+            raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera);
             const intersect_objects = raycaster.intersectObject(scene, true);
             if (intersect_objects.length > 0) {
-                if (intersect_objects[0].object.parent.parent == glb.scene) {
-                    selected_objects.push(intersect_objects[0].object);
+                if (intersect_objects[0].object.parent.parent === objects.twitter_glb) {
+                    selected_objects.push(objects.twitter_glb);
                 }
             }
             outline_pass.selectedObjects = selected_objects;
         });
         objects.twitter_outline_pass = outline_pass;
-        effect_composer.addPass(outline_pass);
+        effect_composer.addPass(objects.twitter_outline_pass);
         const clock = new THREE.Clock();
 
         function update() {
@@ -295,7 +295,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         sprite.position.set(glb_and_sprite_position_r * Math.cos(theta), sprite_scale_r, glb_and_sprite_position_r * Math.sin(theta));
         sprite.scale.set(sprite_scale_r, sprite_scale_r, sprite_scale_r);
         objects.twitter_sprite = sprite;
-        scene.add(sprite);
+        scene.add(objects.twitter_sprite);
     });
 }
 
@@ -306,15 +306,15 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
     film_pass.uniforms.grayscale = false;
     film_pass.enabled = false;
     objects.film_pass = film_pass;
-    effect_composer.addPass(film_pass);
+    effect_composer.addPass(objects.film_pass);
+    const raycaster = new THREE.Raycaster();
     web_gl_renderer.domElement.addEventListener('click', (event) => {
-        const raycaster = new THREE.Raycaster();
         raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera);
         const intersect_objects = raycaster.intersectObject(scene, true);
         if (!(intersect_objects.length > 0)) {
             return;
         }
-        if ('twitter_glb' in objects && intersect_objects[0].object.parent.parent == objects.twitter_glb || 'twitter_sprite' in objects && intersect_objects[0].object == objects.twitter_sprite) {
+        if ('twitter_glb' in objects && intersect_objects[0].object.parent.parent === objects.twitter_glb || 'twitter_sprite' in objects && intersect_objects[0].object === objects.twitter_sprite) {
             window.open('https://twitter.com/mcpu3_kei/');
             objects.film_pass.enabled = true;
         }
@@ -330,22 +330,22 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const theta = 180 * Math.PI / 180;
         glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta));
         objects.github_glb = glb.scene;
-        scene.add(glb.scene);
+        scene.add(objects.github_glb);
         const outline_pass = new OutlinePass(new THREE.Vector2(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight), scene, perspective_camera);
+        const raycaster = new THREE.Raycaster();
         web_gl_renderer.domElement.addEventListener('pointermove', (event) => {
-            const raycaster = new THREE.Raycaster();
-            raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera);
             const selected_objects = [];
+            raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera);
             const intersect_objects = raycaster.intersectObject(scene, true);
             if (intersect_objects.length > 0) {
-                if (intersect_objects[0].object.parent.parent == glb.scene) {
-                    selected_objects.push(intersect_objects[0].object);
+                if (intersect_objects[0].object.parent.parent === objects.github_glb) {
+                    selected_objects.push(objects.github_glb);
                 }
             }
             outline_pass.selectedObjects = selected_objects;
         });
         objects.github_outline_pass = outline_pass;
-        effect_composer.addPass(outline_pass);
+        effect_composer.addPass(objects.github_outline_pass);
         const clock = new THREE.Clock();
 
         function update() {
@@ -370,29 +370,24 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         sprite.position.set(glb_and_sprite_position_r * Math.cos(theta), sprite_scale_r, glb_and_sprite_position_r * Math.sin(theta));
         sprite.scale.set(sprite_scale_r, sprite_scale_r, sprite_scale_r);
         objects.github_sprite = sprite;
-        scene.add(sprite);
+        scene.add(objects.github_sprite);
     });
 }
 
 {
-    let clicked = false;
+    const shader_pass_rgb_shift_shader = new ShaderPass(RGBShiftShader);
+    shader_pass_rgb_shift_shader.enabled = false;
+    objects.shader_pass_rgb_shift_shader = shader_pass_rgb_shift_shader;
+    effect_composer.addPass(objects.shader_pass_rgb_shift_shader);
+    const raycaster = new THREE.Raycaster();
     web_gl_renderer.domElement.addEventListener('click', (event) => {
-        const raycaster = new THREE.Raycaster();
         raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / window.innerWidth - 1, -2 * event.clientY / window.innerHeight + 1), perspective_camera);
         const intersect_objects = raycaster.intersectObject(scene, true);
         if (!(intersect_objects.length > 0)) {
             return;
         }
-        if ('github_glb' in objects && intersect_objects[0].object.parent.parent == objects.github_glb || 'github_sprite' in objects && intersect_objects[0].object == objects.github_sprite) {
+        if ('github_glb' in objects && intersect_objects[0].object.parent.parent === objects.github_glb || 'github_sprite' in objects && intersect_objects[0].object === objects.github_sprite) {
             window.open('https://github.com/Mcpu3/');
-            if (clicked) {
-                return;
-            }
-            clicked = true;
-            const shader_pass_rgb_shift_shader = new ShaderPass(RGBShiftShader);
-            shader_pass_rgb_shift_shader.enabled = false;
-            objects.shader_pass_rgb_shift_shader = shader_pass_rgb_shift_shader;
-            effect_composer.addPass(shader_pass_rgb_shift_shader);
 
             function update() {
                 if (Math.random() < 0.1) {
@@ -418,22 +413,22 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const theta = 270 * Math.PI / 180;
         glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta));
         objects.easteregg_glb = glb.scene;
-        scene.add(glb.scene);
+        scene.add(objects.easteregg_glb);
         const outline_pass = new OutlinePass(new THREE.Vector2(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight), scene, perspective_camera);
+        const raycaster = new THREE.Raycaster();
         web_gl_renderer.domElement.addEventListener('pointermove', (event) => {
-            const raycaster = new THREE.Raycaster();
-            raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera);
             const selected_objects = [];
+            raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera);
             const intersect_objects = raycaster.intersectObject(scene, true);
             if (intersect_objects.length > 0) {
-                if (intersect_objects[0].object.parent.parent == glb.scene) {
-                    selected_objects.push(intersect_objects[0].object);
+                if (intersect_objects[0].object.parent.parent === objects.easteregg_glb) {
+                    selected_objects.push(objects.easteregg_glb);
                 }
             }
             outline_pass.selectedObjects = selected_objects;
         });
         objects.easteregg_outline_pass = outline_pass;
-        effect_composer.addPass(outline_pass);
+        effect_composer.addPass(objects.easteregg_outline_pass);
         const clock = new THREE.Clock();
 
         function update() {
@@ -458,20 +453,20 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         sprite.position.set(glb_and_sprite_position_r * Math.cos(theta), sprite_scale_r, glb_and_sprite_position_r * Math.sin(theta));
         sprite.scale.set(sprite_scale_r, sprite_scale_r, sprite_scale_r);
         objects.easteregg_sprite = sprite;
-        scene.add(sprite);
+        scene.add(objects.easteregg_sprite);
     });
 }
 
 {
     let clicked = false;
+    const raycaster = new THREE.Raycaster();
     web_gl_renderer.domElement.addEventListener('click', (event) => {
-        const raycaster = new THREE.Raycaster();
         raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera);
         const intersect_objects = raycaster.intersectObject(scene, true);
         if (!(intersect_objects.length > 0)) {
             return;
         }
-        if (!('easteregg_glb' in objects && intersect_objects[0].object.parent.parent == objects.easteregg_glb || 'easteregg_sprite' in objects && intersect_objects[0].object == objects.easteregg_sprite)) {
+        if (!('easteregg_glb' in objects && intersect_objects[0].object.parent.parent === objects.easteregg_glb || 'easteregg_sprite' in objects && intersect_objects[0].object === objects.easteregg_sprite)) {
             return;
         }
         if (!('earth' in objects)) {
@@ -481,32 +476,36 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
             return;
         }
         clicked = true;
+        const glitch_pass = new GlitchPass();
+        objects.glitch_pass = glitch_pass;
+        effect_composer.addPass(objects.glitch_pass);
+        const shader_pass_brightness_contrast = new ShaderPass(BrightnessContrastShader);
+        shader_pass_brightness_contrast.uniforms.brightness.value = -0.5;
+        shader_pass_brightness_contrast.enabled = false;
+        objects.shader_pass_brightness_contrast = shader_pass_brightness_contrast;
+        effect_composer.addPass(objects.shader_pass_brightness_contrast);
         const wireframe_geometry = new THREE.WireframeGeometry(objects.earth.geometry);
         const line_basic_material = new THREE.LineBasicMaterial();
         const earth_wireframe = new THREE.LineSegments(wireframe_geometry, line_basic_material);
         earth_wireframe.rotation.z = -23.4 * Math.PI / 180;
         earth_wireframe.visible = false;
         objects.earth_wireframe = earth_wireframe;
-        scene.add(earth_wireframe);
-        const glitch_pass = new GlitchPass();
-        objects.glitch_pass = glitch_pass;
-        effect_composer.addPass(glitch_pass);
-        const shader_pass_brightness_contrast = new ShaderPass(BrightnessContrastShader);
-        shader_pass_brightness_contrast.uniforms.brightness.value = -0.5;
-        shader_pass_brightness_contrast.enabled = false;
-        objects.shader_pass_brightness_contrast = shader_pass_brightness_contrast;
-        effect_composer.addPass(shader_pass_brightness_contrast);
+        scene.add(objects.earth_wireframe);
         const clock = new THREE.Clock();
 
         function update() {
             const elapsed_time = clock.getElapsedTime();
-            if (elapsed_time >= 0.0 && elapsed_time < 0.5) {
-                objects.easteregg_glb.scale.set(Math.cos(elapsed_time * Math.PI), Math.cos(elapsed_time * Math.PI), Math.cos(elapsed_time * Math.PI));
-                objects.easteregg_sprite.scale.set(sprite_scale_r * Math.cos(elapsed_time * Math.PI), sprite_scale_r * Math.cos(elapsed_time * Math.PI), sprite_scale_r * Math.cos(elapsed_time * Math.PI));
-            }
-            else {
-                objects.easteregg_glb.visible = false;
-                objects.easteregg_sprite.visible = false;
+            if (elapsed_time >= 4) {
+                objects.glitch_pass.goWild = true;
+                objects.shader_pass_brightness_contrast.enabled = true;
+                if (Math.random() < 0.1) {
+                    objects.earth.visible = false;
+                    objects.earth_wireframe.visible = true;
+                }
+                else {
+                    objects.earth.visible = true;
+                    objects.earth_wireframe.visible = false;
+                }
             }
             if (elapsed_time >= 0 && elapsed_time < 0.2) {
                 objects.earth.visible = false;
@@ -524,17 +523,13 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
                 objects.earth.visible = true;
                 objects.earth_wireframe.visible = false;
             }
-            if (elapsed_time >= 4) {
-                glitch_pass.goWild = true;
-                objects.shader_pass_brightness_contrast.enabled = true;
-                if (Math.random() < 0.1) {
-                    objects.earth.visible = false;
-                    objects.earth_wireframe.visible = true;
-                }
-                else {
-                    objects.earth.visible = true;
-                    objects.earth_wireframe.visible = false;
-                }
+            if (elapsed_time >= 0.0 && elapsed_time < 0.5) {
+                objects.easteregg_glb.scale.set(Math.cos(elapsed_time * Math.PI), Math.cos(elapsed_time * Math.PI), Math.cos(elapsed_time * Math.PI));
+                objects.easteregg_sprite.scale.set(sprite_scale_r * Math.cos(elapsed_time * Math.PI), sprite_scale_r * Math.cos(elapsed_time * Math.PI), sprite_scale_r * Math.cos(elapsed_time * Math.PI));
+            }
+            else {
+                objects.easteregg_glb.visible = false;
+                objects.easteregg_sprite.visible = false;
             }
             requestAnimationFrame(update);
         }
