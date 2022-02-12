@@ -1,1 +1,1 @@
-window.addEventListener("DOMContentLoaded",function(a){document.getElementById("loading").style.display="none"});var date=Date.now();function update(){var a=.001*(Date.now()-date);document.getElementById("loading_title").innerText=a.toFixed(3);requestAnimationFrame(update)}requestAnimationFrame(update);
+window.addEventListener("DOMContentLoaded",function(a){document.getElementById("loading").style.display="none"});
