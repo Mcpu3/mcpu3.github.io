@@ -14,6 +14,7 @@
         <meta name="twitter:site" content="@mcpu3_kei">
         <meta name="twitter:creator" content="@mcpu3_kei">
         <link rel="icon" href="./resources/images/favicon.ico">
+        <link href="./css/bio_bulma.css" rel="stylesheet">
         <link href="./css/bio.css" rel="stylesheet">
         <script defer src="./js/bio.js" type="module"></script>
         <script defer src="./js/bio_age.js"></script>
@@ -24,41 +25,38 @@
     </head>
     <body>
         <div id="bio"></div>
-        <div class="l-wrapper_01">
-            <article class="card_01">
-                <div class="card__header_01">
-                    <p class="card__title_01">岩本圭介</p>
-                    <figure class="card__thumbnail_01">
-                        <img src="./resources/images/photo.jpg" alt="Photo" class="card__image_01">
-                    </figure>
+        <div class="card">
+            <div class="card-image">
+                <figure class="image is-3by1">
+                    <img src="./resources/images/header.jpg" alt="Header image">
+                </figure>
+            </div>
+            <div class="card-content">
+                <div class="media">
+                    <div class="media-left">
+                        <figure class="image is-48x48">
+                            <img class="is-rounded" src="./resources/images/bio.jpg" alt="Profile image">
+                        </figure>
+                    </div>
+                    <div class="media-content">
+                        <p class="title is-4">岩本圭介</p>
+                        <p class="subtitle is-6"><a class="subtitle is-6" href="https://twitter.com/mcpu3_kei/", target="_blank">@mcpu3_kei</a></p>
+                    </div>
                 </div>
-                <div class="card__body_01">
-                    <p class="card__text2_01">
-                        <dl>
-                            <dt>在学中</dt>
-                            <dd>北九州工業高等専門学校</dd>
-                            <dt>在住</dt>
-                            <dd>北九州市</dd>
-                            <dt>出身</dt>
-                            <dd>周南市</dd>
-                            <dt>年齢</dt>
-                            <dd id="age"></dd>
-                            <dt>資格, 試験</dt>
-                            <dd>普通自動車第一種免許, 基本情報技術者試験, 応用情報技術者試験, TOEIC: 580</dd>
-                        </dl>
-                    </p>
+                <div class="content">
+                    <p class="title is-6">在学中</p>
+                    <p>北九州工業高等専門学校</p>
+                    <p class="title is-6">在住, 出身</p>
+                    <p>北九州市, 周南市</p>
+                    <p class="title is-6">年齢</p>
+                    <p id="age"></p>
+                    <p class="title is-6">資格, 試験</p>
+                    <p>普通自動車第一種免許, 基本情報技術者試験, 応用情報技術者試験, TOEIC: 580</p>
                 </div>
-                <div class="card__footer_01">
-                    <p id="ok", class="card__text_01"><a href="./" class="button_01 -compact">OK</a></p>
+                <div class="buttons is-centered">
+                    <a class="button" id="ok" href="./">OK</a>
                 </div>
-            </article>
+            </div>
         </div>
-        <script>
-            {
-                const date = new Date();
-                const date_birth = new Date('2002/01/11');
-                document.getElementById('age').innerText = Math.floor(((date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate()) - (date_birth.getFullYear() * 10000 + (date_birth.getMonth() + 1) * 100 + date_birth.getDate())) / 10000);
-            }
-        </script>
     </body>
 </html>

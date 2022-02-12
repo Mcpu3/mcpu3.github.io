@@ -14,8 +14,10 @@
         <meta name="twitter:site" content="@mcpu3_kei">
         <meta name="twitter:creator" content="@mcpu3_kei">
         <link rel="icon" href="./resources/images/favicon.ico">
+        <link href="./css/index_bulma.css" rel="stylesheet">
         <link href="./css/index.css" rel="stylesheet">
         <script defer src="./js/index.js" type="module"></script>
+        <script defer src="./js/index_loading.js"></script>
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q9S9MP5LX8"></script>
         <script>
             window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date);gtag("config","G-Q9S9MP5LX8");
@@ -23,5 +25,13 @@
     </head>
     <body>
         <canvas id="index"></canvas>
+        <div class="hero is-primary is-fullheight" id="loading">
+            <div class="hero-body">
+                <div class="container has-text-centered">
+                    <progress class="progress" max="100"></progress>
+                    <p class="title" id="loading_title"></p>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

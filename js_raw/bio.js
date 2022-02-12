@@ -24,7 +24,7 @@ const css_3d_renderer = new CSS3DRenderer({antialias: true});
 const objects = {};
 
 {
-    const css_3d_object = new CSS3DObject(document.querySelector('.l-wrapper_01'));
+    const css_3d_object = new CSS3DObject(document.querySelector('.card'));
     css_3d_object.rotation.y = 15 * Math.PI / 180;
     objects.css_3d_object = css_3d_object;
     scene.add(objects.css_3d_object);

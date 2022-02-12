@@ -3,6 +3,13 @@
     "three": "^0.136.0"
   },
   "devDependencies": {
-    "@types/three": "^0.136.1"
+    "@types/three": "^0.136.1",
+    "bulma": "^0.9.3",
+    "node-sass": "^7.0.1"
+  },
+  "scripts": {
+    "css-build": "node-sass --omit-source-map-url sass/index.scss css/index_bulma.css",
+    "css-watch": "npm run css-build -- --watch",
+    "start": "npm run css-watch"
   }
 }
