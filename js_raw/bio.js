@@ -35,7 +35,7 @@ const objects = {};
         location = './';
     });
     document.getElementById('twitter').addEventListener('pointerup', (event) => {
-        location = 'https://twitter.com/mcpu3_kei/';
+        window.open('https://twitter.com/mcpu3_kei/');
     });
 }
 
