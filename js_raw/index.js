@@ -79,7 +79,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 }
 
 {
-    const sun_light = new THREE.PointLight(0xFFEBCD, 2);
+    const sun_light = new THREE.SpotLight(0xFFEBCD, 2);
     const theta = 90 * Math.PI / 180;
     sun_light.position.set(sun_and_moon_position_r * Math.cos(theta), 0, sun_and_moon_position_r * Math.sin(theta));
     objects.sun_light = sun_light;
@@ -120,33 +120,37 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 {
     const texture_loader = new THREE.TextureLoader();
     const texture = texture_loader.load('../resources/images/planets/earth.jpg', () => {
-        const sphere_geometry = new THREE.SphereGeometry(earth_scale_r, 32, 32);
-        const mesh_lambert_material = new THREE.MeshLambertMaterial({map: texture});
-        const earth = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
-        earth.rotation.x = -23.4 * Math.PI / 180;
-        objects.earth = earth;
-        scene.add(objects.earth);
-        {
-            const texture = texture_loader.load('../resources/images/planets/earth_clouds_1024.png', () => {
-                const sphere_geometry = new THREE.SphereGeometry(cloud_scale_r, 32, 32);
-                const mesh_lambert_material = new THREE.MeshLambertMaterial({map: texture, transparent: true, side: THREE.DoubleSide});
-                const cloud = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
-                objects.cloud = cloud;
-                objects.earth.add(objects.cloud);
-                const clock = new THREE.Clock();
+        const texture_normal = texture_loader.load('../resources/images/planets/earth_normal_2048.jpg', () => {
+            const texture_specular = texture_loader.load('../resources/images/planets/earth_specular_2048.jpg', () => {
+                const sphere_geometry = new THREE.SphereGeometry(earth_scale_r, 32, 32);
+                const mesh_lambert_material = new THREE.MeshPhongMaterial({map: texture, normalMap: texture_normal, specularMap: texture_specular});
+                const earth = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
+                earth.rotation.x = -23.4 * Math.PI / 180;
+                objects.earth = earth;
+                scene.add(objects.earth);
+                {
+                    const texture = texture_loader.load('../resources/images/planets/earth_clouds_1024.png', () => {
+                        const sphere_geometry = new THREE.SphereGeometry(cloud_scale_r, 32, 32);
+                        const mesh_lambert_material = new THREE.MeshLambertMaterial({map: texture, transparent: true, side: THREE.DoubleSide});
+                        const cloud = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
+                        objects.cloud = cloud;
+                        objects.earth.add(objects.cloud);
+                        const clock = new THREE.Clock();
 
-                function update() {
-                    if (clock.getElapsedTime() >= 60) {
-                        clock.start();
-                    }
-                    const elapsed_time = clock.getElapsedTime();
-                    objects.cloud.rotation.y = 2 * Math.PI * elapsed_time / 60;
-                    requestAnimationFrame(update);
+                        function update() {
+                            if (clock.getElapsedTime() >= 60) {
+                                clock.start();
+                            }
+                            const elapsed_time = clock.getElapsedTime();
+                            objects.cloud.rotation.y = 2 * Math.PI * elapsed_time / 60;
+                            requestAnimationFrame(update);
+                        }
+
+                        requestAnimationFrame(update);
+                    });
                 }
-
-                requestAnimationFrame(update);
             });
-        }
+        });
     });
 }
 
