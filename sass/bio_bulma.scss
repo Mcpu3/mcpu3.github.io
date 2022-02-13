@@ -1,0 +1,28 @@
+@charset "utf-8";
+
+$light: rgb(204, 204, 204);
+$dark: rgb(51, 51, 51);
+$scheme-main: rgba(255, 255, 255, 0.8);
+$scheme-main-bis: rgba(204, 204, 204, 0.8);
+$scheme-main-ter: rgba(153, 153, 153, 0.8);
+$scheme-invert: rgba(0, 0, 0, 0.8);
+$scheme-invert-bis: rgba(51, 51, 51, 0.8);
+$scheme-invert-ter: rgba(102, 102, 102, 0.8);
+$background: rgba(255, 255, 255, 0);
+$border: rgba(0, 155, 159, 0.8);
+$border-hover: rgb(0, 155, 159);
+$border-light: rgba(0, 155, 159, 0.6);
+$border-light-hover: rgba(0, 155, 159, 0.8);
+$text: rgb(0, 155, 159);
+$text-light: rgba(0, 155, 159, 0.8);
+$text-strong: rgb(0, 155, 159);
+$link: rgb(0, 155, 159);
+$link-visited: rgb(0, 155, 159);
+$link-hover: rgba(0, 155, 159, 0.8);
+$link-hover-border: rgba(0, 155, 159, 0.8);
+$link-focus: rgba(0, 155, 159, 0.6);
+$link-focus-border: rgba(0, 155, 159, 0.6);
+$link-active: rgba(0, 155, 159, 0.6);
+$link-active-border: rgba(0, 155, 159, 0.6);
+
+@import "../node_modules/bulma/bulma.sass";

@@ -8,7 +8,7 @@
     "node-sass": "^7.0.1"
   },
   "scripts": {
-    "css-build": "node-sass --omit-source-map-url sass/index.scss css/index_bulma.css",
+    "css-build": "node-sass --omit-source-map-url sass/index_bulma.scss css/index_bulma.css",
     "css-watch": "npm run css-build -- --watch",
     "start": "npm run css-watch"
   }

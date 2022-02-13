@@ -31,23 +31,22 @@ const objects = {};
 }
 
 {
-    document.getElementById('ok').addEventListener('touchend', (event) => {
+    document.getElementById('ok').addEventListener('pointerup', (event) => {
         location = './';
+    });
+    document.getElementById('twitter').addEventListener('pointerup', (event) => {
+        location = 'https://twitter.com/mcpu3_kei/';
     });
 }
 
 {
-    window.addEventListener('mousemove', (event) => {
+    window.addEventListener('pointermove', (event) => {
         perspectivate_camera.position.set(0.125 * window.innerWidth * (2 * event.clientX / window.innerWidth - 1), 0.125 * window.innerHeight * (-2 * event.clientY / window.innerHeight + 1), perspectivate_camera_position_z());
         perspectivate_camera.lookAt(0.125 * window.innerWidth * (2 * event.clientX / window.innerWidth - 1), 0.125 * window.innerHeight * (-2 * event.clientY / window.innerHeight + 1), 0);
     });
-    window.addEventListener('touchend', (event) => {
-        perspectivate_camera.position.set(0.125 * window.innerWidth * (2 * event.changedTouches[0].clientX / window.innerWidth - 1), 0.125 * window.innerHeight * (-2 * event.changedTouches[0].clientY / window.innerHeight + 1), perspectivate_camera_position_z());
-        perspectivate_camera.lookAt(0.125 * window.innerWidth * (2 * event.changedTouches[0].clientX / window.innerWidth - 1), 0.125 * window.innerHeight * (-2 * event.changedTouches[0].clientY / window.innerHeight + 1), 0);
-    });
-    window.addEventListener('touchmove', (event) => {
-        perspectivate_camera.position.set(0.125 * window.innerWidth * (2 * event.touches[0].clientX / window.innerWidth - 1), 0.125 * window.innerHeight * (-2 * event.touches[0].clientY / window.innerHeight + 1), perspectivate_camera_position_z());
-        perspectivate_camera.lookAt(0.125 * window.innerWidth * (2 * event.touches[0].clientX / window.innerWidth - 1), 0.125 * window.innerHeight * (-2 * event.touches[0].clientY / window.innerHeight + 1), 0);
+    window.addEventListener('pointerup', (event) => {
+        perspectivate_camera.position.set(0.125 * window.innerWidth * (2 * event.clientX / window.innerWidth - 1), 0.125 * window.innerHeight * (-2 * event.clientY / window.innerHeight + 1), perspectivate_camera_position_z());
+        perspectivate_camera.lookAt(0.125 * window.innerWidth * (2 * event.clientX / window.innerWidth - 1), 0.125 * window.innerHeight * (-2 * event.clientY / window.innerHeight + 1), 0);
     });
 }
 
