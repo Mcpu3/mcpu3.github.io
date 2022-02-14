@@ -123,8 +123,8 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const texture_normal = texture_loader.load('../resources/images/planets/earth_normal_2048.jpg', () => {
             const texture_specular = texture_loader.load('../resources/images/planets/earth_specular_2048.jpg', () => {
                 const sphere_geometry = new THREE.SphereGeometry(earth_scale_r, 32, 32);
-                const mesh_lambert_material = new THREE.MeshPhongMaterial({map: texture, normalMap: texture_normal, specularMap: texture_specular});
-                const earth = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
+                const mesh_phong_material = new THREE.MeshPhongMaterial({map: texture, normalMap: texture_normal, specularMap: texture_specular});
+                const earth = new THREE.Mesh(sphere_geometry, mesh_phong_material);
                 earth.rotation.x = -23.4 * Math.PI / 180;
                 objects.earth = earth;
                 scene.add(objects.earth);
