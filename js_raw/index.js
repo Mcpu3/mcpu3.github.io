@@ -476,6 +476,9 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         if (!('earth' in objects)) {
             return;
         }
+        if (!('easteregg_glb' in objects && 'easteregg_sprite' in objects)) {
+            return;
+        }
         if (clicked) {
             return;
         }
@@ -523,7 +526,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
                 objects.earth.visible = false;
                 objects.earth_wireframe.visible = true;
             }
-            else {
+            else if (elapsed_time >= 0.4 && elapsed_time < 4) {
                 objects.earth.visible = true;
                 objects.earth_wireframe.visible = false;
             }
