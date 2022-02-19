@@ -138,10 +138,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
                         const clock = new THREE.Clock();
 
                         function update() {
-                            if (clock.getElapsedTime() >= 60) {
-                                clock.start();
-                            }
-                            const elapsed_time = clock.getElapsedTime();
+                            const elapsed_time = clock.getElapsedTime() % 60;
                             objects.cloud.rotation.y = 2 * Math.PI * elapsed_time / 60;
                             requestAnimationFrame(update);
                         }
@@ -167,10 +164,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const clock = new THREE.Clock();
 
         function update() {
-            if (clock.getElapsedTime() >= 4) {
-                clock.start();
-            }
-            const elapsed_time = clock.getElapsedTime();
+            const elapsed_time = clock.getElapsedTime() % 4;
             objects.moon.rotation.y = 2 * Math.PI * elapsed_time / 4;
             requestAnimationFrame(update);
         }
@@ -211,10 +205,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const clock = new THREE.Clock();
 
         function update() {
-            if (clock.getElapsedTime() >= 4) {
-                clock.start();
-            }
-            const elapsed_time = clock.getElapsedTime();
+            const elapsed_time = clock.getElapsedTime() % 4;
             objects.bio_glb.rotation.set(2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4);
             requestAnimationFrame(update);
         }
@@ -278,10 +269,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const clock = new THREE.Clock();
 
         function update() {
-            if (clock.getElapsedTime() >= 4) {
-                clock.start();
-            }
-            const elapsed_time = clock.getElapsedTime();
+            const elapsed_time = clock.getElapsedTime() % 4;
             objects.twitter_glb.rotation.set(2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4);
             requestAnimationFrame(update);
         }
@@ -353,10 +341,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const clock = new THREE.Clock();
 
         function update() {
-            if (clock.getElapsedTime() >= 4) {
-                clock.start();
-            }
-            const elapsed_time = clock.getElapsedTime();
+            const elapsed_time = clock.getElapsedTime() % 4;
             objects.github_glb.rotation.set(2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4);
             requestAnimationFrame(update);
         }
@@ -436,10 +421,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
         const clock = new THREE.Clock();
 
         function update() {
-            if (clock.getElapsedTime() >= 4) {
-                clock.start();
-            }
-            const elapsed_time = clock.getElapsedTime();
+            const elapsed_time = clock.getElapsedTime() % 4;
             objects.easteregg_glb.rotation.set(2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4);
             requestAnimationFrame(update);
         }
@@ -502,18 +484,6 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 
         function update() {
             const elapsed_time = clock.getElapsedTime();
-            if (elapsed_time >= 4) {
-                objects.glitch_pass.goWild = true;
-                objects.shader_pass_brightness_contrast.enabled = true;
-                if (Math.random() < 0.1) {
-                    objects.earth.visible = false;
-                    objects.earth_wireframe.visible = true;
-                }
-                else {
-                    objects.earth.visible = true;
-                    objects.earth_wireframe.visible = false;
-                }
-            }
             if (elapsed_time >= 0 && elapsed_time < 0.2) {
                 objects.earth.visible = false;
                 objects.earth_wireframe.visible = true;
@@ -529,6 +499,18 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
             else if (elapsed_time >= 0.4 && elapsed_time < 4) {
                 objects.earth.visible = true;
                 objects.earth_wireframe.visible = false;
+            }
+            else {
+                objects.glitch_pass.goWild = true;
+                objects.shader_pass_brightness_contrast.enabled = true;
+                if (Math.random() < 0.1) {
+                    objects.earth.visible = false;
+                    objects.earth_wireframe.visible = true;
+                }
+                else {
+                    objects.earth.visible = true;
+                    objects.earth_wireframe.visible = false;
+                }
             }
             if (elapsed_time >= 0.0 && elapsed_time < 0.5) {
                 objects.easteregg_glb.scale.set(Math.cos(elapsed_time * Math.PI), Math.cos(elapsed_time * Math.PI), Math.cos(elapsed_time * Math.PI));
