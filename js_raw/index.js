@@ -70,7 +70,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 
 {
     const texture_loader = new THREE.TextureLoader();
-    const texture = texture_loader.load('../resources/images/background.jpg', () => {
+    const texture = texture_loader.load('../resources/images/background.webp', () => {
         const web_gl_cube_render_target = new THREE.WebGLCubeRenderTarget(texture.image.height);
         web_gl_cube_render_target.fromEquirectangularTexture(web_gl_renderer, texture);
         objects.background = web_gl_cube_render_target.texture;
@@ -88,16 +88,16 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 
 {
     const texture_loader = new THREE.TextureLoader();
-    const texture_0 = texture_loader.load('../resources/images/lensflare/lensflare0.jpg', () => {
-        const texture_2 = texture_loader.load('../resources/images/lensflare/lensflare2.jpg', () => {
-            const texture_3 = texture_loader.load('../resources/images/lensflare/lensflare3.jpg', () => {
+    const texture_0 = texture_loader.load('../resources/images/lensflare/lensflare_0.webp', () => {
+        const texture_1 = texture_loader.load('../resources/images/lensflare/lensflare_1.webp', () => {
+            const texture_2 = texture_loader.load('../resources/images/lensflare/lensflare_2.webp', () => {
                 const lensflare = new Lensflare();
                 lensflare.addElement(new LensflareElement(texture_0, 500, 0, objects.sun_light.color));
-                lensflare.addElement(new LensflareElement(texture_2, 1000, 0.1, objects.sun_light.color));
-                lensflare.addElement(new LensflareElement(texture_3, 100, 0.5));
-                lensflare.addElement(new LensflareElement(texture_3, 120, 0.6));
-                lensflare.addElement(new LensflareElement(texture_3, 180, 0.9));
-                lensflare.addElement(new LensflareElement(texture_3, 100, 1));
+                lensflare.addElement(new LensflareElement(texture_1, 1000, 0.1, objects.sun_light.color));
+                lensflare.addElement(new LensflareElement(texture_2, 100, 0.5));
+                lensflare.addElement(new LensflareElement(texture_2, 120, 0.6));
+                lensflare.addElement(new LensflareElement(texture_2, 180, 0.9));
+                lensflare.addElement(new LensflareElement(texture_2, 100, 1));
                 objects.lensflare = lensflare;
                 objects.sun_light.add(objects.lensflare);
 
@@ -119,9 +119,9 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 
 {
     const texture_loader = new THREE.TextureLoader();
-    const texture = texture_loader.load('../resources/images/planets/earth.jpg', () => {
-        const texture_normal = texture_loader.load('../resources/images/planets/earth_normal_2048.jpg', () => {
-            const texture_specular = texture_loader.load('../resources/images/planets/earth_specular_2048.jpg', () => {
+    const texture = texture_loader.load('../resources/images/planets/earth.webp', () => {
+        const texture_normal = texture_loader.load('../resources/images/planets/earth_normal.webp', () => {
+            const texture_specular = texture_loader.load('../resources/images/planets/earth_specular.webp', () => {
                 const sphere_geometry = new THREE.SphereGeometry(earth_scale_r, 32, 32);
                 const mesh_phong_material = new THREE.MeshPhongMaterial({map: texture, normalMap: texture_normal, specularMap: texture_specular});
                 const earth = new THREE.Mesh(sphere_geometry, mesh_phong_material);
@@ -129,7 +129,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
                 objects.earth = earth;
                 scene.add(objects.earth);
                 {
-                    const texture = texture_loader.load('../resources/images/planets/earth_clouds_1024.png', () => {
+                    const texture = texture_loader.load('../resources/images/planets/clouds.webp', () => {
                         const sphere_geometry = new THREE.SphereGeometry(cloud_scale_r, 32, 32);
                         const mesh_lambert_material = new THREE.MeshLambertMaterial({map: texture, transparent: true, side: THREE.DoubleSide});
                         const cloud = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
@@ -154,7 +154,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 {
     const texture_loader = new THREE.TextureLoader();
     const theta = -90 * Math.PI / 180;
-    const texture = texture_loader.load('../resources/images/planets/moon_1024.jpg', () => {
+    const texture = texture_loader.load('../resources/images/planets/moon.webp', () => {
         const sphere_geometry = new THREE.SphereGeometry(moon_scale_r);
         const mesh_lambert_material = new THREE.MeshLambertMaterial({map: texture});
         const moon = new THREE.Mesh(sphere_geometry, mesh_lambert_material);
@@ -216,7 +216,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 
 {
     const texture_loader = new THREE.TextureLoader();
-    const texture = texture_loader.load('../resources/images/bio.jpg', () => {
+    const texture = texture_loader.load('../resources/images/bio.webp', () => {
         const sprite_material = new THREE.SpriteMaterial({map: texture});
         const sprite = new THREE.Sprite(sprite_material);
         const theta = 0 * Math.PI / 180;
@@ -280,7 +280,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 
 {
     const texture_loader = new THREE.TextureLoader();
-    const texture = texture_loader.load('../resources/images/twitter.png', () => {
+    const texture = texture_loader.load('../resources/images/twitter.webp', () => {
         const sprite_material = new THREE.SpriteMaterial({map: texture});
         const sprite = new THREE.Sprite(sprite_material);
         const theta = 90 * Math.PI / 180;
@@ -352,7 +352,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 
 {
     const texture_loader = new THREE.TextureLoader();
-    const texture = texture_loader.load('../resources/images/github.png', () => {
+    const texture = texture_loader.load('../resources/images/github.webp', () => {
         const sprite_material = new THREE.SpriteMaterial({map: texture});
         const sprite = new THREE.Sprite(sprite_material);
         const theta = 180 * Math.PI / 180;
@@ -432,7 +432,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index);
 
 {
     const texture_loader = new THREE.TextureLoader();
-    const texture = texture_loader.load('../resources/images/easteregg.jpg', () => {
+    const texture = texture_loader.load('../resources/images/easteregg.webp', () => {
         const sprite_material = new THREE.SpriteMaterial({map: texture});
         const sprite = new THREE.Sprite(sprite_material);
         const theta = 270 * Math.PI / 180;
