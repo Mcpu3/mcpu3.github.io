@@ -1,11 +1,8 @@
 {
-  "dependencies": {
-    "three": "^0.136.0"
-  },
   "devDependencies": {
-    "@types/three": "^0.136.1",
     "bulma": "^0.9.3",
-    "node-sass": "^7.0.1"
+    "node-sass": "^7.0.1",
+    "three": "^0.138.0"
   },
   "scripts": {
     "css-build": "node-sass --omit-source-map-url sass/index_bulma.scss css/index_bulma.css",

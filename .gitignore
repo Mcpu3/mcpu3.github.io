@@ -115,6 +115,11 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-/examples/*
-!/examples/js
-!/examples/jsm
+/three/*
+!/three/build
+/three/build/*
+!/three/build/three.module.js
+!/three/examples
+/three/examples/*
+!/three/examples/js
+!/three/examples/jsm

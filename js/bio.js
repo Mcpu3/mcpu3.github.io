@@ -1,4 +1,4 @@
-import * as THREE from '../build/three.module.js'
+import * as THREE from 'three'
 import {CSS3DObject, CSS3DRenderer} from '../examples/jsm/renderers/CSS3DRenderer.js'
 var fov=60;function perspectivate_camera_position_z(){return.5*window.innerHeight/Math.tan(.5*fov*Math.PI/180)}var scene=new THREE.Scene,perspectivate_camera=new THREE.PerspectiveCamera(fov,window.innerWidth/window.innerHeight);perspectivate_camera.position.z=perspectivate_camera_position_z();var css_3d_renderer=new CSS3DRenderer({antialias:!0});css_3d_renderer.setSize(window.innerWidth,window.innerHeight);document.getElementById("bio").appendChild(css_3d_renderer.domElement);
 var objects={},css_3d_object=new CSS3DObject(document.querySelector(".card"));css_3d_object.rotation.y=15*Math.PI/180;objects.css_3d_object=css_3d_object;scene.add(objects.css_3d_object);document.getElementById("ok").addEventListener("pointerup",function(a){location="./"});document.getElementById("twitter").addEventListener("pointerup",function(a){window.open("https://twitter.com/mcpu3_kei/")});
