@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="description" content="">
         <meta name="theme-color" content="#009b9f">
-        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
         <meta property="og:url" content="https://mcpu3.github.io/">
         <meta property="og:locale" content="ja_JP">
         <meta property="og:title" content="Wordle Solver (β) - Mcpu3 (岩本圭介)">
@@ -41,7 +41,7 @@
                     <a class="navbar-item" href="./">mcpu3.github.io</a>
                 </div>
                 <div class="navbar-end">
-                    <a class="navbar-item" href="https://twitter.com/mcpu3_kei/">@mcpu3_kei</a>
+                    <a class="navbar-item" href="https://twitter.com/mcpu3_kei/" target="_blank">@mcpu3_kei</a>
                 </div>
             </div>
         </nav>
@@ -63,19 +63,22 @@
                 </div>
             </div>
             <div class="field">
-                <label class="label">Result</label>
+                <label class="label" for="result">Result</label>
                 <div class="control">
                     <input class="input" id="result" type="number" placeholder="01201">
                 </div>
                 <p class="help" id="result_help">🟩: 0, 🟨: 1, ⬛: 2 (🟩🟨⬛🟩🟨: 01201)</p>
             </div>
-            <div class="field has-addons">
-                <div class="control">
-                    <button class="button is-primary" id="solve">Solve</button>
+            <div class="field">
+                <div class="field has-addons">
+                    <div class="control">
+                        <button class="button is-primary" id="solve">Solve (Resolve)</button>
+                    </div>
+                    <div class="control">
+                        <button class="button" id="reset">Reset</button>
+                    </div>
                 </div>
-                <div class="control">
-                    <button class="button" id="reset">Reset</button>
-                </div>
+                <p class="help">Processing may take a few seconds.</p>
             </div>
         </div>
     </body>
