@@ -1,6 +1,7 @@
 {
   "devDependencies": {
     "bulma": "^0.9.3",
+    "bulma-extensions": "^6.2.7",
     "node-sass": "^7.0.1",
     "three": "^0.138.0"
   },

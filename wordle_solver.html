@@ -21,13 +21,9 @@
         <title>Wordle Solver (β) - Mcpu3 (岩本圭介)</title>
         <link rel="icon" href="./resources/images/favicon.webp">
         <link rel="apple-touch-icon" href="./resources/images/apple_touch_icon.webp">
-        <link rel="stylesheet" href="./css/index_bulma.css">
+        <link rel="stylesheet" href="./css/wordle_solver_bulma.css">
         <script src="./js/words.js" defer></script>
-        <script src="./js/wordle_solver.js" defer></script>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q9S9MP5LX8"></script>
-        <script>
-            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date);gtag("config","G-Q9S9MP5LX8");
-        </script>
+        <script src="./js_raw/wordle_solver.js" defer></script>
     </head>
     <body>
         <nav class="navbar">
@@ -47,6 +43,10 @@
         </nav>
         <div class="container">
             <h1 class="title">Wordle Solver (β)</h1>
+            <div class="field">
+                <input class="switch" id="hard_mode" type="checkbox">
+                <label class="label" for="hard_mode">Hard mode</label>
+            </div>
             <div class="level is-mobile">
                 <div class="level-item">
                     <div class="container has-text-centered">
