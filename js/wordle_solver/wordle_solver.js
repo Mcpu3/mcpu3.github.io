@@ -21,10 +21,10 @@ class WordleSolver {
     #add_event_listeners_of_hard_mode() {
         document.getElementById('hard_mode').addEventListener('change', (event) => {
             if (event.target.checked) {
-                this.solver.wordle.hard_mode = true
+                this.solver.wordle.is_hard_mode = true
                 return
             }
-            this.solver.wordle.hard_mode = false
+            this.solver.wordle.is_hard_mode = false
         })
     }
 
