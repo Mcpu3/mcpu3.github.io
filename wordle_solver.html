@@ -22,8 +22,10 @@
         <link rel="icon" href="./resources/images/favicon.webp">
         <link rel="apple-touch-icon" href="./resources/images/apple_touch_icon.webp">
         <link rel="stylesheet" href="./css/wordle_solver_bulma.css">
-        <script src="./js/words.js" defer></script>
-        <script src="./js/wordle_solver.js" defer></script>
+        <script src="./js/wordle_solver/words.js" defer></script>
+        <script src="./js/wordle_solver/wordle.js" defer></script>
+        <script src="./js/wordle_solver/solver.js" defer></script>
+        <script src="./js/wordle_solver/wordle_solver.js" defer></script>
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q9S9MP5LX8"></script>
         <script>
             window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date);gtag("config","G-Q9S9MP5LX8");
@@ -52,16 +54,16 @@
                 <div class="content">
                     <h1 class="title">Wordle Solver (β)</h1>
                     <fieldset class="field">
-                        <input class="switch" id="switch_of_hard_mode" type="checkbox">
-                        <label class="label" for="switch_of_hard_mode">Hard mode</label>
+                        <input class="switch" id="hard_mode" type="checkbox">
+                        <label class="label" for="hard_mode">Hard mode</label>
                     </fieldset>
                     <div class="hero">
                         <div class="hero-head">
                             <div class="level is-mobile">
                                 <div class="level-item">
                                     <div class="container has-text-centered">
-                                        <p class="heading">Candidates of result</p>
-                                        <p class="subtitle" id="number_of_candidates_of_result"></p>
+                                        <p class="heading">Valid solutions</p>
+                                        <p class="subtitle" id="valid_solutions"></p>
                                     </div>
                                 </div>
                             </div>
@@ -74,25 +76,25 @@
                                 <div class="field-body">
                                     <div class="field is-grouped is-grouped-centered">
                                         <div class="control">
-                                            <button class="button" id="button_of_edit_guess">Edit guess</button>
+                                            <button class="button" id="display_changing_guess">Change guess</button>
                                         </div>
                                     </div>
                                 </div>
                             </fieldset>
-                            <fieldset class="field is-horizontal" id="field_of_edit_guess">
+                            <fieldset class="field is-horizontal" id="changing_guess">
                                 <div class="field-label is-normal">
-                                    <label class="label" for="text_input_of_guess_of_edit_guess">Guess</label>
+                                    <label class="label" for="guess_of_changing_guess">Guess</label>
                                 </div>
                                 <div class="field-body">
                                     <div class="field is-grouped">
                                         <div class="control is-expanded">
-                                            <input class="input" id="text_input_of_guess_of_edit_guess" placeholder="Tares">
+                                            <input class="input" id="guess_of_changing_guess" placeholder="Tares">
                                         </div>
                                         <div class="control">
-                                            <button class="button is-primary" id="button_of_edit_of_edit_guess">Edit</button>
+                                            <button class="button is-primary" id="change_of_changing_guess">Change</button>
                                         </div>
                                         <div class="control">
-                                            <button class="button" id="button_of_cancel_of_edit_guess">Cancel</button>
+                                            <button class="button" id="cancel_of_changing_guess">Cancel</button>
                                         </div>
                                     </div>
                                 </div>
@@ -101,28 +103,34 @@
                     </div>
                     <fieldset class="field is-horizontal">
                         <div class="field-label is-normal">
-                            <label class="label" for="text_input_of_result">Result</label>
+                            <label class="label" for="status">Result</label>
                         </div>
                         <div class="field-body">
                             <div class="field is-grouped">
                                 <div class="control is-expanded">
-                                    <input class="input" id="text_input_of_result" type="number" placeholder="01201">
-                                    <p class="help" id="help_of_result">🟩: 0, 🟨: 1, ⬛: 2 (🟩🟨⬛🟩🟨: 01201)</p>
-                                </div>
-                                <div class="control">
-                                    <button class="button is-primary" id="button_of_solve">Solve</button>
-                                </div>
-                                <div class="control">
-                                    <button class="button" id="button_of_resolve">Resolve</button>
+                                    <input class="input" id="status" type="number" placeholder="01201">
+                                    <p class="help" id="help_of_status">🟩🟨⬛🟩🟨: 01201</p>
                                 </div>
                             </div>
                         </div>
+                    </fieldset>
+                        <fieldset class="field">
+                            <div class="field-body">
+                                <div class="field is-grouped is-grouped-centered">
+                                    <div class="control">
+                                        <button class="button is-primary" id="solve">Solve</button>
+                                    </div>
+                                    <div class="control">
+                                        <button class="button" id="resolve">Resolve</button>
+                                    </div>
+                                </div>
+                            </div>
                         </fieldset>
                         <fieldset class="field">
                         <div class="field-body">
                             <div class="field is-grouped">
                                 <div class="control">
-                                    <button class="button is-warning" id="button_of_reset">Reset</button>
+                                    <button class="button is-warning" id="reset">Reset</button>
                                 </div>
                             </div>
                         </div>
