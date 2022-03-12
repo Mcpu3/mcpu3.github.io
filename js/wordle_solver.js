@@ -30,20 +30,45 @@ class WordleSolver {
     }
 
     #add_event_listeners() {
-        document.getElementById('solve').addEventListener('click', (event) => {
+        this.#add_event_listeners_of_solve()
+        this.#add_event_listeners_of_guess()
+        this.#add_event_listeners_of_hard_mode()
+        this.#add_event_listeners_of_reset()
+    }
+
+    #add_event_listeners_of_solve() {
+        document.getElementById('button_of_solve').addEventListener('click', (event) => {
             this.solve()
         })
-        document.getElementById('resolve').addEventListener('click', (event) => {
+        document.getElementById('button_of_resolve').addEventListener('click', (event) => {
             this.resolve()
         })
-        document.getElementById('reset').addEventListener('click', (event) => {
-            this.reset()
+    }
+
+    #add_event_listeners_of_guess() {
+        document.getElementById('button_of_edit_of_edit_guess').addEventListener('click', (event) => {
+            this.edit_guess()
         })
-        document.getElementById('hard_mode').addEventListener('change', (event) => {
+        document.getElementById('button_of_edit_guess').addEventListener('click', (event) => {
+            this.#set_edit_guess(true)
+        })
+        document.getElementById('button_of_cancel_of_edit_guess').addEventListener('click', (event) => {
+            this.#init_ui_of_guess()
+        })
+    }
+
+    #add_event_listeners_of_hard_mode() {
+        document.getElementById('switch_of_hard_mode').addEventListener('change', (event) => {
             this._solver.wordle.hard_mode = false
             if (event.target.checked) {
                 this._solver.wordle.hard_mode = true
             }
+        })
+    }
+
+    #add_event_listeners_of_reset() {
+        document.getElementById('button_of_reset').addEventListener('click', (event) => {
+            this.reset()
         })
     }
 
@@ -54,12 +79,17 @@ class WordleSolver {
     }
 
     solve() {
-        const result = document.getElementById('result').value.toString()
+        const result = document.getElementById('text_input_of_result').value.toString()
         if (this.#foolproof_of_result(result)) {
-            this._solver.wordle.submit(this._guess, result)
-            const guess = this._solver.solve()
-            this._guess = guess
-            this.#init_ui()
+            this.#set_button_state_of_solve(true)
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    this._solver.wordle.submit(this._guess, result)
+                    const guess = this._solver.solve()
+                    this._guess = guess
+                    this.#init_ui()
+                })
+            })
         }
     }
 
@@ -73,9 +103,31 @@ class WordleSolver {
     }
 
     resolve() {
-        const guess = this._solver.solve()
-        this._guess = guess
-        this.#init_ui()
+        this.#set_button_state_of_resolve(true)
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                const guess = this._solver.solve()
+                this._guess = guess
+                this.#init_ui()
+            })
+        })
+    }
+
+    edit_guess() {
+        const guess = document.getElementById('text_input_of_guess_of_edit_guess').value
+        if (this.#foolproof_of_guess(guess.toLowerCase())) {
+            this._guess = guess.toLowerCase()
+            this.#init_ui_of_guess()
+        }
+    }
+
+    #foolproof_of_guess(guess) {
+        if (this._solver.wordle.words.includes(guess)) {
+            this.#set_input_color_of_guess()
+            return true
+        }
+        this.#set_input_color_of_guess(true)
+        return false
     }
 
     reset() {
@@ -83,28 +135,83 @@ class WordleSolver {
     }
 
     #init_ui() {
+        this.#init_ui_of_solve()
+        this.#init_ui_of_guess()
+        this.#init_ui_of_result()
+        this.#init_ui_of_hard_mode()
+        this.#init_ui_of_number_of_candidates_of_result()
+    }
+
+    #init_ui_of_solve() {
+        this.#set_button_state_of_solve()
+        this.#set_button_state_of_resolve()
+    }
+
+    #set_button_state_of_solve(is_loading=false) {
+        document.getElementById('button_of_solve').className = 'button is-primary'
+        if (is_loading) {
+            document.getElementById('button_of_solve').className = 'button is-primary is-loading'
+        }
+    }
+
+    #set_button_state_of_resolve(is_loading=false) {
+        document.getElementById('button_of_resolve').className = 'button'
+        if (is_loading) {
+            document.getElementById('button_of_resolve').className = 'button is-loading'
+        }
+    }
+
+    #init_ui_of_guess() {
         document.getElementById('guess').innerText = ''
         if (this._guess) {
             document.getElementById('guess').innerText = this._guess.toUpperCase()
         }
-        document.getElementById('result').value = ''
+        document.getElementById('text_input_of_guess_of_edit_guess').value = ''
+        this.#set_input_color_of_guess()
+        this.#set_edit_guess()
+    }
+
+    #set_input_color_of_guess(is_danger=false) {
+        document.getElementById('text_input_of_guess_of_edit_guess').className = 'input'
+        if (is_danger) {
+            document.getElementById('text_input_of_guess_of_edit_guess').className = 'input is-danger'
+        }
+    }
+
+    #set_edit_guess(editing_guess=false) {
+        document.getElementById('button_of_edit_guess').style.display = ''
+        document.getElementById('field_of_edit_guess').style.display = 'none'
+        if (editing_guess) {
+            document.getElementById('button_of_edit_guess').style.display = 'none'
+            document.getElementById('field_of_edit_guess').style.display = ''
+        }
+    }
+
+    #init_ui_of_result() {
+        document.getElementById('text_input_of_result').value = ''
         this.#set_input_color_of_result()
-        if (!this._solver.wordle.hard_mode) {
-            document.getElementById('hard_mode').checked = false
-        }
-        else {
-            document.getElementById('hard_mode').checked = true
-        }
-        document.getElementById('number_of_valid_corrects').innerText = this._solver.wordle.valid_corrects.length
     }
 
     #set_input_color_of_result(is_danger=false) {
-        document.getElementById('result').className = 'input'
-        document.getElementById('result_help').className = 'help'
+        document.getElementById('text_input_of_result').className = 'input'
+        document.getElementById('help_of_result').className = 'help'
         if (is_danger) {
-            document.getElementById('result').className = 'input is-danger'
-            document.getElementById('result_help').className = 'help is-danger'
+            document.getElementById('text_input_of_result').className = 'input is-danger'
+            document.getElementById('help_of_result').className = 'help is-danger'
         }
+    }
+
+    #init_ui_of_hard_mode() {
+        if (!this._solver.wordle.hard_mode) {
+            document.getElementById('switch_of_hard_mode').checked = false
+        }
+        else {
+            document.getElementById('switch_of_hard_mode').checked = true
+        }
+    }
+
+    #init_ui_of_number_of_candidates_of_result() {
+        document.getElementById('number_of_candidates_of_result').innerText = this._solver.wordle.valid_corrects.length
     }
 }
 
@@ -214,7 +321,7 @@ class Wordle {
     }
 
     get valid_guesses() {
-        if (!hard_mode) {
+        if (!this._hard_mode) {
             return this._valid_guesses
         }
         return this._valid_corrects

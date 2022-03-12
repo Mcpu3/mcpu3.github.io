@@ -30,65 +30,105 @@
         </script>
     </head>
     <body>
-        <nav class="navbar">
-            <div class="navbar-brand">
-                <a class="navbar-item" href="./">
-                    <img class="is-rounded" src="./resources/images/profile.webp" alt="Profile image">
-                </a>
-            </div>
-            <div class="navbar-menu">
-                <div class="navbar-start">
-                    <a class="navbar-item" href="./">mcpu3.github.io</a>
+        <header>
+            <nav class="navbar">
+                <div class="navbar-brand">
+                    <a class="navbar-item" href="./">
+                        <img class="is-rounded" src="./resources/images/profile.webp" alt="Profile image">
+                    </a>
                 </div>
-                <div class="navbar-end">
-                    <a class="navbar-item" href="https://twitter.com/mcpu3_kei/" target="_blank">@mcpu3_kei</a>
-                </div>
-            </div>
-        </nav>
-        <div class="container">
-            <h1 class="title">Wordle Solver (β)</h1>
-            <div class="field">
-                <input class="switch" id="hard_mode" type="checkbox">
-                <label class="label" for="hard_mode">Hard mode</label>
-            </div>
-            <div class="level is-mobile">
-                <div class="level-item">
-                    <div class="container has-text-centered">
-                        <p class="heading">Valid corrects</p>
-                        <p class="title is-4" id="number_of_valid_corrects"></p>
+                <div class="navbar-menu">
+                    <div class="navbar-start">
+                        <a class="navbar-item" href="./">mcpu3.github.io</a>
+                    </div>
+                    <div class="navbar-end">
+                        <a class="navbar-item" href="https://twitter.com/mcpu3_kei/" target="_blank">@mcpu3_kei</a>
                     </div>
                 </div>
-            </div>
-            <div class="hero">
-                <div class="hero-body">
-                    <div class="container has-text-centered">
-                        <p class="title" id="guess"></p>
+            </nav>
+        </header>
+        <main>
+            <div class="container is-fluid">
+                <div class="content">
+                    <h1 class="title">Wordle Solver (β)</h1>
+                    <fieldset class="field">
+                        <input class="switch" id="switch_of_hard_mode" type="checkbox">
+                        <label class="label" for="switch_of_hard_mode">Hard mode</label>
+                    </fieldset>
+                    <div class="hero">
+                        <div class="hero-head">
+                            <div class="level is-mobile">
+                                <div class="level-item">
+                                    <div class="container has-text-centered">
+                                        <p class="heading">Candidates of result</p>
+                                        <p class="subtitle" id="number_of_candidates_of_result"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hero-body">
+                            <div class="container has-text-centered">
+                                <p class="title" id="guess"></p>
+                            </div>
+                            <fieldset class="field">
+                                <div class="field-body">
+                                    <div class="field is-grouped is-grouped-centered">
+                                        <div class="control">
+                                            <button class="button" id="button_of_edit_guess">Edit guess</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <fieldset class="field is-horizontal" id="field_of_edit_guess">
+                                <div class="field-label is-normal">
+                                    <label class="label" for="text_input_of_guess_of_edit_guess">Guess</label>
+                                </div>
+                                <div class="field-body">
+                                    <div class="field is-grouped">
+                                        <div class="control is-expanded">
+                                            <input class="input" id="text_input_of_guess_of_edit_guess" placeholder="Tares">
+                                        </div>
+                                        <div class="control">
+                                            <button class="button is-primary" id="button_of_edit_of_edit_guess">Edit</button>
+                                        </div>
+                                        <div class="control">
+                                            <button class="button" id="button_of_cancel_of_edit_guess">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
                     </div>
+                    <fieldset class="field is-horizontal">
+                        <div class="field-label is-normal">
+                            <label class="label" for="text_input_of_result">Result</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="field is-grouped">
+                                <div class="control is-expanded">
+                                    <input class="input" id="text_input_of_result" type="number" placeholder="01201">
+                                    <p class="help" id="help_of_result">🟩: 0, 🟨: 1, ⬛: 2 (🟩🟨⬛🟩🟨: 01201)</p>
+                                </div>
+                                <div class="control">
+                                    <button class="button is-primary" id="button_of_solve">Solve</button>
+                                </div>
+                                <div class="control">
+                                    <button class="button" id="button_of_resolve">Resolve</button>
+                                </div>
+                            </div>
+                        </div>
+                        </fieldset>
+                        <fieldset class="field">
+                        <div class="field-body">
+                            <div class="field is-grouped">
+                                <div class="control">
+                                    <button class="button is-warning" id="button_of_reset">Reset</button>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
                 </div>
             </div>
-            <div class="field">
-                <label class="label" for="result">Result</label>
-                <div class="control">
-                    <input class="input" id="result" type="number" placeholder="01201">
-                </div>
-                <p class="help" id="result_help">🟩: 0, 🟨: 1, ⬛: 2 (🟩🟨⬛🟩🟨: 01201)</p>
-            </div>
-            <div class="field">
-                <div class="field is-grouped">
-                    <div class="control">
-                        <button class="button is-primary" id="solve">Solve</button>
-                    </div>
-                    <div class="control">
-                        <button class="button" id="resolve">Resolve</button>
-                    </div>
-                </div>
-                <p class="help">Resolving may take a few seconds.</p>
-            </div>
-            <div class="field">
-                <div class="control">
-                    <button class="button is-warning" id="reset">Reset</button>
-                </div>
-            </div>
-        </div>
+        </main>
     </body>
 </html>
