@@ -177,11 +177,11 @@ class WordleSolver {
                         const node = this.node.querySelector('.solver').querySelector('.guess').querySelector('.change').querySelector('#change')
                         node.addEventListener('click', (event) => {
                             const guess = this.node.querySelector('.solver').querySelector('.guess').querySelector('.change').querySelector('#guess').value
-                            if (!this.solver.wordle.valid_guesses.includes(guess)) {
+                            if (!this.solver.wordle.valid_guesses.includes(guess.toLowerCase())) {
                                 this.node.querySelector('.solver').querySelector('.guess').querySelector('.change').querySelector('#guess').className = 'input is-danger'
                                 return
                             }
-                            this.solver.guess = guess
+                            this.solver.guess = guess.toLowerCase()
                             this.#init_solver_guess_node()
                         })
                     }
