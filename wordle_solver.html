@@ -51,14 +51,16 @@
         </header>
         <main>
             <div class="container is-fluid">
-                <div class="content">
+                <div class="content wordle_solver">
                     <h1 class="title">Wordle Solver (β)</h1>
-                    <fieldset class="field">
-                        <input class="switch" id="hard_mode" type="checkbox">
-                        <label class="label" for="hard_mode">Hard mode</label>
-                    </fieldset>
-                    <div class="hero">
-                        <div class="hero-head">
+                    <div class="content wordle">
+                        <div class="content hard_mode">
+                            <fieldset class="field">
+                                <input class="switch" id="hard_mode" type="checkbox">
+                                <label class="label" for="hard_mode">Hard mode</label>
+                            </fieldset>
+                        </div>
+                        <div class="content valid_solutions">
                             <div class="level is-mobile">
                                 <div class="level-item">
                                     <div class="container has-text-centered">
@@ -68,73 +70,73 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="hero-body">
-                            <div class="container has-text-centered">
-                                <p class="title" id="guess"></p>
+                    </div>
+                    <div class="content solver">
+                        <div class="content guess">
+                            <div class="content guess">
+                                <div class="container has-text-centered">
+                                    <p class="title" id="guess"></p>
+                                </div>
                             </div>
-                            <fieldset class="field">
-                                <div class="field-body">
-                                    <div class="field is-grouped is-grouped-centered">
-                                        <div class="control">
-                                            <button class="button" id="display_changing_guess">Change guess</button>
+                            <div class="content change">
+                                <fieldset class="field is-horizontal">
+                                    <div class="field-label is-normal">
+                                        <label class="label" for="guess">Guess</label>
+                                    </div>
+                                    <div class="field-body">
+                                        <div class="field has-addons">
+                                            <div class="control is-expanded">
+                                                <input class="input" id="guess" placeholder="Tares">
+                                            </div>
+                                            <div class="control">
+                                                <button class="button" id="change">Change</button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </fieldset>
-                            <fieldset class="field is-horizontal" id="changing_guess">
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="content status">
+                            <fieldset class="field is-horizontal">
                                 <div class="field-label is-normal">
-                                    <label class="label" for="guess_of_changing_guess">Guess</label>
+                                    <label class="label" for="status">Status</label>
                                 </div>
                                 <div class="field-body">
                                     <div class="field is-grouped">
                                         <div class="control is-expanded">
-                                            <input class="input" id="guess_of_changing_guess" placeholder="Tares">
+                                            <input class="input" id="status" type="number" placeholder="01201">
+                                            <p class="help" id="status_help">🟩🟨⬛🟩🟨: 01201</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="content solve_resolve">
+                            <fieldset class="field">
+                                <div class="field-body">
+                                    <div class="field is-grouped is-grouped-centered">
+                                        <div class="control">
+                                            <button class="button is-primary" id="solve">Solve</button>
                                         </div>
                                         <div class="control">
-                                            <button class="button is-primary" id="change_of_changing_guess">Change</button>
-                                        </div>
-                                        <div class="control">
-                                            <button class="button" id="cancel_of_changing_guess">Cancel</button>
+                                            <button class="button" id="resolve">Resolve</button>
                                         </div>
                                     </div>
                                 </div>
                             </fieldset>
                         </div>
                     </div>
-                    <fieldset class="field is-horizontal">
-                        <div class="field-label is-normal">
-                            <label class="label" for="status">Result</label>
-                        </div>
-                        <div class="field-body">
-                            <div class="field is-grouped">
-                                <div class="control is-expanded">
-                                    <input class="input" id="status" type="number" placeholder="01201">
-                                    <p class="help" id="help_of_status">🟩🟨⬛🟩🟨: 01201</p>
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
+                    <div class="content reset">
                         <fieldset class="field">
                             <div class="field-body">
-                                <div class="field is-grouped is-grouped-centered">
+                                <div class="field is-grouped">
                                     <div class="control">
-                                        <button class="button is-primary" id="solve">Solve</button>
-                                    </div>
-                                    <div class="control">
-                                        <button class="button" id="resolve">Resolve</button>
+                                        <button class="button is-warning" id="reset">Reset</button>
                                     </div>
                                 </div>
                             </div>
                         </fieldset>
-                        <fieldset class="field">
-                        <div class="field-body">
-                            <div class="field is-grouped">
-                                <div class="control">
-                                    <button class="button is-warning" id="reset">Reset</button>
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
+                    </div>
                 </div>
             </div>
         </main>

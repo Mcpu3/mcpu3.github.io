@@ -1,196 +1,261 @@
 class WordleSolver {
     constructor(solver) {
+        this.node = document.querySelector('.wordle_solver')
         this.solver = solver
-        this.#add_event_listeners()
-        this.#init_ui()
+        this.#add_event_listener()
+        this.init()
     }
 
     init() {
         this.solver.init()
-        this.#init_ui()
+        this.#init_node()
     }
 
-    #add_event_listeners() {
-        this.#add_event_listeners_of_hard_mode()
-        this.#add_event_listeners_of_changing_guess()
-        this.#add_event_listeners_of_solve()
-        this.#add_event_listeners_of_resolve()
-        this.#add_event_listeners_of_reset()
+    #init_node() {
+        this.#init_wordle_node()
+        this.#init_solver_node()
+        this.#init_reset_node()
     }
 
-    #add_event_listeners_of_hard_mode() {
-        document.getElementById('hard_mode').addEventListener('change', (event) => {
-            if (event.target.checked) {
-                this.solver.wordle.is_hard_mode = true
-                return
+        #init_wordle_node() {
+            this.#init_wordle_valid_solutions_node()
+            this.#init_wordle_hard_mode_node()
+        }
+
+            #init_wordle_valid_solutions_node() {
+                this.#init_wordle_valid_solutions_valid_solutions_node()
             }
-            this.solver.wordle.is_hard_mode = false
-        })
+
+                #init_wordle_valid_solutions_valid_solutions_node() {
+                    const node = this.node.querySelector('.wordle').querySelector('.valid_solutions').querySelector('#valid_solutions')
+                    node.innerText = this.solver.wordle.valid_solutions.length
+                }
+
+            #init_wordle_hard_mode_node() {
+                this.#init_wordle_hard_mode_hard_mode_node()
+            }
+
+                #init_wordle_hard_mode_hard_mode_node() {
+                    const node = this.node.querySelector('.wordle').querySelector('.hard_mode').querySelector('#hard_mode')
+                    node.checked = this.solver.wordle.is_hard_mode
+                }
+
+        #init_solver_node() {
+            this.#init_solver_guess_node()
+            this.#init_solver_status_node()
+            this.#init_solver_solve_resolve_node()
+        }
+
+            #init_solver_guess_node() {
+                this.#init_solver_guess_guess_node()
+                this.#init_solver_guess_change_node()
+            }
+
+                #init_solver_guess_guess_node() {
+                    this.#init_solver_guess_guess_guess_node()
+                }
+
+                    #init_solver_guess_guess_guess_node() {
+                        const node = this.node.querySelector('.solver').querySelector('.guess').querySelector('.guess').querySelector('#guess')
+                        const guess = this.solver.guess
+                        if (!guess) {
+                            node.innerText = ''
+                            return
+                        }
+                        node.innerText = guess.toUpperCase()
+                    }
+
+                #init_solver_guess_change_node() {
+                    this.#init_solver_guess_change_guess_node()
+                    this.#init_solver_guess_change_change_node()
+                }
+
+                    #init_solver_guess_change_guess_node() {
+                        const node = this.node.querySelector('.solver').querySelector('.guess').querySelector('.change').querySelector('#guess')
+                        node.value = ''
+                        node.className = 'input'
+                    }
+
+                    #init_solver_guess_change_change_node() {
+                        const node = this.node.querySelector('.solver').querySelector('.guess').querySelector('.change').querySelector('#change')
+                    }
+
+            #init_solver_status_node() {
+                this.#init_solver_status_status_node()
+                this.#init_solver_status_status_help_node()
+            }
+
+                #init_solver_status_status_node() {
+                    const node = this.node.querySelector('.solver').querySelector('.status').querySelector('#status')
+                    node.value = ''
+                    node.className = 'input'
+                }
+
+                #init_solver_status_status_help_node() {
+                    const node = this.node.querySelector('.solver').querySelector('.status').querySelector('#status_help')
+                    node.className = 'help'
+                }
+
+            #init_solver_solve_resolve_node() {
+                this.#init_solver_solve_resolve_solve_node()
+                this.#init_solver_solve_resolve_resolve_node()
+            }
+
+                #init_solver_solve_resolve_solve_node() {
+                    const node = this.node.querySelector('.solver').querySelector('.solve_resolve').querySelector('#solve')
+                    node.className = 'button is-primary'
+                }
+
+                #init_solver_solve_resolve_resolve_node() {
+                    const node = this.node.querySelector('.solver').querySelector('.solve_resolve').querySelector('#resolve')
+                    node.className = 'button'
+                }
+
+        #init_reset_node() {
+            this.#init_reset_reset_node()
+        }
+
+            #init_reset_reset_node() {
+                const node = this.node.querySelector('.reset').querySelector('#reset')
+            }
+
+    #add_event_listener() {
+        this.#add_wordle_event_listener()
+        this.#add_solver_event_listener()
+        this.#add_reset_event_listener()
     }
 
-    #add_event_listeners_of_changing_guess() {
-        document.getElementById('display_changing_guess').addEventListener('click', (event) => {
-            this.#set_displaying_of_changing_guess(true)
-        })
-        document.getElementById('change_of_changing_guess').addEventListener('click', (event) => {
-            const guess = document.getElementById('guess_of_changing_guess').value
-            if (!this.#foolproof_of_guess(guess.toLowerCase())) {
-                this.#set_color_of_guess_of_changing_guess(true)
-                return
-            }
-            this.solver.guess = guess.toLowerCase()
-            this.#init_ui_of_guess()
-            this.#init_ui_of_changing_guess()
-        })
-        document.getElementById('cancel_of_changing_guess').addEventListener('click', (event) => {
-            this.#init_ui_of_changing_guess()
-        })
-    }
+        #add_wordle_event_listener() {
+            this.#add_wordle_valid_solutions_event_listener()
+            this.#add_wordle_hard_mode_event_listener()
+        }
 
-    #add_event_listeners_of_solve() {
-        document.getElementById('solve').addEventListener('click', (event) => {
-            const status = document.getElementById('status').value.toString()
-            if (!this.#foolproof_of_status(status)) {
-                this.#set_color_of_status(true)
-                return
+            #add_wordle_valid_solutions_event_listener() {
+                this.#add_wordle_valid_solutions_valid_solutions_event_listener()
             }
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    this.solver.solve(status)
-                    this.#init_ui_of_valid_solutions()
-                    this.#init_ui_of_guess()
-                    this.#init_ui_of_status()
-                    this.#init_ui_of_solve()
+
+                #add_wordle_valid_solutions_valid_solutions_event_listener() {
+                    const node = this.node.querySelector('.wordle').querySelector('.valid_solutions').querySelector('#valid_solutions')
+                }
+
+            #add_wordle_hard_mode_event_listener() {
+                this.#add_wordle_hard_mode_hard_mode_event_listener()
+            }
+
+                #add_wordle_hard_mode_hard_mode_event_listener() {
+                    const node = this.node.querySelector('.wordle').querySelector('.hard_mode').querySelector('#hard_mode')
+                    node.addEventListener('change', (event) => {
+                        this.solver.wordle.is_hard_mode = event.target.checked
+                    })
+                }
+
+        #add_solver_event_listener() {
+            this.#add_solver_guess_event_listener()
+            this.#add_solver_status_event_listener()
+            this.#add_solver_solve_resolve_event_listener()
+        }
+
+            #add_solver_guess_event_listener() {
+                this.#add_solver_guess_guess_event_listener()
+                this.#add_solver_guess_change_event_listener()
+            }
+
+                #add_solver_guess_guess_event_listener() {
+                    const node = this.node.querySelector('.solver').querySelector('.guess').querySelector('#guess')
+                }
+
+                #add_solver_guess_change_event_listener() {
+                    this.#add_solver_guess_change_guess_event_listener()
+                    this.#add_solver_guess_change_change_event_listener()
+                }
+
+                    #add_solver_guess_change_guess_event_listener() {
+                        const node = this.node.querySelector('.solver').querySelector('.guess').querySelector('.change').querySelector('#guess')
+                    }
+
+                    #add_solver_guess_change_change_event_listener() {
+                        const node = this.node.querySelector('.solver').querySelector('.guess').querySelector('.change').querySelector('#change')
+                        node.addEventListener('click', (event) => {
+                            const guess = this.node.querySelector('.solver').querySelector('.guess').querySelector('.change').querySelector('#guess').value
+                            if (!this.solver.wordle.valid_guesses.includes(guess)) {
+                                this.node.querySelector('.solver').querySelector('.guess').querySelector('.change').querySelector('#guess').className = 'input is-danger'
+                                return
+                            }
+                            this.solver.guess = guess
+                            this.#init_solver_guess_node()
+                        })
+                    }
+
+            #add_solver_status_event_listener() {
+                this.#add_solver_status_status_event_listener()
+                this.#add_solver_status_status_help_event_listener()
+            }
+
+                #add_solver_status_status_event_listener() {
+                    const node = this.node.querySelector('.solver').querySelector('.status').querySelector('#status')
+                }
+
+                #add_solver_status_status_help_event_listener() {
+                    const node = this.node.querySelector('.solver').querySelector('.status').querySelector('#status_help')
+                }
+
+            #add_solver_solve_resolve_event_listener() {
+                this.#add_solver_solve_resolve_solve_event_listener()
+                this.#add_solver_solve_resolve_resolve_event_listener()
+            }
+
+                #add_solver_solve_resolve_solve_event_listener() {
+                    const node = this.node.querySelector('.solver').querySelector('.solve_resolve').querySelector('#solve')
+                    node.addEventListener('click', (event) => {
+                        const status = this.node.querySelector('.solver').querySelector('.status').querySelector('#status').value.toString()
+                        if (!(status.match(new RegExp('[012]{' + this.solver.guess.length.toString() + '}')) && status.match(new RegExp('[012]{' + this.solver.guess.length.toString() + '}'))[0] === status)) {
+                            this.node.querySelector('.solver').querySelector('.status').querySelector('#status').className = 'input is-danger'
+                            this.node.querySelector('.solver').querySelector('.status').querySelector('#status_help').className = 'help is-danger'
+                            return
+                        }
+                        event.target.className = 'button is-primary is-loading'
+                        requestAnimationFrame(() => {
+                            requestAnimationFrame(() => {
+                                this.solver.solve(status)
+                                this.#init_wordle_valid_solutions_node()
+                                this.#init_solver_guess_guess_node()
+                                this.#init_solver_status_node()
+                                this.#init_solver_solve_resolve_solve_node()
+                            })
+                        })
+                    })
+                }
+
+                #add_solver_solve_resolve_resolve_event_listener() {
+                    const node = this.node.querySelector('.solver').querySelector('.solve_resolve').querySelector('#resolve')
+                    node.addEventListener('click', (event) => {
+                        node.className = 'button is-loading'
+                        requestAnimationFrame(() => {
+                            requestAnimationFrame(() => {
+                                this.solver.resolve()
+                                this.#init_wordle_valid_solutions_node()
+                                this.#init_solver_guess_guess_node()
+                                this.#init_solver_solve_resolve_resolve_node()
+                            })
+                        })
+                    })
+                }
+
+        #add_reset_event_listener() {
+            this.#add_reset_reset_event_listener()
+        }
+
+            #add_reset_reset_event_listener() {
+                const node = this.node.querySelector('.reset').querySelector('#reset')
+                node.addEventListener('click', (event) => {
+                    this.init()
                 })
-            })
-        })
-    }
+            }
+}
 
-    #add_event_listeners_of_resolve() {
-        document.getElementById('resolve').addEventListener('click', (event) => {
-            this.#set_state_of_resolve(true)
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    this.solver.resolve()
-                    this.#init_ui_of_guess()
-                    this.#init_ui_of_resolve()
-                })
-            })
-        })
-    }
 
-    #add_event_listeners_of_reset() {
-        document.getElementById('reset').addEventListener('click', (event) => {
-            this.init()
-        })
-    }
+class InitializingNode {
 
-    #init_ui() {
-        this.#init_ui_of_hard_mode()
-        this.#init_ui_of_valid_solutions()
-        this.#init_ui_of_guess()
-        this.#init_ui_of_changing_guess()
-        this.#init_ui_of_status()
-        this.#init_ui_of_solve()
-        this.#init_ui_of_resolve()
-    }
-
-    #init_ui_of_hard_mode() {
-        if (this.solver.wordle.is_hard_mode) {
-            document.getElementById('hard_mode').checked = true
-            return
-        }
-        document.getElementById('hard_mode').checked = false
-    }
-
-    #init_ui_of_valid_solutions() {
-        document.getElementById('valid_solutions').innerText = this.solver.wordle.valid_solutions.length
-    }
-
-    #init_ui_of_guess() {
-        if (!this.solver.guess) {
-            document.getElementById('guess').innerText = ''
-            return
-        }
-        document.getElementById('guess').innerText = this.solver.guess.toUpperCase()
-    }
-
-    #init_ui_of_changing_guess() {
-        document.getElementById('guess_of_changing_guess').value = ''
-        this.#set_displaying_of_changing_guess()
-        this.#set_color_of_guess_of_changing_guess()
-    }
-
-    #init_ui_of_status() {
-        document.getElementById('status').value = ''
-        this.#set_color_of_status()
-    }
-
-    #init_ui_of_solve() {
-        this.#set_state_of_solve()
-    }
-
-    #init_ui_of_resolve() {
-        this.#set_state_of_resolve()
-    }
-
-    #set_displaying_of_changing_guess(has_display=false) {
-        if (has_display) {
-            document.getElementById('display_changing_guess').style.display = 'none'
-            document.getElementById('changing_guess').style.display = ''
-            return
-        }
-        document.getElementById('display_changing_guess').style.display = ''
-        document.getElementById('changing_guess').style.display = 'none'
-    }
-
-    #set_color_of_guess_of_changing_guess(is_danger=false) {
-        if (is_danger) {
-            document.getElementById('guess_of_changing_guess').className = 'input is-danger'
-            return
-        }
-        document.getElementById('guess_of_changing_guess').className = 'input'
-    }
-
-    #set_color_of_status(is_danger=false) {
-        if (is_danger) {
-            document.getElementById('status').className = 'input is-danger'
-            document.getElementById('help_of_status').className = 'help is-danger'
-            return
-        }
-        document.getElementById('status').className = 'input'
-        document.getElementById('help_of_status').className = 'help'
-    }
-
-    #set_state_of_solve(is_loading=false) {
-        if (is_loading) {
-            document.getElementById('solve').className = 'button is-primary is-loading'
-            return
-        }
-        document.getElementById('solve').className = 'button is-primary'
-    }
-
-    #set_state_of_resolve(is_loading=false) {
-        if (is_loading) {
-            document.getElementById('resolve').className = 'button is-loading'
-            return
-        }
-        document.getElementById('resolve').className = 'button'
-    }
-
-    #foolproof_of_guess(guess) {
-        if (!this.solver.wordle.valid_guesses.includes(guess)) {
-            return false
-        }
-        return true
-    }
-
-    #foolproof_of_status(status) {
-        if (!(status.match(/[012]{5}/) && status.match(/[012]{5}/)[0] === status)) {
-            return false
-        }
-        return true
-    }
 }
 
 

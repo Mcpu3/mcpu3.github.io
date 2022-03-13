@@ -1,7 +1,7 @@
 class Solver {
     constructor(wordle) {
-        this.guess = 'tares'
         this.wordle = wordle
+        this.init()
     }
 
     init() {
@@ -19,16 +19,16 @@ class Solver {
     }
 
     #get_guess() {
-        let guess = undefined;
-        if (this.wordle.valid_solutions.length > 0) {
-            if (this.wordle.valid_solutions.length > 1) {
-                const guesses = this.#get_sorted_guesses_by_entropy()
-                guess = guesses[Math.floor((Math.min(guesses.length, 10) - 1) * Math.random())]
-            }
-            else {
-                guess = this.wordle.valid_solutions[0]
-            }
+        if (this.wordle.valid_solutions.length === 0) {
+            const guess = undefined
+            return guess
         }
+        if (this.wordle.valid_solutions.length === 1) {
+            const guess = this.wordle.valid_solutions[0]
+            return guess
+        }
+        const guesses = this.#get_sorted_guesses_by_entropy()
+        const guess = guesses[Math.floor((Math.min(guesses.length, 10) - 1) * Math.random())]
         return guess
     }
 
@@ -50,13 +50,12 @@ class Solver {
     #get_entropy(guess) {
         const statuses = {}
         this.wordle.valid_solutions.forEach(valid_solution => {
-            const result = this.wordle.get_status(guess, valid_solution)
-            if (!(result in statuses)) {
-                statuses[result] = 1
+            const status = WordleUtilities.get_status(guess, valid_solution)
+            if (!(status in statuses)) {
+                statuses[status] = 1
+                return
             }
-            else {
-                statuses[result] += 1
-            }
+            statuses[status] += 1
         })
         const e = []
         Object.values(statuses).forEach(p => {

@@ -1,28 +1,41 @@
 class Wordle {
-    constructor(hard_mode=false) {
-        this.words = words
-        this.is_hard_mode = hard_mode
-        this.valid_solutions = this.words
+    constructor(is_hard_mode=false) {
+        this.init(is_hard_mode)
     }
 
     get valid_guesses() {
         if (this.is_hard_mode) {
-            return this.valid_solutions
+            const valid_guesses = this.valid_solutions
+            return valid_guesses
         }
-        return this.words
+        const valid_guesses = words
+        return valid_guesses
     }
 
     init(is_hard_mode=false) {
-        this.words = words
+        this.valid_solutions = words
         this.is_hard_mode = is_hard_mode
-        this.valid_solutions = this.words
     }
 
     enter(guess, status) {
         this.valid_solutions = this.#get_valid_solutions(guess, status)
     }
 
-    get_status(guess, solution) {
+    #get_valid_solutions(guess, status) {
+        const valid_solutions = []
+        this.valid_solutions.forEach(valid_solution => {
+            if (WordleUtilities.get_status(guess, valid_solution) !== status) {
+                return
+            }
+            valid_solutions.push(valid_solution)
+        })
+        return valid_solutions
+    }
+}
+
+
+class WordleUtilities {
+    static get_status(guess, solution) {
         let status = ''
         for (let i = 0; i < Math.min(guess.length, solution.length); i++) {
             if (solution.includes(guess[i])) {
@@ -39,14 +52,4 @@ class Wordle {
         }
         return status
     }
-
-    #get_valid_solutions(guess, status) {
-        const valid_solutions = []
-        this.valid_solutions.forEach(valid_solution => {
-            if (this.get_status(guess, valid_solution) === status) {
-                valid_solutions.push(valid_solution)
-            }
-        })
-        return valid_solutions
-    }
-}
+};
