@@ -3,59 +3,59 @@ class WordleSolver {
         this.node = document.querySelector('.wordle_solver')
         this.solver = solver
         this.#add_event_listener()
-        this.init()
+        this.initialize()
     }
 
-    init() {
-        this.solver.init()
-        this.#init_node()
+    initialize() {
+        this.solver.initialize()
+        this.#initialize_node()
     }
 
-    #init_node() {
-        this.#init_wordle_node()
-        this.#init_solver_node()
-        this.#init_reset_node()
+    #initialize_node() {
+        this.#initialize_wordle_node()
+        this.#initialize_solver_node()
+        this.#initialize_reset_node()
     }
 
-        #init_wordle_node() {
-            this.#init_wordle_valid_solutions_node()
-            this.#init_wordle_hard_mode_node()
+        #initialize_wordle_node() {
+            this.#initialize_wordle_valid_solutions_node()
+            this.#initialize_wordle_hard_mode_node()
         }
 
-            #init_wordle_valid_solutions_node() {
-                this.#init_wordle_valid_solutions_valid_solutions_node()
+            #initialize_wordle_valid_solutions_node() {
+                this.#initialize_wordle_valid_solutions_valid_solutions_node()
             }
 
-                #init_wordle_valid_solutions_valid_solutions_node() {
+                #initialize_wordle_valid_solutions_valid_solutions_node() {
                     const node = this.node.querySelector('.wordle').querySelector('.valid_solutions').querySelector('#valid_solutions')
                     node.innerText = this.solver.wordle.valid_solutions.length
                 }
 
-            #init_wordle_hard_mode_node() {
-                this.#init_wordle_hard_mode_hard_mode_node()
+            #initialize_wordle_hard_mode_node() {
+                this.#initialize_wordle_hard_mode_hard_mode_node()
             }
 
-                #init_wordle_hard_mode_hard_mode_node() {
+                #initialize_wordle_hard_mode_hard_mode_node() {
                     const node = this.node.querySelector('.wordle').querySelector('.hard_mode').querySelector('#hard_mode')
                     node.checked = this.solver.wordle.is_hard_mode
                 }
 
-        #init_solver_node() {
-            this.#init_solver_guess_node()
-            this.#init_solver_status_node()
-            this.#init_solver_solve_resolve_node()
+        #initialize_solver_node() {
+            this.#initialize_solver_guess_node()
+            this.#initialize_solver_status_node()
+            this.#initialize_solver_solve_resolve_node()
         }
 
-            #init_solver_guess_node() {
-                this.#init_solver_guess_guess_node()
-                this.#init_solver_guess_change_node()
+            #initialize_solver_guess_node() {
+                this.#initialize_solver_guess_guess_node()
+                this.#initialize_solver_guess_change_node()
             }
 
-                #init_solver_guess_guess_node() {
-                    this.#init_solver_guess_guess_guess_node()
+                #initialize_solver_guess_guess_node() {
+                    this.#initialize_solver_guess_guess_guess_node()
                 }
 
-                    #init_solver_guess_guess_guess_node() {
+                    #initialize_solver_guess_guess_guess_node() {
                         const node = this.node.querySelector('.solver').querySelector('.guess').querySelector('.guess').querySelector('#guess')
                         const guess = this.solver.guess
                         if (!guess) {
@@ -65,57 +65,57 @@ class WordleSolver {
                         node.innerText = guess.toUpperCase()
                     }
 
-                #init_solver_guess_change_node() {
-                    this.#init_solver_guess_change_guess_node()
-                    this.#init_solver_guess_change_change_node()
+                #initialize_solver_guess_change_node() {
+                    this.#initialize_solver_guess_change_guess_node()
+                    this.#initialize_solver_guess_change_change_node()
                 }
 
-                    #init_solver_guess_change_guess_node() {
+                    #initialize_solver_guess_change_guess_node() {
                         const node = this.node.querySelector('.solver').querySelector('.guess').querySelector('.change').querySelector('#guess')
                         node.value = ''
                         node.className = 'input'
                     }
 
-                    #init_solver_guess_change_change_node() {
+                    #initialize_solver_guess_change_change_node() {
                         const node = this.node.querySelector('.solver').querySelector('.guess').querySelector('.change').querySelector('#change')
                     }
 
-            #init_solver_status_node() {
-                this.#init_solver_status_status_node()
-                this.#init_solver_status_status_help_node()
+            #initialize_solver_status_node() {
+                this.#initialize_solver_status_status_node()
+                this.#initialize_solver_status_status_help_node()
             }
 
-                #init_solver_status_status_node() {
+                #initialize_solver_status_status_node() {
                     const node = this.node.querySelector('.solver').querySelector('.status').querySelector('#status')
                     node.value = ''
                     node.className = 'input'
                 }
 
-                #init_solver_status_status_help_node() {
+                #initialize_solver_status_status_help_node() {
                     const node = this.node.querySelector('.solver').querySelector('.status').querySelector('#status_help')
                     node.className = 'help'
                 }
 
-            #init_solver_solve_resolve_node() {
-                this.#init_solver_solve_resolve_solve_node()
-                this.#init_solver_solve_resolve_resolve_node()
+            #initialize_solver_solve_resolve_node() {
+                this.#initialize_solver_solve_resolve_solve_node()
+                this.#initialize_solver_solve_resolve_resolve_node()
             }
 
-                #init_solver_solve_resolve_solve_node() {
+                #initialize_solver_solve_resolve_solve_node() {
                     const node = this.node.querySelector('.solver').querySelector('.solve_resolve').querySelector('#solve')
                     node.className = 'button is-primary'
                 }
 
-                #init_solver_solve_resolve_resolve_node() {
+                #initialize_solver_solve_resolve_resolve_node() {
                     const node = this.node.querySelector('.solver').querySelector('.solve_resolve').querySelector('#resolve')
                     node.className = 'button'
                 }
 
-        #init_reset_node() {
-            this.#init_reset_reset_node()
+        #initialize_reset_node() {
+            this.#initialize_reset_reset_node()
         }
 
-            #init_reset_reset_node() {
+            #initialize_reset_reset_node() {
                 const node = this.node.querySelector('.reset').querySelector('#reset')
             }
 
@@ -182,7 +182,7 @@ class WordleSolver {
                                 return
                             }
                             this.solver.guess = guess.toLowerCase()
-                            this.#init_solver_guess_node()
+                            this.#initialize_solver_guess_node()
                         })
                     }
 
@@ -217,10 +217,10 @@ class WordleSolver {
                         requestAnimationFrame(() => {
                             requestAnimationFrame(() => {
                                 this.solver.solve(status)
-                                this.#init_wordle_valid_solutions_node()
-                                this.#init_solver_guess_guess_node()
-                                this.#init_solver_status_node()
-                                this.#init_solver_solve_resolve_solve_node()
+                                this.#initialize_wordle_valid_solutions_node()
+                                this.#initialize_solver_guess_guess_node()
+                                this.#initialize_solver_status_node()
+                                this.#initialize_solver_solve_resolve_solve_node()
                             })
                         })
                     })
@@ -233,9 +233,9 @@ class WordleSolver {
                         requestAnimationFrame(() => {
                             requestAnimationFrame(() => {
                                 this.solver.resolve()
-                                this.#init_wordle_valid_solutions_node()
-                                this.#init_solver_guess_guess_node()
-                                this.#init_solver_solve_resolve_resolve_node()
+                                this.#initialize_wordle_valid_solutions_node()
+                                this.#initialize_solver_guess_guess_node()
+                                this.#initialize_solver_solve_resolve_resolve_node()
                             })
                         })
                     })
@@ -248,7 +248,7 @@ class WordleSolver {
             #add_reset_reset_event_listener() {
                 const node = this.node.querySelector('.reset').querySelector('#reset')
                 node.addEventListener('click', (event) => {
-                    this.init()
+                    this.initialize()
                 })
             }
 }

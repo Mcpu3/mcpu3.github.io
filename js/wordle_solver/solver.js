@@ -1,12 +1,12 @@
 class Solver {
     constructor(wordle) {
         this.wordle = wordle
-        this.init()
+        this.initialize()
     }
 
-    init() {
+    initialize() {
         this.guess = 'tares'
-        this.wordle.init()
+        this.wordle.initialize()
     }
 
     solve(status) {
@@ -55,7 +55,7 @@ class Solver {
                 statuses[status] = 1
                 return
             }
-            statuses[status] += 1
+            statuses[status]++
         })
         const e = []
         Object.values(statuses).forEach(p => {
