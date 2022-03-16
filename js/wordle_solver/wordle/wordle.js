@@ -1,6 +1,11 @@
 class Wordle {
-    constructor(is_hard_mode=false) {
-        this.initialize(is_hard_mode)
+    constructor() {
+        this.valid_solutions = WORDS
+        if (localStorage.getItem('is_hard_mode') === '1') {
+            this.is_hard_mode = true
+            return
+        }
+        this.is_hard_mode = false
     }
 
     get valid_guesses() {
@@ -8,13 +13,26 @@ class Wordle {
             const valid_guesses = this.valid_solutions
             return valid_guesses
         }
-        const valid_guesses = words
+        const valid_guesses = VALID_GUESSES
         return valid_guesses
     }
 
-    initialize(is_hard_mode=false) {
-        this.valid_solutions = words
+    set_is_hard_mode(is_hard_mode) {
         this.is_hard_mode = is_hard_mode
+        if (is_hard_mode) {
+            localStorage.setItem('is_hard_mode', '1')
+            return
+        }
+        localStorage.setItem('is_hard_mode', '0')
+    }
+
+    initialize() {
+        this.valid_solutions = WORDS
+        if (localStorage.getItem('is_hard_mode') === '1') {
+            this.is_hard_mode = true
+            return
+        }
+        this.is_hard_mode = false
     }
 
     enter(guess, status) {
@@ -36,7 +54,7 @@ class Wordle {
 
 class WordleUtilities {
     static get_status(guess, solution) {
-        let status = ' '.repeat(guess.length)
+        let status = '0'.repeat(guess.length)
         const solution_characters = {}
         for (let i = 0; i < solution.length; i++) {
             if (!(solution[i] in solution_characters)) {
@@ -52,19 +70,19 @@ class WordleUtilities {
             if (guess[i] !== solution[i]) {
                 continue
             }
-            status = status.substring(0, i) + '0' + status.substring(i + 1)
+            status = status.slice(0, i) + '1' + status.slice(i + 1)
             solution_characters[guess[i]]--
         }
         for (let i = 0; i < guess.length; i++) {
-            if (status[i] === '0') {
+            if (status[i] === '1') {
                 continue
             }
             if (!(guess[i] in solution_characters) || solution_characters[guess[i]] === 0) {
-                status = status.substring(0, i) + '2' + status.substring(i + 1)
+                status = status.slice(0, i) + '3' + status.slice(i + 1)
                 continue
             }
             if (guess[i] !== solution[i]) {
-                status = status.substring(0, i) + '1' + status.substring(i + 1)
+                status = status.slice(0, i) + '2' + status.slice(i + 1)
                 solution_characters[guess[i]]--
             }
         }

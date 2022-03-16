@@ -1,264 +1,71 @@
 class WordleSolver {
-    constructor(solver) {
-        this.node = document.querySelector('.wordle_solver')
-        this.solver = solver
-        this.#add_event_listener()
-        this.initialize()
+    constructor(wordle) {
+        this.guess = 'tares'
+        this.wordle = wordle
     }
 
     initialize() {
-        this.solver.initialize()
-        this.#initialize_node()
+        this.guess = 'tares'
+        this.wordle.initialize()
     }
 
-    #initialize_node() {
-        this.#initialize_wordle_node()
-        this.#initialize_solver_node()
-        this.#initialize_reset_node()
+    solve(status) {
+        this.wordle.enter(this.guess, status)
+        this.guess = this.#get_guess()
     }
 
-        #initialize_wordle_node() {
-            this.#initialize_wordle_valid_solutions_node()
-            this.#initialize_wordle_hard_mode_node()
-        }
-
-            #initialize_wordle_valid_solutions_node() {
-                this.#initialize_wordle_valid_solutions_valid_solutions_node()
-            }
-
-                #initialize_wordle_valid_solutions_valid_solutions_node() {
-                    const node = this.node.querySelector('.wordle').querySelector('.valid_solutions').querySelector('#valid_solutions')
-                    node.innerText = this.solver.wordle.valid_solutions.length
-                }
-
-            #initialize_wordle_hard_mode_node() {
-                this.#initialize_wordle_hard_mode_hard_mode_node()
-            }
-
-                #initialize_wordle_hard_mode_hard_mode_node() {
-                    const node = this.node.querySelector('.wordle').querySelector('.hard_mode').querySelector('#hard_mode')
-                    node.checked = this.solver.wordle.is_hard_mode
-                }
-
-        #initialize_solver_node() {
-            this.#initialize_solver_guess_node()
-            this.#initialize_solver_status_node()
-            this.#initialize_solver_solve_resolve_node()
-        }
-
-            #initialize_solver_guess_node() {
-                this.#initialize_solver_guess_guess_node()
-                this.#initialize_solver_guess_change_node()
-            }
-
-                #initialize_solver_guess_guess_node() {
-                    this.#initialize_solver_guess_guess_guess_node()
-                }
-
-                    #initialize_solver_guess_guess_guess_node() {
-                        const node = this.node.querySelector('.solver').querySelector('.guess').querySelector('.guess').querySelector('#guess')
-                        const guess = this.solver.guess
-                        if (!guess) {
-                            node.innerText = ''
-                            return
-                        }
-                        node.innerText = guess.toUpperCase()
-                    }
-
-                #initialize_solver_guess_change_node() {
-                    this.#initialize_solver_guess_change_guess_node()
-                    this.#initialize_solver_guess_change_change_node()
-                }
-
-                    #initialize_solver_guess_change_guess_node() {
-                        const node = this.node.querySelector('.solver').querySelector('.guess').querySelector('.change').querySelector('#guess')
-                        node.value = ''
-                        node.className = 'input'
-                    }
-
-                    #initialize_solver_guess_change_change_node() {
-                        const node = this.node.querySelector('.solver').querySelector('.guess').querySelector('.change').querySelector('#change')
-                    }
-
-            #initialize_solver_status_node() {
-                this.#initialize_solver_status_status_node()
-                this.#initialize_solver_status_status_help_node()
-            }
-
-                #initialize_solver_status_status_node() {
-                    const node = this.node.querySelector('.solver').querySelector('.status').querySelector('#status')
-                    node.value = ''
-                    node.className = 'input'
-                }
-
-                #initialize_solver_status_status_help_node() {
-                    const node = this.node.querySelector('.solver').querySelector('.status').querySelector('#status_help')
-                    node.className = 'help'
-                }
-
-            #initialize_solver_solve_resolve_node() {
-                this.#initialize_solver_solve_resolve_solve_node()
-                this.#initialize_solver_solve_resolve_resolve_node()
-            }
-
-                #initialize_solver_solve_resolve_solve_node() {
-                    const node = this.node.querySelector('.solver').querySelector('.solve_resolve').querySelector('#solve')
-                    node.className = 'button is-primary'
-                }
-
-                #initialize_solver_solve_resolve_resolve_node() {
-                    const node = this.node.querySelector('.solver').querySelector('.solve_resolve').querySelector('#resolve')
-                    node.className = 'button'
-                }
-
-        #initialize_reset_node() {
-            this.#initialize_reset_reset_node()
-        }
-
-            #initialize_reset_reset_node() {
-                const node = this.node.querySelector('.reset').querySelector('#reset')
-            }
-
-    #add_event_listener() {
-        this.#add_wordle_event_listener()
-        this.#add_solver_event_listener()
-        this.#add_reset_event_listener()
+    resolve() {
+        this.guess = this.#get_guess()
     }
 
-        #add_wordle_event_listener() {
-            this.#add_wordle_valid_solutions_event_listener()
-            this.#add_wordle_hard_mode_event_listener()
+    #get_guess() {
+        if (this.wordle.valid_solutions.length === WORDS.length) {
+            const guess = 'tares'
+            return guess
         }
-
-            #add_wordle_valid_solutions_event_listener() {
-                this.#add_wordle_valid_solutions_valid_solutions_event_listener()
-            }
-
-                #add_wordle_valid_solutions_valid_solutions_event_listener() {
-                    const node = this.node.querySelector('.wordle').querySelector('.valid_solutions').querySelector('#valid_solutions')
-                }
-
-            #add_wordle_hard_mode_event_listener() {
-                this.#add_wordle_hard_mode_hard_mode_event_listener()
-            }
-
-                #add_wordle_hard_mode_hard_mode_event_listener() {
-                    const node = this.node.querySelector('.wordle').querySelector('.hard_mode').querySelector('#hard_mode')
-                    node.addEventListener('change', (event) => {
-                        this.solver.wordle.is_hard_mode = event.target.checked
-                    })
-                }
-
-        #add_solver_event_listener() {
-            this.#add_solver_guess_event_listener()
-            this.#add_solver_status_event_listener()
-            this.#add_solver_solve_resolve_event_listener()
+        if (this.wordle.valid_solutions.length === 0) {
+            const guess = ''
+            return guess
         }
-
-            #add_solver_guess_event_listener() {
-                this.#add_solver_guess_guess_event_listener()
-                this.#add_solver_guess_change_event_listener()
-            }
-
-                #add_solver_guess_guess_event_listener() {
-                    const node = this.node.querySelector('.solver').querySelector('.guess').querySelector('#guess')
-                }
-
-                #add_solver_guess_change_event_listener() {
-                    this.#add_solver_guess_change_guess_event_listener()
-                    this.#add_solver_guess_change_change_event_listener()
-                }
-
-                    #add_solver_guess_change_guess_event_listener() {
-                        const node = this.node.querySelector('.solver').querySelector('.guess').querySelector('.change').querySelector('#guess')
-                    }
-
-                    #add_solver_guess_change_change_event_listener() {
-                        const node = this.node.querySelector('.solver').querySelector('.guess').querySelector('.change').querySelector('#change')
-                        node.addEventListener('click', (event) => {
-                            const guess = this.node.querySelector('.solver').querySelector('.guess').querySelector('.change').querySelector('#guess').value
-                            if (!this.solver.wordle.valid_guesses.includes(guess.toLowerCase())) {
-                                this.node.querySelector('.solver').querySelector('.guess').querySelector('.change').querySelector('#guess').className = 'input is-danger'
-                                return
-                            }
-                            this.solver.guess = guess.toLowerCase()
-                            this.#initialize_solver_guess_node()
-                        })
-                    }
-
-            #add_solver_status_event_listener() {
-                this.#add_solver_status_status_event_listener()
-                this.#add_solver_status_status_help_event_listener()
-            }
-
-                #add_solver_status_status_event_listener() {
-                    const node = this.node.querySelector('.solver').querySelector('.status').querySelector('#status')
-                }
-
-                #add_solver_status_status_help_event_listener() {
-                    const node = this.node.querySelector('.solver').querySelector('.status').querySelector('#status_help')
-                }
-
-            #add_solver_solve_resolve_event_listener() {
-                this.#add_solver_solve_resolve_solve_event_listener()
-                this.#add_solver_solve_resolve_resolve_event_listener()
-            }
-
-                #add_solver_solve_resolve_solve_event_listener() {
-                    const node = this.node.querySelector('.solver').querySelector('.solve_resolve').querySelector('#solve')
-                    node.addEventListener('click', (event) => {
-                        const status = this.node.querySelector('.solver').querySelector('.status').querySelector('#status').value.toString()
-                        if (!(status.match(new RegExp('[012]{' + this.solver.guess.length.toString() + '}')) && status.match(new RegExp('[012]{' + this.solver.guess.length.toString() + '}'))[0] === status)) {
-                            this.node.querySelector('.solver').querySelector('.status').querySelector('#status').className = 'input is-danger'
-                            this.node.querySelector('.solver').querySelector('.status').querySelector('#status_help').className = 'help is-danger'
-                            return
-                        }
-                        event.target.className = 'button is-primary is-loading'
-                        requestAnimationFrame(() => {
-                            requestAnimationFrame(() => {
-                                this.solver.solve(status)
-                                this.#initialize_wordle_valid_solutions_node()
-                                this.#initialize_solver_guess_guess_node()
-                                this.#initialize_solver_status_node()
-                                this.#initialize_solver_solve_resolve_solve_node()
-                            })
-                        })
-                    })
-                }
-
-                #add_solver_solve_resolve_resolve_event_listener() {
-                    const node = this.node.querySelector('.solver').querySelector('.solve_resolve').querySelector('#resolve')
-                    node.addEventListener('click', (event) => {
-                        node.className = 'button is-loading'
-                        requestAnimationFrame(() => {
-                            requestAnimationFrame(() => {
-                                this.solver.resolve()
-                                this.#initialize_wordle_valid_solutions_node()
-                                this.#initialize_solver_guess_guess_node()
-                                this.#initialize_solver_solve_resolve_resolve_node()
-                            })
-                        })
-                    })
-                }
-
-        #add_reset_event_listener() {
-            this.#add_reset_reset_event_listener()
+        if (this.wordle.valid_solutions.length === 1) {
+            const guess = this.wordle.valid_solutions[0]
+            return guess
         }
+        const guesses = this.#get_sorted_guesses_by_entropy()
+        const guess = guesses[Math.floor((guesses.length - 1) * Math.pow(Math.random(), 8))]
+        return guess
+    }
 
-            #add_reset_reset_event_listener() {
-                const node = this.node.querySelector('.reset').querySelector('#reset')
-                node.addEventListener('click', (event) => {
-                    this.initialize()
-                })
+    #get_sorted_guesses_by_entropy() {
+        const guesses = []
+        const guesses_and_entropies = []
+        this.wordle.valid_guesses.forEach(valid_guess => {
+            guesses_and_entropies.push([valid_guess, this.#get_entropy(valid_guess)])
+        })
+        guesses_and_entropies.sort((a, b) => {
+            return b[1] - a[1]
+        })
+        guesses_and_entropies.forEach(guess_and_entropy => {
+            guesses.push(guess_and_entropy[0])
+        })
+        return guesses
+    }
+
+    #get_entropy(guess) {
+        const statuses = {}
+        this.wordle.valid_solutions.forEach(valid_solution => {
+            const status = WordleUtilities.get_status(guess, valid_solution)
+            if (!(status in statuses)) {
+                statuses[status] = 1
+                return
             }
+            statuses[status]++
+        })
+        const e = []
+        Object.values(statuses).forEach(p => {
+            e.push(p * Math.log2(p))
+        })
+        const entropy = -e.reduce((previous_value, current_value) => previous_value + current_value, 0)
+        return entropy
+    }
 }
-
-
-class InitializingNode {
-
-}
-
-
-const wordle = new Wordle()
-const solver = new Solver(wordle)
-const wordle_solver = new WordleSolver(solver)
