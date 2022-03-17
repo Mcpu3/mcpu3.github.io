@@ -1,12 +1,14 @@
 class WordleSolver {
     constructor(wordle) {
-        this.guess = 'tares'
+        this.guess = ''
         this.wordle = wordle
+        this.resolve()
     }
 
     initialize() {
-        this.guess = 'tares'
+        this.guess = ''
         this.wordle.initialize()
+        this.resolve()
     }
 
     solve(status) {

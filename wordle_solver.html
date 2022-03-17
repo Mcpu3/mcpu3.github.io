@@ -2,13 +2,13 @@
 <html lang="ja">
     <head>
         <meta charset="utf-8">
-        <meta name="description" content="">
+        <meta name="description" content="Want to show off your Wordle play to your friends? This is a high-performance Wordle Solver that also supports hard mode.">
         <meta name="theme-color" content="#009b9f">
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
         <meta property="og:url" content="https://mcpu3.github.io/">
         <meta property="og:locale" content="ja_JP">
         <meta property="og:title" content="Wordle Solver (β) - Mcpu3 (岩本圭介)">
-        <meta property="og:description" content="\">
+        <meta property="og:description" content="Want to show off your Wordle play to your friends? This is a high-performance Wordle Solver that also supports hard mode.">
         <meta property="og:image" content="https://mcpu3.github.io/resources/images/og.webp">
         <meta name="og:type" content="profile">
         <meta name="og:profile:first_name" content="圭介">
@@ -28,7 +28,8 @@
         <script src="./js/wordle_solver/wordle/wordle.js" defer></script>
         <script src="./js/wordle_solver/wordle_solver.js" defer></script>
         <script src="./js/wordle_solver.js" defer></script>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q9S9MP5LX8"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bulma-extensions@6.2.7/bulma-accordion/dist/js/bulma-accordion.min.js"></script>
+        <script src="https://www.googletagmanager.com/gtag/js?id=G-Q9S9MP5LX8" async></script>
         <script>
             window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date);gtag("config","G-Q9S9MP5LX8");
         </script>
@@ -41,8 +42,13 @@
                         <img class="is-rounded" src="./resources/images/profile.webp" alt="Profile image">
                     </a>
                     <a class="navbar-item" href="./wordle_solver.html">Wordle Solver (β)</a>
+                    <a class="navbar-burger" data-target="_navbar-menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </a>
                 </div>
-                <div class="navbar-menu">
+                <div class="navbar-menu" id="_navbar-menu">
                     <div class="navbar-start">
                         <a class="navbar-item" href="./">
                             <span class="icon-text">
@@ -69,145 +75,170 @@
         <main>
             <div class="container is-fluid">
                 <div class="content">
-                    <div class="box">
-                        <div class="content" id="wordle_solver">
-                            <div class="content guess">
-                                <div class="level is-mobile">
-                                    <div class="level-item">
-                                        <div class="container has-text-centered">
-                                            <p class="heading">Guess</p>
-                                            <p class="title is-uppercase" id="guess"></p>
-                                        </div>
-                                    </div>
+                    <div class="content">
+                        <div class="accordions">
+                            <div class="accordion">
+                                <div class="accordion-header toggle">
+                                    <p>
+                                        <span class="icon-text">
+                                            <span class="icon">
+                                                <i class="fa-solid fa-circle-question"></i>
+                                            </span>
+                                            <span>How to use</span>
+                                        </span>
+                                    </p>
                                 </div>
-                            </div>
-                            <div class="content change_guess">
-                                <form>
-                                    <fieldset class="field is-horizontal">
-                                        <div class="field-label is-normal">
-                                            <label class="label" for="guess_input">Guess</label>
-                                        </div>
-                                        <div class="field-body">
-                                            <div class="field is-grouped">
-                                                <div class="control is-expanded">
-                                                    <input class="input" id="guess_input" placeholder="Tares">
-                                                </div>
-                                                <div class="control">
-                                                    <button class="button" id="change_button">
-                                                        <span class="icon-text">
-                                                            <span class="icon">
-                                                                <i class="fa-solid fa-pen-to-square"></i>
-                                                            </span>
-                                                            <span>Change</span>
-                                                        </span>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                </form>
-                            </div>
-                            <div class="content solve">
-                                <form>
-                                    <fieldset class="field is-horizontal">
-                                        <div class="field-label is-normal">
-                                            <label class="label" for="status_input">Status</label>
-                                        </div>
-                                        <div class="field-body">
-                                            <div class="field is-grouped">
-                                                <div class="control is-expanded">
-                                                    <input class="input" id="status_input" placeholder="🟩🟨⬛🟩🟨" readonly>
-                                                </div>
-                                                <div class="control">
-                                                    <button class="button is-primary" id="solve_button">
-                                                        <span class="icon-text">
-                                                            <span class="icon">
-                                                                <i class="fa-solid fa-check"></i>
-                                                            </span>
-                                                            <span>Solve</span>
-                                                        </span>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                    <fieldset class="field">
-                                        <div class="control">
-                                            <div class="buttons has-addons is-centered">
-                                                <button class="button" id="correct_button">🟩</button>
-                                                <button class="button" id="present_button">🟨</button>
-                                                <button class="button" id="absent_button">⬛</button>
-                                                <button class="button" id="delete_button">
-                                                    <span class="icon-text">
-                                                        <span class="icon">
-                                                            <i class="fa-solid fa-delete-left"></i>
-                                                        </span>
-                                                    </span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                </form>
-                            </div>
-                            <div class="content resolve">
-                                <form>
-                                    <fieldset class="field">
-                                        <div class="control">
-                                            <div class="buttons is-centered">
-                                                <button class="button" id="resolve_button">
-                                                    <span class="icon-text">
-                                                        <span class="icon">
-                                                            <i class="fa-solid fa-check-double"></i>
-                                                        </span>
-                                                        <span>Resolve</span>
-                                                    </span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                </form>
-                            </div>
-                            <div class="box">
-                                <div class="content wordle">
-                                    <div class="content valid_solutions">
-                                        <div class="level is-mobile">
-                                            <div class="level-item">
-                                                <div class="container has-text-centered">
-                                                    <p class="heading">Valid solutions</p>
-                                                    <p class="subtitle" id="valid_solutions"></p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="content is_hard_mode">
-                                        <form>
-                                            <field_set class="field">
-                                                <input class="switch" id="is_hard_mode_checkbox" type="checkbox">
-                                                    <label class="label" for="is_hard_mode_checkbox">Hard mode</label>
-                                            </field_set>
-                                        </form>
+                                <div class="accordion-body">
+                                    <div class="accordion-content">
+                                        <figure>
+                                            <video src="./resources/videos/how_to_use.mp4" controls></video>
+                                        </figure>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="content reset">
-                        <form>
-                            <fieldset class="field">
-                                <div class="control">
-                                    <div class="buttons is-centered">
-                                        <button class="button is-warning" id="reset_button">
-                                            <span class="icon-text">
-                                                <span class="icon">
-                                                    <i class="fa-solid fa-arrow-rotate-left"></i>
-                                                </span>
-                                                <span>Reset</span>
-                                            </span>
-                                        </button>
+                    <div class="content">
+                        <div class="box">
+                            <div class="content wordle_solver">
+                                <div class="content guess">
+                                    <div class="level is-mobile">
+                                        <div class="level-item">
+                                            <div class="container has-text-centered">
+                                                <p class="heading">Guess</p>
+                                                <p class="title is-uppercase" id="guess"></p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </fieldset>
-                        </form>
+                                <div class="content change_guess">
+                                    <form>
+                                        <fieldset class="field is-horizontal">
+                                            <div class="field-label is-normal">
+                                                <label class="label" for="guess_input">Guess</label>
+                                            </div>
+                                            <div class="field-body">
+                                                <div class="field has-addons">
+                                                    <div class="control is-expanded">
+                                                        <input class="input" id="guess_input" placeholder="Tares">
+                                                    </div>
+                                                    <div class="control">
+                                                        <button class="button" id="change_button">
+                                                            <span class="icon-text">
+                                                                <span class="icon">
+                                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                                </span>
+                                                                <span>Change</span>
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                                <div class="content solve">
+                                    <form>
+                                        <fieldset class="field is-horizontal">
+                                            <div class="field-label is-normal">
+                                                <label class="label" for="status_input">Status</label>
+                                            </div>
+                                            <div class="field-body">
+                                                <div class="field has-addons">
+                                                    <div class="control is-expanded">
+                                                        <input class="input" id="status_input" readonly>
+                                                    </div>
+                                                    <div class="control">
+                                                        <button class="button is-primary" id="solve_button">
+                                                            <span class="icon-text">
+                                                                <span class="icon">
+                                                                    <i class="fa-solid fa-check"></i>
+                                                                </span>
+                                                                <span>Solve</span>
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <fieldset class="field">
+                                            <div class="control">
+                                                <div class="buttons has-addons is-centered">
+                                                    <button class="button" id="correct_button">🟩</button>
+                                                    <button class="button" id="present_button">🟨</button>
+                                                    <button class="button" id="absent_button">⬛</button>
+                                                    <button class="button" id="delete_button">
+                                                        <span class="icon-text">
+                                                            <span class="icon">
+                                                                <i class="fa-solid fa-delete-left"></i>
+                                                            </span>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                                <div class="content resolve">
+                                    <form>
+                                        <fieldset class="field">
+                                            <div class="control">
+                                                <div class="buttons is-centered">
+                                                    <button class="button" id="resolve_button">
+                                                        <span class="icon-text">
+                                                            <span class="icon">
+                                                                <i class="fa-solid fa-check-double"></i>
+                                                            </span>
+                                                            <span>Resolve</span>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                                <div class="box">
+                                    <div class="content wordle">
+                                        <div class="content valid_solutions">
+                                            <div class="level is-mobile">
+                                                <div class="level-item">
+                                                    <div class="container has-text-centered">
+                                                        <p class="heading">Valid solutions</p>
+                                                        <p class="subtitle" id="valid_solutions"></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="content is_hard_mode">
+                                            <form>
+                                                <field_set class="field">
+                                                    <input class="switch" id="is_hard_mode_checkbox" type="checkbox">
+                                                        <label class="label" for="is_hard_mode_checkbox">Hard mode</label>
+                                                </field_set>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="content reset">
+                                    <form>
+                                        <fieldset class="field">
+                                            <div class="control">
+                                                <div class="buttons is-centered">
+                                                    <button class="button is-warning" id="reset_button">
+                                                        <span class="icon-text">
+                                                            <span class="icon">
+                                                                <i class="fa-solid fa-arrow-rotate-left"></i>
+                                                            </span>
+                                                            <span>Reset</span>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -231,5 +262,11 @@
                 </ul>
             </nav>
         </footer>
+        <script>
+            document.addEventListener("DOMContentLoaded",function(){var b=Array.prototype.slice.call(document.querySelectorAll(".navbar-burger"),0);0<b.length&&b.forEach(function(a){a.addEventListener("click",function(){var c=document.getElementById(a.dataset.target);a.classList.toggle("is-active");c.classList.toggle("is-active")})})});
+        </script>
+        <script>
+            bulmaAccordion.attach();
+        </script>
     </body>
 </html>
