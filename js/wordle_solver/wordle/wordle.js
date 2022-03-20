@@ -19,7 +19,7 @@ class Wordle {
 
     set_is_hard_mode(is_hard_mode) {
         this.is_hard_mode = is_hard_mode
-        if (is_hard_mode) {
+        if (this.is_hard_mode) {
             localStorage.setItem('is_hard_mode', '1')
             return
         }
