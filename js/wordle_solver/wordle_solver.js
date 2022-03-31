@@ -34,7 +34,7 @@ class WordleSolver {
             return guess
         }
         const guesses = this.#get_sorted_guesses_by_entropy()
-        const guess = guesses[Math.floor((guesses.length - 1) * Math.pow(Math.random(), 16))]
+        const guess = guesses[Math.floor(0.5 * (guesses.length - 1) * Math.pow(Math.random(), 8))]
         return guess
     }
 
