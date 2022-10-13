@@ -1,1 +1,3 @@
-window.addEventListener("DOMContentLoaded",function(a){document.getElementById("loading").style.display="none"});
+window.addEventListener('DOMContentLoaded', (event) => {
+    document.getElementById('loading').style.display = 'none'
+})

@@ -1,57 +1,560 @@
 import * as THREE from 'three'
-import {BrightnessContrastShader} from '../three/examples/jsm/shaders/BrightnessContrastShader.js'
-import {DRACOLoader} from '../three/examples/jsm/loaders/DRACOLoader.js'
-import {EffectComposer} from '../three/examples/jsm/postprocessing/EffectComposer.js'
-import {FilmPass} from '../three/examples/jsm/postprocessing/FilmPass.js'
-import {GlitchPass} from '../three/examples/jsm/postprocessing/GlitchPass.js'
-import {GLTFLoader} from '../three/examples/jsm/loaders/GLTFLoader.js'
-import {Lensflare, LensflareElement} from '../three/examples/jsm/objects/Lensflare.js'
-import {OrbitControls} from '../three/examples/jsm/controls/OrbitControls.js'
-import {OutlinePass} from '../three/examples/jsm/postprocessing/OutlinePass.js'
-import {RenderPass} from '../three/examples/jsm/postprocessing/RenderPass.js'
-import {RGBShiftShader} from '../three/examples/jsm/shaders/RGBShiftShader.js'
-import {ShaderPass} from '../three/examples/jsm/postprocessing/ShaderPass.js'
-var sun_and_moon_position_r=1E3,earth_scale_r=100,cloud_scale_r=6436.8/6356.8*earth_scale_r,moon_scale_r=1737.2/6356.8*earth_scale_r,glb_and_sprite_position_r=8356.8/6356.8*earth_scale_r,sprite_scale_r=.25*(glb_and_sprite_position_r-earth_scale_r),camera_position_r=glb_and_sprite_position_r+sprite_scale_r,index=document.querySelector("#index"),scene=new THREE.Scene,perspective_camera=new THREE.PerspectiveCamera(90,window.innerWidth/window.innerHeight,.1,camera_position_r+sun_and_moon_position_r+moon_scale_r),
-update$0=function(){perspective_camera.position.y=0;var a=Math.sign(perspective_camera.position.z)*Math.acos(perspective_camera.position.x/Math.hypot(perspective_camera.position.x,perspective_camera.position.z));perspective_camera.position.x=camera_position_r*Math.cos(a);perspective_camera.position.z=camera_position_r*Math.sin(a);perspective_camera.lookAt(.5*(earth_scale_r+glb_and_sprite_position_r)*Math.cos(a+d_theta),0,.5*(earth_scale_r+glb_and_sprite_position_r)*Math.sin(a+d_theta));requestAnimationFrame(update$0)},
-d_theta=Math.acos(.5*(earth_scale_r+glb_and_sprite_position_r)/camera_position_r),theta=-90*Math.PI/180;perspective_camera.position.set(camera_position_r*Math.cos(theta),0,camera_position_r*Math.sin(theta));perspective_camera.lookAt(.5*(earth_scale_r+glb_and_sprite_position_r)*Math.cos(theta+d_theta),0,.5*(earth_scale_r+glb_and_sprite_position_r)*Math.sin(theta+d_theta));requestAnimationFrame(update$0);var web_gl_renderer=new THREE.WebGLRenderer({canvas:index,antialias:!0});
-web_gl_renderer.setSize(window.devicePixelRatio*index.clientWidth,window.devicePixelRatio*index.clientHeight,!1);document.body.appendChild(web_gl_renderer.domElement);var objects={},effect_composer=new EffectComposer(web_gl_renderer);effect_composer.setSize(window.devicePixelRatio*web_gl_renderer.domElement.clientWidth,window.devicePixelRatio*web_gl_renderer.domElement.clientHeight);var render_pass=new RenderPass(scene,perspective_camera);objects.render_pass=render_pass;effect_composer.addPass(objects.render_pass);
-var orbit_controls=new OrbitControls(perspective_camera,index);orbit_controls.enablePan=!1;orbit_controls.enableZoom=!1;orbit_controls.enableDamping=!0;orbit_controls.autoRotate=!0;
-var texture=(new THREE.TextureLoader).load("../resources/images/background.webp",function(){var a=new THREE.WebGLCubeRenderTarget(texture.image.height);a.fromEquirectangularTexture(web_gl_renderer,texture);objects.background=a.texture;scene.background=objects.background}),sun_light=new THREE.SpotLight(16772045,2),theta$1=90*Math.PI/180;sun_light.position.set(sun_and_moon_position_r*Math.cos(theta$1),0,sun_and_moon_position_r*Math.sin(theta$1));objects.sun_light=sun_light;scene.add(objects.sun_light);
-var texture_0=(new THREE.TextureLoader).load("../resources/images/lensflare/lensflare_0.webp",function(){var a=(new THREE.TextureLoader).load("../resources/images/lensflare/lensflare_1.webp",function(){var d=(new THREE.TextureLoader).load("../resources/images/lensflare/lensflare_2.webp",function(){function e(){objects.lensflare.visible=.9>Math.random()?!0:!1;requestAnimationFrame(e)}var c=new Lensflare;c.addElement(new LensflareElement(texture_0,500,0,objects.sun_light.color));c.addElement(new LensflareElement(a,
-1E3,.1,objects.sun_light.color));c.addElement(new LensflareElement(d,100,.5));c.addElement(new LensflareElement(d,120,.6));c.addElement(new LensflareElement(d,180,.9));c.addElement(new LensflareElement(d,100,1));objects.lensflare=c;objects.sun_light.add(objects.lensflare);requestAnimationFrame(e)})})}),sphere_geometry=new THREE.SphereGeometry(earth_scale_r,32,32),mesh_phong_material=new THREE.MeshPhongMaterial,earth=new THREE.Mesh(sphere_geometry,mesh_phong_material),texture$2=(new THREE.TextureLoader).load("../resources/images/planets/earth.webp",
-function(){earth.material.map=texture$2;earth.material.needsUpdate=!0}),texture_normal=(new THREE.TextureLoader).load("../resources/images/planets/earth_normal.webp",function(){earth.material.normalMap=texture_normal;earth.material.needsUpdate=!0}),texture_specular=(new THREE.TextureLoader).load("../resources/images/planets/earth_specular.webp",function(){earth.material.specularMap=texture_specular;earth.material.needsUpdate=!0});earth.rotation.x=-23.4*Math.PI/180;objects.earth=earth;scene.add(objects.earth);
-var update$3=function(){var a=clock.getElapsedTime()%60;objects.cloud.rotation.y=2*Math.PI*a/60;requestAnimationFrame(update$3)},sphere_geometry$4=new THREE.SphereGeometry(cloud_scale_r,32,32),mesh_lambert_material=new THREE.MeshLambertMaterial({transparent:!0,side:THREE.DoubleSide}),cloud=new THREE.Mesh(sphere_geometry$4,mesh_lambert_material),texture$5=(new THREE.TextureLoader).load("../resources/images/planets/clouds.webp",function(){cloud.material.map=texture$5;cloud.material.needsUpdate=!0});
-objects.cloud=cloud;objects.earth.add(objects.cloud);var clock=new THREE.Clock;requestAnimationFrame(update$3);
-var update$6=function(){var a=clock$11.getElapsedTime()%4;objects.moon.rotation.y=2*Math.PI*a/4;requestAnimationFrame(update$6)},theta$7=-90*Math.PI/180,sphere_geometry$8=new THREE.SphereGeometry(moon_scale_r),mesh_lambert_material$9=new THREE.MeshLambertMaterial,moon=new THREE.Mesh(sphere_geometry$8,mesh_lambert_material$9),texture$10=(new THREE.TextureLoader).load("../resources/images/planets/moon.webp",function(){moon.material.map=texture$10;moon.material.needsUpdate=!0});
-moon.position.set(sun_and_moon_position_r*Math.cos(theta$7),0,sun_and_moon_position_r*Math.sin(theta$7));objects.moon=moon;scene.add(objects.moon);var clock$11=new THREE.Clock;requestAnimationFrame(update$6);var moon_light=new THREE.PointLight(16777215,2);moon_light.position.set(sun_and_moon_position_r*Math.cos(theta$7),0,sun_and_moon_position_r*Math.sin(theta$7));objects.moon_light=moon_light;scene.add(objects.moon_light);objects.natural_satellites=[];
-for(var sphere_buffer_geometry=new THREE.SphereBufferGeometry(3,3,3),i=0;1E3>i;i++){var mesh_phong_material$12=new THREE.MeshPhongMaterial({color:6710886,flatShading:!0}),natural_satellite=new THREE.Mesh(sphere_buffer_geometry,mesh_phong_material$12),r=.5*(sun_and_moon_position_r-camera_position_r)*Math.random()+.5*(sun_and_moon_position_r-camera_position_r)+camera_position_r,theta$13=2*Math.PI*Math.random(),phi=2*Math.PI*Math.random();natural_satellite.position.set(r*Math.sin(theta$13)*Math.cos(phi),
-r*Math.sin(theta$13)*Math.sin(phi),r*Math.cos(theta$13));natural_satellite.rotation.set(2*Math.PI*Math.random(),2*Math.PI*Math.random(),2*Math.PI*Math.random());natural_satellite.scale.x=natural_satellite.scale.y=natural_satellite.scale.z=Math.random();objects.natural_satellites.push(natural_satellite);scene.add(natural_satellite)}
-(new GLTFLoader).setDRACOLoader((new DRACOLoader).setDecoderPath("./three/examples/js/libs/draco/")).load("../resources/glb/bio.glb",function(a){function d(){var b=h.getElapsedTime()%4;objects.bio_glb.rotation.set(2*Math.PI*b/4,2*Math.PI*b/4,2*Math.PI*b/4);requestAnimationFrame(d)}var e=0*Math.PI/180;a.scene.position.set(glb_and_sprite_position_r*Math.cos(e),0,glb_and_sprite_position_r*Math.sin(e));objects.bio_glb=a.scene;scene.add(objects.bio_glb);var c=new OutlinePass(new THREE.Vector2(window.devicePixelRatio*
-web_gl_renderer.domElement.clientWidth,window.devicePixelRatio*web_gl_renderer.domElement.clientHeight),scene,perspective_camera),f=new THREE.Raycaster;web_gl_renderer.domElement.addEventListener("pointermove",function(b){var g=[];f.setFromCamera(new THREE.Vector2(2*b.clientX/web_gl_renderer.domElement.clientWidth-1,-2*b.clientY/web_gl_renderer.domElement.clientHeight+1),perspective_camera);b=f.intersectObject(scene,!0);0<b.length&&b[0].object.parent.parent===objects.bio_glb&&g.push(objects.bio_glb);
-c.selectedObjects=g});objects.bio_outline_pass=c;effect_composer.addPass(objects.bio_outline_pass);var h=new THREE.Clock;requestAnimationFrame(d)});var sprite_material=new THREE.SpriteMaterial,sprite=new THREE.Sprite(sprite_material),texture$14=(new THREE.TextureLoader).load("../resources/images/bio.webp",function(){sprite.material.map=texture$14;sprite.material.needsUpdate=!0}),theta$15=0*Math.PI/180;
-sprite.position.set(glb_and_sprite_position_r*Math.cos(theta$15),sprite_scale_r,glb_and_sprite_position_r*Math.sin(theta$15));sprite.scale.set(sprite_scale_r,sprite_scale_r,sprite_scale_r);objects.bio_sprite=sprite;scene.add(objects.bio_sprite);var raycaster=new THREE.Raycaster;
-web_gl_renderer.domElement.addEventListener("click",function(a){raycaster.setFromCamera(new THREE.Vector2(2*a.clientX/web_gl_renderer.domElement.clientWidth-1,-2*a.clientY/web_gl_renderer.domElement.clientHeight+1),perspective_camera);a=raycaster.intersectObject(scene,!0);0<a.length&&("bio_glb"in objects&&a[0].object.parent.parent===objects.bio_glb||a[0].object===objects.bio_sprite)&&(location="./bio.html")});
-(new GLTFLoader).setDRACOLoader((new DRACOLoader).setDecoderPath("./three/examples/js/libs/draco/")).load("../resources/glb/twitter.glb",function(a){function d(){var b=h.getElapsedTime()%4;objects.twitter_glb.rotation.set(2*Math.PI*b/4,2*Math.PI*b/4,2*Math.PI*b/4);requestAnimationFrame(d)}var e=90*Math.PI/180;a.scene.position.set(glb_and_sprite_position_r*Math.cos(e),0,glb_and_sprite_position_r*Math.sin(e));objects.twitter_glb=a.scene;scene.add(objects.twitter_glb);var c=new OutlinePass(new THREE.Vector2(window.devicePixelRatio*
-web_gl_renderer.domElement.clientWidth,window.devicePixelRatio*web_gl_renderer.domElement.clientHeight),scene,perspective_camera),f=new THREE.Raycaster;web_gl_renderer.domElement.addEventListener("pointermove",function(b){var g=[];f.setFromCamera(new THREE.Vector2(2*b.clientX/web_gl_renderer.domElement.clientWidth-1,-2*b.clientY/web_gl_renderer.domElement.clientHeight+1),perspective_camera);b=f.intersectObject(scene,!0);0<b.length&&b[0].object.parent.parent===objects.twitter_glb&&g.push(objects.twitter_glb);
-c.selectedObjects=g});objects.twitter_outline_pass=c;effect_composer.addPass(objects.twitter_outline_pass);var h=new THREE.Clock;requestAnimationFrame(d)});var sprite_material$16=new THREE.SpriteMaterial,sprite$17=new THREE.Sprite(sprite_material$16),texture$18=(new THREE.TextureLoader).load("../resources/images/twitter.webp",function(){sprite$17.material.map=texture$18;sprite$17.material.needsUpdate=!0}),theta$19=90*Math.PI/180;
-sprite$17.position.set(glb_and_sprite_position_r*Math.cos(theta$19),sprite_scale_r,glb_and_sprite_position_r*Math.sin(theta$19));sprite$17.scale.set(sprite_scale_r,sprite_scale_r,sprite_scale_r);objects.twitter_sprite=sprite$17;scene.add(objects.twitter_sprite);var film_pass=new FilmPass;film_pass.uniforms.sIntensity.value=.5;film_pass.uniforms.sCount.value=1E3;film_pass.uniforms.grayscale=!1;film_pass.enabled=!1;objects.film_pass=film_pass;effect_composer.addPass(objects.film_pass);
-var raycaster$20=new THREE.Raycaster;
-web_gl_renderer.domElement.addEventListener("click",function(a){raycaster$20.setFromCamera(new THREE.Vector2(2*a.clientX/web_gl_renderer.domElement.clientWidth-1,-2*a.clientY/web_gl_renderer.domElement.clientHeight+1),perspective_camera);a=raycaster$20.intersectObject(scene,!0);0<a.length&&("twitter_glb"in objects&&a[0].object.parent.parent===objects.twitter_glb||a[0].object===objects.twitter_sprite)&&(window.open("https://twitter.com/mcpu3_kei/"),objects.film_pass.enabled=!0)});
-(new GLTFLoader).setDRACOLoader((new DRACOLoader).setDecoderPath("./three/examples/js/libs/draco/")).load("../resources/glb/github.glb",function(a){function d(){var b=h.getElapsedTime()%4;objects.github_glb.rotation.set(2*Math.PI*b/4,2*Math.PI*b/4,2*Math.PI*b/4);requestAnimationFrame(d)}var e=180*Math.PI/180;a.scene.position.set(glb_and_sprite_position_r*Math.cos(e),0,glb_and_sprite_position_r*Math.sin(e));objects.github_glb=a.scene;scene.add(objects.github_glb);var c=new OutlinePass(new THREE.Vector2(window.devicePixelRatio*
-web_gl_renderer.domElement.clientWidth,window.devicePixelRatio*web_gl_renderer.domElement.clientHeight),scene,perspective_camera),f=new THREE.Raycaster;web_gl_renderer.domElement.addEventListener("pointermove",function(b){var g=[];f.setFromCamera(new THREE.Vector2(2*b.clientX/web_gl_renderer.domElement.clientWidth-1,-2*b.clientY/web_gl_renderer.domElement.clientHeight+1),perspective_camera);b=f.intersectObject(scene,!0);0<b.length&&b[0].object.parent.parent===objects.github_glb&&g.push(objects.github_glb);
-c.selectedObjects=g});objects.github_outline_pass=c;effect_composer.addPass(objects.github_outline_pass);var h=new THREE.Clock;requestAnimationFrame(d)});var sprite_material$21=new THREE.SpriteMaterial,sprite$22=new THREE.Sprite(sprite_material$21),texture$23=(new THREE.TextureLoader).load("../resources/images/github.webp",function(){sprite$22.material.map=texture$23;sprite$22.material.needsUpdate=!0}),theta$24=180*Math.PI/180;
-sprite$22.position.set(glb_and_sprite_position_r*Math.cos(theta$24),sprite_scale_r,glb_and_sprite_position_r*Math.sin(theta$24));sprite$22.scale.set(sprite_scale_r,sprite_scale_r,sprite_scale_r);objects.github_sprite=sprite$22;scene.add(objects.github_sprite);var shader_pass_rgb_shift_shader=new ShaderPass(RGBShiftShader);shader_pass_rgb_shift_shader.enabled=!1;objects.shader_pass_rgb_shift_shader=shader_pass_rgb_shift_shader;effect_composer.addPass(objects.shader_pass_rgb_shift_shader);
-var raycaster$25=new THREE.Raycaster;
-web_gl_renderer.domElement.addEventListener("click",function(a){raycaster$25.setFromCamera(new THREE.Vector2(2*a.clientX/window.innerWidth-1,-2*a.clientY/window.innerHeight+1),perspective_camera);a=raycaster$25.intersectObject(scene,!0);if(0<a.length&&("github_glb"in objects&&a[0].object.parent.parent===objects.github_glb||a[0].object===objects.github_sprite)){var d=function(){objects.shader_pass_rgb_shift_shader.enabled=.1>Math.random()?!0:!1;requestAnimationFrame(d)};window.open("https://github.com/Mcpu3/");
-requestAnimationFrame(d)}});
-(new GLTFLoader).setDRACOLoader((new DRACOLoader).setDecoderPath("./three/examples/js/libs/draco/")).load("../resources/glb/easteregg.glb",function(a){function d(){var b=h.getElapsedTime()%4;objects.easteregg_glb.rotation.set(2*Math.PI*b/4,2*Math.PI*b/4,2*Math.PI*b/4);requestAnimationFrame(d)}var e=270*Math.PI/180;a.scene.position.set(glb_and_sprite_position_r*Math.cos(e),0,glb_and_sprite_position_r*Math.sin(e));objects.easteregg_glb=a.scene;scene.add(objects.easteregg_glb);var c=new OutlinePass(new THREE.Vector2(window.devicePixelRatio*
-web_gl_renderer.domElement.clientWidth,window.devicePixelRatio*web_gl_renderer.domElement.clientHeight),scene,perspective_camera),f=new THREE.Raycaster;web_gl_renderer.domElement.addEventListener("pointermove",function(b){var g=[];f.setFromCamera(new THREE.Vector2(2*b.clientX/web_gl_renderer.domElement.clientWidth-1,-2*b.clientY/web_gl_renderer.domElement.clientHeight+1),perspective_camera);b=f.intersectObject(scene,!0);0<b.length&&b[0].object.parent.parent===objects.easteregg_glb&&g.push(objects.easteregg_glb);
-c.selectedObjects=g});objects.easteregg_outline_pass=c;effect_composer.addPass(objects.easteregg_outline_pass);var h=new THREE.Clock;requestAnimationFrame(d)});var sprite_material$27=new THREE.SpriteMaterial,sprite$28=new THREE.Sprite(sprite_material$27),texture$29=(new THREE.TextureLoader).load("../resources/images/easteregg.webp",function(){sprite$28.material.map=texture$29;sprite$28.material.needsUpdate=!0}),theta$30=270*Math.PI/180;
-sprite$28.position.set(glb_and_sprite_position_r*Math.cos(theta$30),sprite_scale_r,glb_and_sprite_position_r*Math.sin(theta$30));sprite$28.scale.set(sprite_scale_r,sprite_scale_r,sprite_scale_r);objects.easteregg_sprite=sprite$28;scene.add(objects.easteregg_sprite);var wireframe_geometry=new THREE.WireframeGeometry(objects.earth.geometry),line_basic_material=new THREE.LineBasicMaterial,earth_wireframe=new THREE.LineSegments(wireframe_geometry,line_basic_material);
-earth_wireframe.rotation.z=-23.4*Math.PI/180;earth_wireframe.visible=!1;objects.earth_wireframe=earth_wireframe;scene.add(objects.earth_wireframe);var clicked=!1,raycaster$31=new THREE.Raycaster;
-web_gl_renderer.domElement.addEventListener("click",function(a){function d(){var c=e.getElapsedTime();0<=c&&.2>c?(objects.earth.visible=!1,objects.earth_wireframe.visible=!0):.2<=c&&.3>c?(objects.earth.visible=!0,objects.earth_wireframe.visible=!1):.3<=c&&.4>c?(objects.earth.visible=!1,objects.earth_wireframe.visible=!0):.4<=c&&4>c?(objects.earth.visible=!0,objects.earth_wireframe.visible=!1):(objects.glitch_pass.goWild=!0,objects.shader_pass_brightness_contrast.enabled=!0,.1>Math.random()?(objects.earth.visible=
-!1,objects.earth_wireframe.visible=!0):(objects.earth.visible=!0,objects.earth_wireframe.visible=!1));0<=c&&.5>c?("easteregg_glb"in objects&&objects.easteregg_glb.scale.set(Math.cos(c*Math.PI),Math.cos(c*Math.PI),Math.cos(c*Math.PI)),objects.easteregg_sprite.scale.set(sprite_scale_r*Math.cos(c*Math.PI),sprite_scale_r*Math.cos(c*Math.PI),sprite_scale_r*Math.cos(c*Math.PI))):("easteregg_glb"in objects&&(objects.easteregg_glb.visible=!1),objects.easteregg_sprite.visible=!1);requestAnimationFrame(d)}
-raycaster$31.setFromCamera(new THREE.Vector2(2*a.clientX/web_gl_renderer.domElement.clientWidth-1,-2*a.clientY/web_gl_renderer.domElement.clientHeight+1),perspective_camera);a=raycaster$31.intersectObject(scene,!0);if(0<a.length&&("easteregg_glb"in objects&&a[0].object.parent.parent===objects.easteregg_glb||a[0].object===objects.easteregg_sprite)&&!clicked){clicked=!0;a=new GlitchPass;objects.glitch_pass=a;effect_composer.addPass(objects.glitch_pass);a=new ShaderPass(BrightnessContrastShader);a.uniforms.brightness.value=
--.5;a.enabled=!1;objects.shader_pass_brightness_contrast=a;effect_composer.addPass(objects.shader_pass_brightness_contrast);var e=new THREE.Clock;requestAnimationFrame(d)}});
-function update(){if(web_gl_renderer.domElement.width!==web_gl_renderer.domElement.clientWidth||web_gl_renderer.domElement.height!==web_gl_renderer.domElement.clientHeight){web_gl_renderer.setSize(window.devicePixelRatio*web_gl_renderer.domElement.clientWidth,window.devicePixelRatio*web_gl_renderer.domElement.clientHeight,!1);var a=!0}else a=!1;a&&(perspective_camera.aspect=web_gl_renderer.domElement.clientWidth/web_gl_renderer.domElement.clientHeight,perspective_camera.updateProjectionMatrix());
-effect_composer.setSize(window.devicePixelRatio*web_gl_renderer.domElement.clientWidth,window.devicePixelRatio*web_gl_renderer.domElement.clientHeight);web_gl_renderer.render(scene,perspective_camera);effect_composer.render();orbit_controls.update();requestAnimationFrame(update)}requestAnimationFrame(update);
+import {BrightnessContrastShader} from './../js/node_modules/three/examples/jsm/shaders/BrightnessContrastShader.js'
+import {DRACOLoader} from './../js/node_modules/three/examples/jsm/loaders/DRACOLoader.js'
+import {EffectComposer} from './../js/node_modules/three/examples/jsm/postprocessing/EffectComposer.js'
+import {FilmPass} from './../js/node_modules/three/examples/jsm/postprocessing/FilmPass.js'
+import {GlitchPass} from './../js/node_modules/three/examples/jsm/postprocessing/GlitchPass.js'
+import {GLTFLoader} from './../js/node_modules/three/examples/jsm/loaders/GLTFLoader.js'
+import {Lensflare, LensflareElement} from './../js/node_modules/three/examples/jsm/objects/Lensflare.js'
+import {OrbitControls} from './../js/node_modules/three/examples/jsm/controls/OrbitControls.js'
+import {OutlinePass} from './../js/node_modules/three/examples/jsm/postprocessing/OutlinePass.js'
+import {RenderPass} from './../js/node_modules/three/examples/jsm/postprocessing/RenderPass.js'
+import {RGBShiftShader} from './../js/node_modules/three/examples/jsm/shaders/RGBShiftShader.js'
+import {ShaderPass} from './../js/node_modules/three/examples/jsm/postprocessing/ShaderPass.js'
+
+
+const sun_and_moon_position_r = 1000
+const earth_scale_r = 100
+const cloud_scale_r = (6356.8 + 80) / 6356.8 * earth_scale_r
+const moon_scale_r = 1737.2 / 6356.8 * earth_scale_r
+const glb_and_sprite_position_r = (6356.8 + 2000) / 6356.8 * earth_scale_r
+const sprite_scale_r = 0.25 * (glb_and_sprite_position_r - earth_scale_r)
+const camera_position_r = glb_and_sprite_position_r + sprite_scale_r
+
+const index = document.querySelector('#index')
+
+const scene = new THREE.Scene()
+
+const perspective_camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, camera_position_r + sun_and_moon_position_r + moon_scale_r)
+{
+    const d_theta = Math.acos(0.5 * (earth_scale_r + glb_and_sprite_position_r) / camera_position_r)
+    const theta = -90 * Math.PI / 180
+    perspective_camera.position.set(camera_position_r * Math.cos(theta), 0, camera_position_r * Math.sin(theta))
+    perspective_camera.lookAt(0.5 * (earth_scale_r + glb_and_sprite_position_r) * Math.cos(theta + d_theta), 0, 0.5 * (earth_scale_r + glb_and_sprite_position_r) * Math.sin(theta + d_theta))
+
+    function update() {
+        perspective_camera.position.y = 0
+        const theta = Math.sign(perspective_camera.position.z) * Math.acos(perspective_camera.position.x / Math.hypot(perspective_camera.position.x, perspective_camera.position.z))
+        perspective_camera.position.x = camera_position_r * Math.cos(theta)
+        perspective_camera.position.z = camera_position_r * Math.sin(theta)
+        perspective_camera.lookAt(0.5 * (earth_scale_r + glb_and_sprite_position_r) * Math.cos(theta + d_theta), 0, 0.5 * (earth_scale_r + glb_and_sprite_position_r) * Math.sin(theta + d_theta))
+        requestAnimationFrame(update)
+    }
+
+    requestAnimationFrame(update)
+}
+
+const web_gl_renderer = new THREE.WebGLRenderer({canvas: index, antialias: true})
+{
+    web_gl_renderer.setSize(window.devicePixelRatio * index.clientWidth, window.devicePixelRatio * index.clientHeight, false)
+    document.body.appendChild(web_gl_renderer.domElement)
+}
+
+const objects = {}
+
+const effect_composer = new EffectComposer(web_gl_renderer)
+{
+    effect_composer.setSize(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight)
+    const render_pass = new RenderPass(scene, perspective_camera)
+    objects.render_pass = render_pass
+    effect_composer.addPass(objects.render_pass)
+}
+
+const orbit_controls = new OrbitControls(perspective_camera, index)
+{
+    orbit_controls.enablePan = false
+    orbit_controls.enableZoom = false
+    orbit_controls.enableDamping = true
+    orbit_controls.autoRotate = true
+}
+
+{
+    const texture = new THREE.TextureLoader().load('./../resources/images/background.webp', () => {
+        const web_gl_cube_render_target = new THREE.WebGLCubeRenderTarget(texture.image.height)
+        web_gl_cube_render_target.fromEquirectangularTexture(web_gl_renderer, texture)
+        objects.background = web_gl_cube_render_target.texture
+        scene.background = objects.background
+    })
+}
+
+{
+    const sun_light = new THREE.SpotLight(0xFFEBCD, 2)
+    const theta = 90 * Math.PI / 180
+    sun_light.position.set(sun_and_moon_position_r * Math.cos(theta), 0, sun_and_moon_position_r * Math.sin(theta))
+    objects.sun_light = sun_light
+    scene.add(objects.sun_light)
+}
+
+{
+    const texture_0 = new THREE.TextureLoader().load('./../resources/images/lensflare/lensflare_0.webp', () => {
+        const texture_1 = new THREE.TextureLoader().load('./../resources/images/lensflare/lensflare_1.webp', () => {
+            const texture_2 = new THREE.TextureLoader().load('./../resources/images/lensflare/lensflare_2.webp', () => {
+                const lensflare = new Lensflare()
+                lensflare.addElement(new LensflareElement(texture_0, 500, 0, objects.sun_light.color))
+                lensflare.addElement(new LensflareElement(texture_1, 1000, 0.1, objects.sun_light.color))
+                lensflare.addElement(new LensflareElement(texture_2, 100, 0.5))
+                lensflare.addElement(new LensflareElement(texture_2, 120, 0.6))
+                lensflare.addElement(new LensflareElement(texture_2, 180, 0.9))
+                lensflare.addElement(new LensflareElement(texture_2, 100, 1))
+                objects.lensflare = lensflare
+                objects.sun_light.add(objects.lensflare)
+
+                function update() {
+                    if (Math.random() < 0.9) {
+                        objects.lensflare.visible = true
+                    }
+                    else {
+                        objects.lensflare.visible = false
+                    }
+                    requestAnimationFrame(update)
+                }
+            
+                requestAnimationFrame(update)
+            })
+        })
+    })
+}
+
+{
+    const sphere_geometry = new THREE.SphereGeometry(earth_scale_r, 32, 32)
+    const mesh_phong_material = new THREE.MeshPhongMaterial()
+    const earth = new THREE.Mesh(sphere_geometry, mesh_phong_material)
+    const texture = new THREE.TextureLoader().load('./../resources/images/planets/earth.webp', () => {
+        earth.material.map = texture
+        earth.material.needsUpdate = true
+    })
+    const texture_normal = new THREE.TextureLoader().load('./../resources/images/planets/earth_normal.webp', () => {
+        earth.material.normalMap = texture_normal
+        earth.material.needsUpdate = true
+    })
+    const texture_specular = new THREE.TextureLoader().load('./../resources/images/planets/earth_specular.webp', () => {
+        earth.material.specularMap = texture_specular
+        earth.material.needsUpdate = true
+    })
+    earth.rotation.x = -23.4 * Math.PI / 180
+    objects.earth = earth
+    scene.add(objects.earth)
+    {
+        const sphere_geometry = new THREE.SphereGeometry(cloud_scale_r, 32, 32)
+        const mesh_lambert_material = new THREE.MeshLambertMaterial({transparent: true, side: THREE.DoubleSide})
+        const cloud = new THREE.Mesh(sphere_geometry, mesh_lambert_material)
+        const texture = new THREE.TextureLoader().load('./../resources/images/planets/clouds.webp', () => {
+            cloud.material.map = texture
+            cloud.material.needsUpdate = true
+        })
+        objects.cloud = cloud
+        objects.earth.add(objects.cloud)
+        const clock = new THREE.Clock()
+
+        function update() {
+            const elapsed_time = clock.getElapsedTime() % 60
+            objects.cloud.rotation.y = 2 * Math.PI * elapsed_time / 60
+            requestAnimationFrame(update)
+        }
+
+        requestAnimationFrame(update)
+    }
+}
+
+{
+    const theta = -90 * Math.PI / 180
+    const sphere_geometry = new THREE.SphereGeometry(moon_scale_r)
+    const mesh_lambert_material = new THREE.MeshLambertMaterial()
+    const moon = new THREE.Mesh(sphere_geometry, mesh_lambert_material)
+    const texture = new THREE.TextureLoader().load('./../resources/images/planets/moon.webp', () => {
+        moon.material.map = texture
+        moon.material.needsUpdate = true
+    })
+    moon.position.set(sun_and_moon_position_r * Math.cos(theta), 0, sun_and_moon_position_r * Math.sin(theta))
+    objects.moon = moon
+    scene.add(objects.moon)
+    const clock = new THREE.Clock()
+
+    function update() {
+        const elapsed_time = clock.getElapsedTime() % 4
+        objects.moon.rotation.y = 2 * Math.PI * elapsed_time / 4
+        requestAnimationFrame(update)
+    }
+
+    requestAnimationFrame(update)
+    const moon_light = new THREE.PointLight(0xFFFFFF, 2)
+    moon_light.position.set(sun_and_moon_position_r * Math.cos(theta), 0, sun_and_moon_position_r * Math.sin(theta))
+    objects.moon_light = moon_light
+    scene.add(objects.moon_light)
+}
+
+
+{
+    objects.natural_satellites = []
+    const sphere_buffer_geometry = new THREE.SphereGeometry(3, 3, 3)
+    for (let i = 0; i < 1000; i++) {
+        const mesh_phong_material = new THREE.MeshPhongMaterial({color: 0x666666, flatShading: true})
+        const natural_satellite = new THREE.Mesh(sphere_buffer_geometry, mesh_phong_material)
+        const r = 0.5 * (sun_and_moon_position_r - camera_position_r) * Math.random() + 0.5 * (sun_and_moon_position_r - camera_position_r) + camera_position_r
+        const theta = 2 * Math.PI * Math.random()
+        const phi = 2 * Math.PI * Math.random()
+        natural_satellite.position.set(r * Math.sin(theta) * Math.cos(phi), r * Math.sin(theta) * Math.sin(phi), r * Math.cos(theta))
+        natural_satellite.rotation.set(2 * Math.PI * Math.random(), 2 * Math.PI * Math.random(), 2 * Math.PI * Math.random())
+        natural_satellite.scale.x = natural_satellite.scale.y = natural_satellite.scale.z = Math.random()
+        objects.natural_satellites.push(natural_satellite)
+        scene.add(natural_satellite)
+    }
+}
+
+{
+    new GLTFLoader().setDRACOLoader(new DRACOLoader().setDecoderPath('./node_modules/three/examples/js/libs/draco/')).load('./../resources/glb/bio.glb', (glb) => {
+        const theta = 0 * Math.PI / 180
+        glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta))
+        objects.bio_glb = glb.scene
+        scene.add(objects.bio_glb)
+        const outline_pass = new OutlinePass(new THREE.Vector2(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight), scene, perspective_camera)
+        const raycaster = new THREE.Raycaster()
+        web_gl_renderer.domElement.addEventListener('pointermove', (event) => {
+            const selected_objects = []
+            raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera)
+            const intersect_objects = raycaster.intersectObject(scene, true)
+            if (intersect_objects.length > 0) {
+                if (intersect_objects[0].object.parent.parent === objects.bio_glb) {
+                    selected_objects.push(objects.bio_glb)
+                }
+            }
+            outline_pass.selectedObjects = selected_objects
+        })
+        objects.bio_outline_pass = outline_pass
+        effect_composer.addPass(objects.bio_outline_pass)
+        const clock = new THREE.Clock()
+
+        function update() {
+            const elapsed_time = clock.getElapsedTime() % 4
+            objects.bio_glb.rotation.set(2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4)
+            requestAnimationFrame(update)
+        }
+
+        requestAnimationFrame(update)
+    })
+}
+
+{
+    const sprite_material = new THREE.SpriteMaterial()
+    const sprite = new THREE.Sprite(sprite_material)
+    const texture = new THREE.TextureLoader().load('./../resources/images/bio.webp', () => {
+        sprite.material.map = texture
+        sprite.material.needsUpdate = true
+    })
+    const theta = 0 * Math.PI / 180
+    sprite.position.set(glb_and_sprite_position_r * Math.cos(theta), sprite_scale_r, glb_and_sprite_position_r * Math.sin(theta))
+    sprite.scale.set(sprite_scale_r, sprite_scale_r, sprite_scale_r)
+    objects.bio_sprite = sprite
+    scene.add(objects.bio_sprite)
+}
+
+{
+    const raycaster = new THREE.Raycaster()
+    web_gl_renderer.domElement.addEventListener('click', (event) => {
+        raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera)
+        const intersect_objects = raycaster.intersectObject(scene, true)
+        if (!(intersect_objects.length > 0)) {
+            return
+        }
+        if ('bio_glb' in objects && intersect_objects[0].object.parent.parent === objects.bio_glb || intersect_objects[0].object === objects.bio_sprite) {
+            location = './bio.html'
+        }
+    })
+}
+
+{
+    new GLTFLoader().setDRACOLoader(new DRACOLoader().setDecoderPath('./node_modules/three/examples/js/libs/draco/')).load('./../resources/glb/twitter.glb', (glb) => {
+        const theta = 90 * Math.PI / 180
+        glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta))
+        objects.twitter_glb = glb.scene
+        scene.add(objects.twitter_glb)
+        const outline_pass = new OutlinePass(new THREE.Vector2(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight), scene, perspective_camera)
+        const raycaster = new THREE.Raycaster()
+        web_gl_renderer.domElement.addEventListener('pointermove', (event) => {
+            const selected_objects = []
+            raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera)
+            const intersect_objects = raycaster.intersectObject(scene, true)
+            if (intersect_objects.length > 0) {
+                if (intersect_objects[0].object.parent.parent === objects.twitter_glb) {
+                    selected_objects.push(objects.twitter_glb)
+                }
+            }
+            outline_pass.selectedObjects = selected_objects
+        })
+        objects.twitter_outline_pass = outline_pass
+        effect_composer.addPass(objects.twitter_outline_pass)
+        const clock = new THREE.Clock()
+
+        function update() {
+            const elapsed_time = clock.getElapsedTime() % 4
+            objects.twitter_glb.rotation.set(2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4)
+            requestAnimationFrame(update)
+        }
+
+        requestAnimationFrame(update)
+    })
+}
+
+{
+    const sprite_material = new THREE.SpriteMaterial()
+    const sprite = new THREE.Sprite(sprite_material)
+    const texture = new THREE.TextureLoader().load('./../resources/images/twitter.webp', () => {
+        sprite.material.map = texture
+        sprite.material.needsUpdate = true
+    })
+    const theta = 90 * Math.PI / 180
+    sprite.position.set(glb_and_sprite_position_r * Math.cos(theta), sprite_scale_r, glb_and_sprite_position_r * Math.sin(theta))
+    sprite.scale.set(sprite_scale_r, sprite_scale_r, sprite_scale_r)
+    objects.twitter_sprite = sprite
+    scene.add(objects.twitter_sprite)
+}
+
+{
+    const film_pass = new FilmPass()
+    film_pass.uniforms.sIntensity.value = 0.5
+    film_pass.uniforms.sCount.value = 1000
+    film_pass.uniforms.grayscale = false
+    film_pass.enabled = false
+    objects.film_pass = film_pass
+    effect_composer.addPass(objects.film_pass)
+    const raycaster = new THREE.Raycaster()
+    web_gl_renderer.domElement.addEventListener('click', (event) => {
+        raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera)
+        const intersect_objects = raycaster.intersectObject(scene, true)
+        if (!(intersect_objects.length > 0)) {
+            return
+        }
+        if ('twitter_glb' in objects && intersect_objects[0].object.parent.parent === objects.twitter_glb || intersect_objects[0].object === objects.twitter_sprite) {
+            window.open('https://twitter.com/mcpu3_kei/')
+            objects.film_pass.enabled = true
+        }
+    })
+}
+
+{
+    new GLTFLoader().setDRACOLoader(new DRACOLoader().setDecoderPath('./node_modules/three/examples/js/libs/draco/')).load('./../resources/glb/github.glb', (glb) => {
+        const theta = 180 * Math.PI / 180
+        glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta))
+        objects.github_glb = glb.scene
+        scene.add(objects.github_glb)
+        const outline_pass = new OutlinePass(new THREE.Vector2(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight), scene, perspective_camera)
+        const raycaster = new THREE.Raycaster()
+        web_gl_renderer.domElement.addEventListener('pointermove', (event) => {
+            const selected_objects = []
+            raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera)
+            const intersect_objects = raycaster.intersectObject(scene, true)
+            if (intersect_objects.length > 0) {
+                if (intersect_objects[0].object.parent.parent === objects.github_glb) {
+                    selected_objects.push(objects.github_glb)
+                }
+            }
+            outline_pass.selectedObjects = selected_objects
+        })
+        objects.github_outline_pass = outline_pass
+        effect_composer.addPass(objects.github_outline_pass)
+        const clock = new THREE.Clock()
+
+        function update() {
+            const elapsed_time = clock.getElapsedTime() % 4
+            objects.github_glb.rotation.set(2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4)
+            requestAnimationFrame(update)
+        }
+
+        requestAnimationFrame(update)
+    })
+}
+
+{
+    const sprite_material = new THREE.SpriteMaterial()
+    const sprite = new THREE.Sprite(sprite_material)
+    const texture = new THREE.TextureLoader().load('./../resources/images/github.webp', () => {
+        sprite.material.map = texture
+        sprite.material.needsUpdate = true
+    })
+    const theta = 180 * Math.PI / 180
+    sprite.position.set(glb_and_sprite_position_r * Math.cos(theta), sprite_scale_r, glb_and_sprite_position_r * Math.sin(theta))
+    sprite.scale.set(sprite_scale_r, sprite_scale_r, sprite_scale_r)
+    objects.github_sprite = sprite
+    scene.add(objects.github_sprite)
+}
+
+{
+    const shader_pass_rgb_shift_shader = new ShaderPass(RGBShiftShader)
+    shader_pass_rgb_shift_shader.enabled = false
+    objects.shader_pass_rgb_shift_shader = shader_pass_rgb_shift_shader
+    effect_composer.addPass(objects.shader_pass_rgb_shift_shader)
+    const raycaster = new THREE.Raycaster()
+    web_gl_renderer.domElement.addEventListener('click', (event) => {
+        raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / window.innerWidth - 1, -2 * event.clientY / window.innerHeight + 1), perspective_camera)
+        const intersect_objects = raycaster.intersectObject(scene, true)
+        if (!(intersect_objects.length > 0)) {
+            return
+        }
+        if ('github_glb' in objects && intersect_objects[0].object.parent.parent === objects.github_glb || intersect_objects[0].object === objects.github_sprite) {
+            window.open('https://github.com/Mcpu3/')
+
+            function update() {
+                if (Math.random() < 0.1) {
+                    objects.shader_pass_rgb_shift_shader.enabled = true
+                }
+                else {
+                    objects.shader_pass_rgb_shift_shader.enabled = false
+                }
+                requestAnimationFrame(update)
+            }
+
+            requestAnimationFrame(update)
+        }
+    })
+}
+
+{
+    new GLTFLoader().setDRACOLoader(new DRACOLoader().setDecoderPath('./node_modules/three/examples/js/libs/draco/')).load('./../resources/glb/easteregg.glb', (glb) => {
+        const theta = 270 * Math.PI / 180
+        glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta))
+        objects.easteregg_glb = glb.scene
+        scene.add(objects.easteregg_glb)
+        const outline_pass = new OutlinePass(new THREE.Vector2(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight), scene, perspective_camera)
+        const raycaster = new THREE.Raycaster()
+        web_gl_renderer.domElement.addEventListener('pointermove', (event) => {
+            const selected_objects = []
+            raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera)
+            const intersect_objects = raycaster.intersectObject(scene, true)
+            if (intersect_objects.length > 0) {
+                if (intersect_objects[0].object.parent.parent === objects.easteregg_glb) {
+                    selected_objects.push(objects.easteregg_glb)
+                }
+            }
+            outline_pass.selectedObjects = selected_objects
+        })
+        objects.easteregg_outline_pass = outline_pass
+        effect_composer.addPass(objects.easteregg_outline_pass)
+        const clock = new THREE.Clock()
+
+        function update() {
+            const elapsed_time = clock.getElapsedTime() % 4
+            objects.easteregg_glb.rotation.set(2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4)
+            requestAnimationFrame(update)
+        }
+
+        requestAnimationFrame(update)
+    })
+}
+
+{
+    const sprite_material = new THREE.SpriteMaterial()
+    const sprite = new THREE.Sprite(sprite_material)
+    const texture = new THREE.TextureLoader().load('./../resources/images/easteregg.webp', () => {
+        sprite.material.map = texture
+        sprite.material.needsUpdate = true
+    })
+    const theta = 270 * Math.PI / 180
+    sprite.position.set(glb_and_sprite_position_r * Math.cos(theta), sprite_scale_r, glb_and_sprite_position_r * Math.sin(theta))
+    sprite.scale.set(sprite_scale_r, sprite_scale_r, sprite_scale_r)
+    objects.easteregg_sprite = sprite
+    scene.add(objects.easteregg_sprite)
+}
+
+{
+    const wireframe_geometry = new THREE.WireframeGeometry(objects.earth.geometry)
+    const line_basic_material = new THREE.LineBasicMaterial()
+    const earth_wireframe = new THREE.LineSegments(wireframe_geometry, line_basic_material)
+    earth_wireframe.rotation.z = -23.4 * Math.PI / 180
+    earth_wireframe.visible = false
+    objects.earth_wireframe = earth_wireframe
+    scene.add(objects.earth_wireframe)
+    let clicked = false
+    const raycaster = new THREE.Raycaster()
+    web_gl_renderer.domElement.addEventListener('click', (event) => {
+        raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera)
+        const intersect_objects = raycaster.intersectObject(scene, true)
+        if (!(intersect_objects.length > 0)) {
+            return
+        }
+        if (!('easteregg_glb' in objects && intersect_objects[0].object.parent.parent === objects.easteregg_glb || intersect_objects[0].object === objects.easteregg_sprite)) {
+            return
+        }
+        if (clicked) {
+            return
+        }
+        clicked = true
+        const glitch_pass = new GlitchPass()
+        objects.glitch_pass = glitch_pass
+        effect_composer.addPass(objects.glitch_pass)
+        const shader_pass_brightness_contrast = new ShaderPass(BrightnessContrastShader)
+        shader_pass_brightness_contrast.uniforms.brightness.value = -0.5
+        shader_pass_brightness_contrast.enabled = false
+        objects.shader_pass_brightness_contrast = shader_pass_brightness_contrast
+        effect_composer.addPass(objects.shader_pass_brightness_contrast)
+        const clock = new THREE.Clock()
+
+        function update() {
+            const elapsed_time = clock.getElapsedTime()
+            if (elapsed_time >= 0 && elapsed_time < 0.2) {
+                objects.earth.visible = false
+                objects.earth_wireframe.visible = true
+            }
+            else if (elapsed_time >= 0.2 && elapsed_time < 0.3) {
+                objects.earth.visible = true
+                objects.earth_wireframe.visible = false
+            }
+            else if (elapsed_time >= 0.3 && elapsed_time < 0.4) {
+                objects.earth.visible = false
+                objects.earth_wireframe.visible = true
+            }
+            else if (elapsed_time >= 0.4 && elapsed_time < 4) {
+                objects.earth.visible = true
+                objects.earth_wireframe.visible = false
+            }
+            else {
+                objects.glitch_pass.goWild = true
+                objects.shader_pass_brightness_contrast.enabled = true
+                if (Math.random() < 0.1) {
+                    objects.earth.visible = false
+                    objects.earth_wireframe.visible = true
+                }
+                else {
+                    objects.earth.visible = true
+                    objects.earth_wireframe.visible = false
+                }
+            }
+            if (elapsed_time >= 0.0 && elapsed_time < 0.5) {
+                if ('easteregg_glb' in objects) {
+                    objects.easteregg_glb.scale.set(Math.cos(elapsed_time * Math.PI), Math.cos(elapsed_time * Math.PI), Math.cos(elapsed_time * Math.PI))
+                }
+                objects.easteregg_sprite.scale.set(sprite_scale_r * Math.cos(elapsed_time * Math.PI), sprite_scale_r * Math.cos(elapsed_time * Math.PI), sprite_scale_r * Math.cos(elapsed_time * Math.PI))
+            }
+            else {
+                if ('easteregg_glb' in objects) {
+                    objects.easteregg_glb.visible = false
+                }
+                objects.easteregg_sprite.visible = false
+            }
+            requestAnimationFrame(update)
+        }
+
+        requestAnimationFrame(update)
+    })
+}
+
+function update() {
+    function resize() {
+        if (web_gl_renderer.domElement.width !== web_gl_renderer.domElement.clientWidth || web_gl_renderer.domElement.height !== web_gl_renderer.domElement.clientHeight) {
+            web_gl_renderer.setSize(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight, false)
+            return true
+        }
+        return false
+    }
+
+    if (resize()) {
+        perspective_camera.aspect = web_gl_renderer.domElement.clientWidth / web_gl_renderer.domElement.clientHeight
+        perspective_camera.updateProjectionMatrix()
+    }
+    effect_composer.setSize(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight)
+    web_gl_renderer.render(scene, perspective_camera)
+    effect_composer.render()
+    orbit_controls.update()
+    requestAnimationFrame(update)
+}
+
+requestAnimationFrame(update)

@@ -1,0 +1,5 @@
+{
+    "service": "github-pages",
+    "dockerComposeFile": "./../docker-compose.yml",
+    "workspaceFolder": "/var/www/html/"
+}

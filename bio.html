@@ -21,22 +21,27 @@
         <title>Bio - Mcpu3 (岩本圭介)</title>
         <link rel="icon" href="./resources/images/favicon.webp">
         <link rel="apple-touch-icon" href="./resources/images/apple_touch_icon.webp">
-        <link rel="stylesheet" href="./css/bio_bulma.css">
+        <link rel="stylesheet" href="./css/bulma/bio.css">
         <link rel="stylesheet" href="./css/bio.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
         <script src="./js/bio/age.js" defer></script>
         <script type="importmap">
             {
                 "imports": {
-                    "three": "../three/build/three.module.js"
+                    "three": "./../js/node_modules/three/build/three.module.js"
                 }
             }
         </script>
-        <script src="https://ga.jspm.io/npm:es-module-shims@1.4.6/dist/es-module-shims.js" defer></script>
+        <script src="./js/node_modules/es-module-shims/dist/es-module-shims.js" defer></script>
         <script src="./js/bio.js" type="module" defer></script>
         <script src="https://www.googletagmanager.com/gtag/js?id=G-Q9S9MP5LX8" async></script>
         <script>
-            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date);gtag("config","G-Q9S9MP5LX8");
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', 'G-Q9S9MP5LX8');
         </script>
     </head>
     <body>
@@ -103,7 +108,7 @@
                             <span>資格, 試験</span>
                         </span>
                     </dt>
-                    <dd>普通自動車第一種免許, 基本情報技術者試験, 応用情報技術者試験, TOEIC L&R IPテスト: 580</dd>
+                    <dd>普通自動車第一種免許, 基本情報技術者試験, 応用情報技術者試験, TOEIC L&R 公開テスト: 590</dd>
                 </dl>
             </div>
             <footer class="card-footer">

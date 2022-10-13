@@ -1,12 +1,15 @@
 {
   "devDependencies": {
-    "bulma": "^0.9.3",
+    "bulma": "^0.9.4",
     "bulma-extensions": "^6.2.7",
-    "node-sass": "^7.0.1",
-    "three": "^0.138.0"
+    "es-module-shims": "^1.6.1",
+    "node-sass": "^7.0.3",
+    "three": "^0.145.0"
   },
   "scripts": {
-    "css-build": "node-sass --omit-source-map-url sass/index_bulma.scss css/index_bulma.css",
+    "index-css-build": "node-sass --omit-source-map-url ./sass/index.scss ./css/bulma/index.css",
+    "bio-css-build": "node-sass --omit-source-map-url ./sass/bio.scss ./css/bulma/bio.css",
+    "wordle-solver-css-build": "node-sass --omit-source-map-url ./sass/wordle_solver.scss ./css/bulma/wordle_solver.css",
     "css-watch": "npm run css-build -- --watch",
     "start": "npm run css-watch"
   }

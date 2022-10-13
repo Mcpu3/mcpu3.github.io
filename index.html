@@ -21,21 +21,26 @@
         <title>Mcpu3 (岩本圭介)</title>
         <link rel="icon" href="./resources/images/favicon.webp">
         <link rel="apple-touch-icon" href="./resources/images/apple_touch_icon.webp">
-        <link rel="stylesheet" href="./css/index_bulma.css">
+        <link rel="stylesheet" href="./css/bulma/index.css">
         <link rel="stylesheet" href="./css/index.css">
         <script src="./js/index/loading.js" defer></script>
         <script type="importmap">
             {
                 "imports": {
-                    "three": "../three/build/three.module.js"
+                    "three": "./../js/node_modules/three/build/three.module.js"
                 }
             }
         </script>
-        <script src="https://ga.jspm.io/npm:es-module-shims@1.4.6/dist/es-module-shims.js" defer></script>
+        <script src="./js/node_modules/es-module-shims/dist/es-module-shims.js" defer></script>
         <script src="./js/index.js" type="module" defer></script>
         <script src="https://www.googletagmanager.com/gtag/js?id=G-Q9S9MP5LX8" async></script>
         <script>
-            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date);gtag("config","G-Q9S9MP5LX8");
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', 'G-Q9S9MP5LX8');
         </script>
     </head>
     <body>
