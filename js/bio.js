@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import {CSS3DObject, CSS3DRenderer} from './../js/node_modules/three/examples/jsm/renderers/CSS3DRenderer.js'
+import {CSS3DObject, CSS3DRenderer} from './../modules/three/examples/jsm/renderers/CSS3DRenderer.js'
 
 
 const fov = 60;

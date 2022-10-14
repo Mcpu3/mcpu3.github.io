@@ -7,4 +7,4 @@ services:
     volumes:
       - ./:/var/www/html/
     working_dir: /var/www/html/
-    command: bash -c 'npm install && nginx -g "daemon off;"'
+    command: bash -c './scripts/install.sh && nginx -g "daemon off;"'

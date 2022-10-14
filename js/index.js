@@ -1,16 +1,16 @@
 import * as THREE from 'three'
-import {BrightnessContrastShader} from './../js/node_modules/three/examples/jsm/shaders/BrightnessContrastShader.js'
-import {DRACOLoader} from './../js/node_modules/three/examples/jsm/loaders/DRACOLoader.js'
-import {EffectComposer} from './../js/node_modules/three/examples/jsm/postprocessing/EffectComposer.js'
-import {FilmPass} from './../js/node_modules/three/examples/jsm/postprocessing/FilmPass.js'
-import {GlitchPass} from './../js/node_modules/three/examples/jsm/postprocessing/GlitchPass.js'
-import {GLTFLoader} from './../js/node_modules/three/examples/jsm/loaders/GLTFLoader.js'
-import {Lensflare, LensflareElement} from './../js/node_modules/three/examples/jsm/objects/Lensflare.js'
-import {OrbitControls} from './../js/node_modules/three/examples/jsm/controls/OrbitControls.js'
-import {OutlinePass} from './../js/node_modules/three/examples/jsm/postprocessing/OutlinePass.js'
-import {RenderPass} from './../js/node_modules/three/examples/jsm/postprocessing/RenderPass.js'
-import {RGBShiftShader} from './../js/node_modules/three/examples/jsm/shaders/RGBShiftShader.js'
-import {ShaderPass} from './../js/node_modules/three/examples/jsm/postprocessing/ShaderPass.js'
+import {BrightnessContrastShader} from './../modules/three/examples/jsm/shaders/BrightnessContrastShader.js'
+import {DRACOLoader} from './../modules/three/examples/jsm/loaders/DRACOLoader.js'
+import {EffectComposer} from './../modules/three/examples/jsm/postprocessing/EffectComposer.js'
+import {FilmPass} from './../modules/three/examples/jsm/postprocessing/FilmPass.js'
+import {GlitchPass} from './../modules/three/examples/jsm/postprocessing/GlitchPass.js'
+import {GLTFLoader} from './../modules/three/examples/jsm/loaders/GLTFLoader.js'
+import {Lensflare, LensflareElement} from './../modules/three/examples/jsm/objects/Lensflare.js'
+import {OrbitControls} from './../modules/three/examples/jsm/controls/OrbitControls.js'
+import {OutlinePass} from './../modules/three/examples/jsm/postprocessing/OutlinePass.js'
+import {RenderPass} from './../modules/three/examples/jsm/postprocessing/RenderPass.js'
+import {RGBShiftShader} from './../modules/three/examples/jsm/shaders/RGBShiftShader.js'
+import {ShaderPass} from './../modules/three/examples/jsm/postprocessing/ShaderPass.js'
 
 
 const sun_and_moon_position_r = 1000
@@ -202,7 +202,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index)
 }
 
 {
-    new GLTFLoader().setDRACOLoader(new DRACOLoader().setDecoderPath('./node_modules/three/examples/js/libs/draco/')).load('./../resources/glb/bio.glb', (glb) => {
+    new GLTFLoader().setDRACOLoader(new DRACOLoader().setDecoderPath('./../modules/three/examples/js/libs/draco/')).load('./../resources/glb/bio.glb', (glb) => {
         const theta = 0 * Math.PI / 180
         glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta))
         objects.bio_glb = glb.scene
@@ -263,7 +263,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index)
 }
 
 {
-    new GLTFLoader().setDRACOLoader(new DRACOLoader().setDecoderPath('./node_modules/three/examples/js/libs/draco/')).load('./../resources/glb/twitter.glb', (glb) => {
+    new GLTFLoader().setDRACOLoader(new DRACOLoader().setDecoderPath('./../modules/three/examples/js/libs/draco/')).load('./../resources/glb/twitter.glb', (glb) => {
         const theta = 90 * Math.PI / 180
         glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta))
         objects.twitter_glb = glb.scene
@@ -332,7 +332,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index)
 }
 
 {
-    new GLTFLoader().setDRACOLoader(new DRACOLoader().setDecoderPath('./node_modules/three/examples/js/libs/draco/')).load('./../resources/glb/github.glb', (glb) => {
+    new GLTFLoader().setDRACOLoader(new DRACOLoader().setDecoderPath('./../modules/three/examples/js/libs/draco/')).load('./../resources/glb/github.glb', (glb) => {
         const theta = 180 * Math.PI / 180
         glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta))
         objects.github_glb = glb.scene
@@ -409,7 +409,7 @@ const orbit_controls = new OrbitControls(perspective_camera, index)
 }
 
 {
-    new GLTFLoader().setDRACOLoader(new DRACOLoader().setDecoderPath('./node_modules/three/examples/js/libs/draco/')).load('./../resources/glb/easteregg.glb', (glb) => {
+    new GLTFLoader().setDRACOLoader(new DRACOLoader().setDecoderPath('./../modules/three/examples/js/libs/draco/')).load('./../resources/glb/easteregg.glb', (glb) => {
         const theta = 270 * Math.PI / 180
         glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta))
         objects.easteregg_glb = glb.scene
