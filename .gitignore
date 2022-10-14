@@ -114,12 +114,3 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
-
-/three/*
-!/three/build
-/three/build/*
-!/three/build/three.module.js
-!/three/examples
-/three/examples/*
-!/three/examples/js
-!/three/examples/jsm
