@@ -8,5 +8,3 @@ services:
       - ./:/var/www/html/
     working_dir: /var/www/html/
     command: bash -c 'npm install && nginx -g "daemon off;"'
-    tty: true
-    stdin_open: true
