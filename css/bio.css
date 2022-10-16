@@ -11,6 +11,6 @@ html, body {
     width: 100%;
     height: 100%;
     display: block;
-    background: url(../resources/images/bio_background.webp) center;
+    background: url(../resources/images/bio/background.webp) center;
     background-size: cover;
 }
