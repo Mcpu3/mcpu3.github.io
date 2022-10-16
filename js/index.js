@@ -263,11 +263,11 @@ const orbit_controls = new OrbitControls(perspective_camera, index)
 }
 
 {
-    new GLTFLoader().setDRACOLoader(new DRACOLoader().setDecoderPath('./../modules/three/examples/js/libs/draco/')).load('./../resources/glb/twitter.glb', (glb) => {
+    new GLTFLoader().setDRACOLoader(new DRACOLoader().setDecoderPath('./../modules/three/examples/js/libs/draco/')).load('./../resources/glb/social_media.glb', (glb) => {
         const theta = 90 * Math.PI / 180
         glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta))
-        objects.twitter_glb = glb.scene
-        scene.add(objects.twitter_glb)
+        objects.social_media_glb = glb.scene
+        scene.add(objects.social_media_glb)
         const outline_pass = new OutlinePass(new THREE.Vector2(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight), scene, perspective_camera)
         const raycaster = new THREE.Raycaster()
         web_gl_renderer.domElement.addEventListener('pointermove', (event) => {
@@ -275,19 +275,19 @@ const orbit_controls = new OrbitControls(perspective_camera, index)
             raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera)
             const intersect_objects = raycaster.intersectObject(scene, true)
             if (intersect_objects.length > 0) {
-                if (intersect_objects[0].object.parent.parent === objects.twitter_glb) {
-                    selected_objects.push(objects.twitter_glb)
+                if (intersect_objects[0].object.parent.parent === objects.social_media_glb) {
+                    selected_objects.push(objects.social_media_glb)
                 }
             }
             outline_pass.selectedObjects = selected_objects
         })
-        objects.twitter_outline_pass = outline_pass
-        effect_composer.addPass(objects.twitter_outline_pass)
+        objects.social_media_outline_pass = outline_pass
+        effect_composer.addPass(objects.social_media_outline_pass)
         const clock = new THREE.Clock()
 
         function update() {
             const elapsed_time = clock.getElapsedTime() % 4
-            objects.twitter_glb.rotation.set(2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4)
+            objects.social_media_glb.rotation.set(2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4)
             requestAnimationFrame(update)
         }
 
@@ -298,15 +298,15 @@ const orbit_controls = new OrbitControls(perspective_camera, index)
 {
     const sprite_material = new THREE.SpriteMaterial()
     const sprite = new THREE.Sprite(sprite_material)
-    const texture = new THREE.TextureLoader().load('./../resources/images/twitter.webp', () => {
+    const texture = new THREE.TextureLoader().load('./../resources/images/social_media.webp', () => {
         sprite.material.map = texture
         sprite.material.needsUpdate = true
     })
     const theta = 90 * Math.PI / 180
     sprite.position.set(glb_and_sprite_position_r * Math.cos(theta), sprite_scale_r, glb_and_sprite_position_r * Math.sin(theta))
     sprite.scale.set(sprite_scale_r, sprite_scale_r, sprite_scale_r)
-    objects.twitter_sprite = sprite
-    scene.add(objects.twitter_sprite)
+    objects.social_media_sprite = sprite
+    scene.add(objects.social_media_sprite)
 }
 
 {
@@ -324,8 +324,8 @@ const orbit_controls = new OrbitControls(perspective_camera, index)
         if (!(intersect_objects.length > 0)) {
             return
         }
-        if ('twitter_glb' in objects && intersect_objects[0].object.parent.parent === objects.twitter_glb || intersect_objects[0].object === objects.twitter_sprite) {
-            window.open('https://twitter.com/mcpu3_kei/')
+        if ('social_media_glb' in objects && intersect_objects[0].object.parent.parent === objects.social_media_glb || intersect_objects[0].object === objects.social_media_sprite) {
+            window.open('./social_media.html')
             objects.film_pass.enabled = true
         }
     })

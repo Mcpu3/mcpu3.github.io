@@ -32,10 +32,16 @@ const objects = {};
 
 {
     document.getElementById('ok').addEventListener('pointerup', (event) => {
-        location = './';
+        window.close();
     });
-    document.getElementById('social_media').addEventListener('pointerup', (event) => {
-        window.open('./social_media.html');
+    document.getElementById('instagram').addEventListener('pointerup', (event) => {
+        window.open('https://www.instagram.com/mcpu3_kei/');
+    });
+    document.getElementById('twitter').addEventListener('pointerup', (event) => {
+        window.open('https://twitter.com/mcpu3_kei/');
+    });
+    document.getElementById('github').addEventListener('pointerup', (event) => {
+        window.open('https://github.com/Mcpu3/');
     });
 }
 
