@@ -332,11 +332,11 @@ const orbit_controls = new OrbitControls(perspective_camera, index)
 }
 
 {
-    new GLTFLoader().setDRACOLoader(new DRACOLoader().setDecoderPath('./../modules/three/examples/js/libs/draco/')).load('./../resources/glb/github.glb', (glb) => {
+    new GLTFLoader().setDRACOLoader(new DRACOLoader().setDecoderPath('./../modules/three/examples/js/libs/draco/')).load('./../resources/glb/wordle_solver.glb', (glb) => {
         const theta = 180 * Math.PI / 180
         glb.scene.position.set(glb_and_sprite_position_r * Math.cos(theta), 0, glb_and_sprite_position_r * Math.sin(theta))
-        objects.github_glb = glb.scene
-        scene.add(objects.github_glb)
+        objects.wordle_solver_glb = glb.scene
+        scene.add(objects.wordle_solver_glb)
         const outline_pass = new OutlinePass(new THREE.Vector2(window.devicePixelRatio * web_gl_renderer.domElement.clientWidth, window.devicePixelRatio * web_gl_renderer.domElement.clientHeight), scene, perspective_camera)
         const raycaster = new THREE.Raycaster()
         web_gl_renderer.domElement.addEventListener('pointermove', (event) => {
@@ -344,19 +344,19 @@ const orbit_controls = new OrbitControls(perspective_camera, index)
             raycaster.setFromCamera(new THREE.Vector2(2 * event.clientX / web_gl_renderer.domElement.clientWidth - 1, -2 * event.clientY / web_gl_renderer.domElement.clientHeight + 1), perspective_camera)
             const intersect_objects = raycaster.intersectObject(scene, true)
             if (intersect_objects.length > 0) {
-                if (intersect_objects[0].object.parent.parent === objects.github_glb) {
-                    selected_objects.push(objects.github_glb)
+                if (intersect_objects[0].object.parent.parent === objects.wordle_solver_glb) {
+                    selected_objects.push(objects.wordle_solver_glb)
                 }
             }
             outline_pass.selectedObjects = selected_objects
         })
-        objects.github_outline_pass = outline_pass
-        effect_composer.addPass(objects.github_outline_pass)
+        objects.wordle_solver_outline_pass = outline_pass
+        effect_composer.addPass(objects.wordle_solver_outline_pass)
         const clock = new THREE.Clock()
 
         function update() {
             const elapsed_time = clock.getElapsedTime() % 4
-            objects.github_glb.rotation.set(2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4)
+            objects.wordle_solver_glb.rotation.set(2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4, 2 * Math.PI * elapsed_time / 4)
             requestAnimationFrame(update)
         }
 
@@ -367,15 +367,15 @@ const orbit_controls = new OrbitControls(perspective_camera, index)
 {
     const sprite_material = new THREE.SpriteMaterial()
     const sprite = new THREE.Sprite(sprite_material)
-    const texture = new THREE.TextureLoader().load('./../resources/images/github.webp', () => {
+    const texture = new THREE.TextureLoader().load('./../resources/images/wordle_solver.webp', () => {
         sprite.material.map = texture
         sprite.material.needsUpdate = true
     })
     const theta = 180 * Math.PI / 180
     sprite.position.set(glb_and_sprite_position_r * Math.cos(theta), sprite_scale_r, glb_and_sprite_position_r * Math.sin(theta))
     sprite.scale.set(sprite_scale_r, sprite_scale_r, sprite_scale_r)
-    objects.github_sprite = sprite
-    scene.add(objects.github_sprite)
+    objects.wordle_solver_sprite = sprite
+    scene.add(objects.wordle_solver_sprite)
 }
 
 {
@@ -390,8 +390,8 @@ const orbit_controls = new OrbitControls(perspective_camera, index)
         if (!(intersect_objects.length > 0)) {
             return
         }
-        if ('github_glb' in objects && intersect_objects[0].object.parent.parent === objects.github_glb || intersect_objects[0].object === objects.github_sprite) {
-            window.open('https://github.com/Mcpu3/')
+        if ('wordle_solver_glb' in objects && intersect_objects[0].object.parent.parent === objects.wordle_solver_glb || intersect_objects[0].object === objects.wordle_solver_sprite) {
+            window.open('./wordle_solver.html')
 
             function update() {
                 if (Math.random() < 0.1) {
