@@ -1,4 +1,5 @@
 npm install
+rm -rf ./modules/
 mkdir ./modules/
 cp -rf ./node_modules/bulma-extensions/ ./modules/bulma-extensions/
 cp -rf ./node_modules/es-module-shims/ ./modules/es-module-shims/

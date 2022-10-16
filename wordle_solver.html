@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
         <meta property="og:url" content="https://mcpu3.github.io/">
         <meta property="og:locale" content="ja_JP">
-        <meta property="og:title" content="Wordle Solver (β) - Mcpu3 (岩本圭介)">
+        <meta property="og:title" content="Wordle Solver - Mcpu3 (岩本圭介)">
         <meta property="og:description" content="Want to show off your Wordle play to your friends? This is the best Wordle Solver that also supports hard mode.">
         <meta property="og:image" content="https://mcpu3.github.io/resources/images/og.webp">
         <meta name="og:type" content="profile">
@@ -18,7 +18,7 @@
         <meta name="twitter:card" content="summary">
         <meta name="twitter:site" content="@mcpu3_kei">
         <meta name="twitter:creator" content="@mcpu3_kei">
-        <title>Wordle Solver (β) - Mcpu3 (岩本圭介)</title>
+        <title>Wordle Solver - Mcpu3 (岩本圭介)</title>
         <link rel="icon" href="./resources/images/favicon.webp">
         <link rel="apple-touch-icon" href="./resources/images/apple_touch_icon.webp">
         <link rel="stylesheet" href="./css/bulma/wordle_solver.css">
@@ -29,7 +29,7 @@
         <script src="./js/wordle_solver/wordle_solver.js" defer></script>
         <script src="./js/wordle_solver.js" defer></script>
         <script src="./modules/bulma-extensions/bulma-accordion/dist/js/bulma-accordion.min.js"></script>
-        <script src="https://www.googletagmanager.com/gtag/js?id=G-Q9S9MP5LX8" async></script>
+        <!-- <script src="https://www.googletagmanager.com/gtag/js?id=G-Q9S9MP5LX8" async></script>
         <script>
             window.dataLayer = window.dataLayer || [];
             function gtag() {
@@ -37,7 +37,7 @@
             }
             gtag('js', new Date());
             gtag('config', 'G-Q9S9MP5LX8');
-        </script>
+        </script> -->
     </head>
     <body>
         <header>
@@ -47,7 +47,7 @@
                         <img class="is-rounded" src="./resources/images/bio/profile.webp" alt="Profile image">
                     </a>
                     <a class="navbar-item" href="./wordle_solver.html">
-                        <h1>Wordle Solver (β)</h1>
+                        <h1>Wordle Solver</h1>
                     </a>
                     <a class="navbar-burger" data-target="_navbar-menu">
                         <span></span>
@@ -67,10 +67,10 @@
                         </a>
                     </div>
                     <div class="navbar-end">
-                        <a class="navbar-item" href="https://twitter.com/mcpu3_kei/" target="_blank">
+                        <a class="navbar-item" href="./social_media.html" target="_blank">
                             <span class="icon-text">
                                 <span class="icon">
-                                    <i class="fa-brands fa-twitter"></i>
+                                    <i class="fa-brands fa-instagram"></i>
                                 </span>
                                 <span>@mcpu3_kei</span>
                             </span>
@@ -264,13 +264,23 @@
                         </a>
                     </li>
                     <li class="is-active">
-                        <a href="./wordle_solver.html">Wordle Solver (β)</a>
+                        <a href="./wordle_solver.html">Wordle Solver</a>
                     </li>
                 </ul>
             </nav>
         </footer>
         <script>
-            document.addEventListener("DOMContentLoaded",function(){var b=Array.prototype.slice.call(document.querySelectorAll(".navbar-burger"),0);0<b.length&&b.forEach(function(a){a.addEventListener("click",function(){var c=document.getElementById(a.dataset.target);a.classList.toggle("is-active");c.classList.toggle("is-active")})})});
+            document.addEventListener('DOMContentLoaded', () => {
+                const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+                $navbarBurgers.forEach(el => {
+                    el.addEventListener('click', () => {
+                        const target = el.dataset.target;
+                        const $target = document.getElementById(target);
+                        el.classList.toggle('is-active');
+                        $target.classList.toggle('is-active');
+                    });
+                });
+            });
         </script>
         <script>
             bulmaAccordion.attach();
